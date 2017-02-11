@@ -1,0 +1,22 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Alle Mitglieder</h1>
+
+{% if mitglieder %}
+  <ul class="bl">
+  {% for mitglied in mitglieder %}
+    <li><a href="{% url 'mitglieder:detail' mitglied.mitgliedsNummer %}">{{ mitglied }}</a></li>
+  {% endfor %}
+  <li><a href="{% url 'mitglieder:add' %}">+</a>
+  </ul>
+{% else %}
+  <p>No polls are available.</p>
+{% endif %}
+
+<p>
+  <ul>
+    <li><a href="/benutzer/alle/">Benutzerübersicht</a></li>
+    <li><a href="/accounts/logout/?next=/">Logout</a></li>
+  </ul>
+</p>

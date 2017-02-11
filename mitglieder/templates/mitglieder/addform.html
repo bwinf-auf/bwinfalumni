@@ -1,0 +1,48 @@
+
+<h1>Mitglied hinzufügen</h1>
+
+<form action="/mitglieder/add/" method="post">
+    {% csrf_token %}
+    <table style="border:0px">
+      {{ mform.as_table }}
+      {{ pform.as_table }}
+      {{ bform.as_table }}
+      <tr><th></th><td><input type="submit" value="Hinzufügen" /></td></tr>
+    </table>
+</form>
+
+<script>
+  var checkbox = document.getElementById("id_adduserp");
+  
+  var fields = [];
+  
+  fields.push(document.getElementById("id_username"));
+  fields.push(document.getElementById("id_email"));
+
+  function showall() {
+    for (i in fields) {
+      fields[i].required = true;
+      fields[i].parentNode.parentNode.style.display = "table-row";
+    }
+  }
+  function hideall() {
+    for (i in fields) {
+      fields[i].required = false;
+      fields[i].parentNode.parentNode.style.display = "none";
+    }
+  }
+  
+  function togglevis(){
+    if (checkbox.checked) {
+      showall();
+    }
+    else {
+      hideall();
+    }
+  };
+  
+  checkbox.onchange = togglevis;
+  
+  togglevis();
+</script>
+

@@ -1,0 +1,29 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Alle Mitglieder und ihre Accounts</h1>
+
+{% if mitglieder %}
+<ul class="bl">
+  {% for mitglied in mitglieder %}
+  <li><a href="{% url 'mitglieder:detail' mitglied.mitgliedsNummer %}">{{ mitglied }}</a>
+    <ul class="bl">
+      {% for userinfo in mitglied.benutzerinformation_set.all %}
+      <li><a href="{% url 'benutzer:detail' userinfo.user.id %}">{{ userinfo.user.username }}</a></li>
+      {% endfor %}
+      <li><a href="{% url 'benutzer:addmitgliedsnummer' mitglied.mitgliedsNummer %}">+</a></li>
+    </ul>
+  </li>
+  {% endfor %}
+  <li><a href="{% url 'mitglieder:add' %}">+</a>
+</ul>
+{% else %}
+<p>No polls are available.</p>
+{% endif %}
+
+
+<p>
+  <ul>
+    <li><a href="/accounts/logout/?next=/">Logout</a></li>
+  </ul>
+</p>

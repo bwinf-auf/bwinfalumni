@@ -1,0 +1,46 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Alle Umsätze</h1>
+
+<form action="/umsaetze/" method="post">
+  {% csrf_token %}
+  <table style="border:0px">
+    <tr>
+      <td></td>
+      <td>{{ form.wertstellungsDatum.errors }}{{ form.wertstellungsDatum }}</td>
+      <td>{{ form.text.errors }}{{ form.text }}</td>
+      <td>{{ form.typ.errors }}{{ form.typ }}</td>
+      <td>{{ form.centValue.errors }}{{ form.centValue }}</td>
+      <td> in Cent!</td>
+      <td><input type="submit" value="Hinzufügen" /></td>
+    </tr>
+    <tr>
+      <th>Vorher</th>
+      <th>Datum</th>
+      <th>Grund</th>
+      <th>Typ</th>
+      <th>Umsatz</th>
+      <th>Nachher</th>
+      <th></th>
+    </tr>
+  {% for umsatz in umsaetze %}
+    <tr>
+      <td class="ra">{{ umsatz.before }} €</td>
+      <td>{{ umsatz.umsatz.wertstellungsDatum }}</td>
+      <td>{{ umsatz.umsatz.text }}</td>
+      <td>{{ umsatz.umsatz.typ }}</td>
+      <td class="ra">{{ umsatz.amount }} €</td>
+      <td class="ra">{{ umsatz.after }} €</td>
+      <td></td>
+    </tr>
+  {% endfor %}
+  </table>
+</form>
+
+<p>
+  <ul>
+    <li><a href="/benutzer/alle/">Benutzerübersicht</a></li>
+    <li><a href="/accounts/logout/?next=/">Logout</a></li>
+  </ul>
+</p>
