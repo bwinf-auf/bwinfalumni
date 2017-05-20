@@ -23,3 +23,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', admin.site.urls),
 ]
+
+admin.site.site_header = 'BwInf-Alumni Login'
