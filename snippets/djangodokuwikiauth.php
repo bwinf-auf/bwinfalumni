@@ -13,7 +13,7 @@
 define('DOKU_AUTH', dirname(__FILE__));
 define('AUTH_USERFILE',DOKU_CONF.'users.auth.php');
  
-class auth_django extends auth_basic {
+class auth_django extends dokuwiki_auth_plugin {
 	var $link = null;
  
 	/**
