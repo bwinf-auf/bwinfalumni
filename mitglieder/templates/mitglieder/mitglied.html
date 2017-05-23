@@ -1,8 +1,8 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
 
-<h1>{{ mitglied.mitgliedsNummer }}</h1>
-<h2>{{ mitglied.name }}</h2>
+<h1>{{ mitglied.mitgliedsnummer }}</h1>
+<h2>{{ mitglied.vorname }} {{ mitglied.nachname }}</h2>
 
 Vorher: {{ before }}
 <ul>

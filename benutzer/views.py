@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 import re
 
-from .models import BenutzerInformation
+from .models import BenutzerMitglied
 from mitglieder.models import Mitglied
 from django.contrib.auth.models import User
 
 from django import forms
+
 
 class BenutzerForm(forms.Form):
     username = forms.CharField(label='Login-Name', max_length=200)
@@ -43,10 +44,9 @@ def index(request):
     })
 
     try:
-        mitglied = benutzer.benutzerinformation.mitglied
+        mitglied = benutzer.benutzermitglied.mitglied
     except:
         raise Http404("Keine Benutzerinformationen vorhanden.")
-    
     
     return render(request, 'benutzer/uebersicht.html', {'benutzer': benutzer,
                                                         'mitglied': mitglied,
@@ -54,24 +54,30 @@ def index(request):
                                                         'errormessage': errormessage,
                                                         'successmessage': successmessage,
                                                     })  
-  
+
+
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def listusers(request):
-    all_mitglieder = Mitglied.objects.order_by('mitgliedsNummer')
+    all_mitglieder = Mitglied.objects.order_by('mitgliedsnummer')
     return render(request, 'benutzer/mitgliederliste.html', {'mitglieder': all_mitglieder})
+
+
 
 @login_required
 def showuser(request, userid):
     benutzer = get_object_or_404(User, id__exact = userid)
     try:
-        mitglied = benutzer.benutzerinformation.mitglied
+        mitglied = benutzer.benutzermitglied.mitglied
     except:
         raise Http404("Keine Benutzerinformationen vorhanden.")
     
     return render(request, 'benutzer/anzeige.html', {'benutzer': benutzer,
                                                         'mitglied': mitglied,
                                                         })
+
+
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -80,7 +86,7 @@ class UserForm(forms.ModelForm):
 
 class UserInfoForm(forms.ModelForm):
     class Meta:
-        model = BenutzerInformation
+        model = BenutzerMitglied
         fields = ['mitglied']
 
 @login_required
@@ -107,13 +113,12 @@ def addbenutzer(request, mitgliedsnummer = -1):
             successmessage = "Benutzer wurde erfolgreich hinzugefügt."
         return render(request, 'benutzer/adddone.html', {'errormessage': errormessage,
                                                          'successmessage': successmessage,}) 
-    
     else: # GET or something
         bform = UserForm()
         if mitgliedsnummer == -1: 
             biform = UserInfoForm()
         else:
-            biform = UserInfoForm({'mitglied': get_object_or_404(Mitglied, mitgliedsNummer__exact = mitgliedsnummer)})
+            biform = UserInfoForm({'mitglied': get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer)})
           
         return render(request, 'benutzer/addform.html', {'bform': bform,
                                                          'biform': biform}) 

@@ -6,17 +6,12 @@ from .models import Umsatz
 
 from django import forms
 
-# Create your views here.
-
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
 
 
 class UmsatzForm(forms.ModelForm):
     class Meta:
         model = Umsatz
-        fields = ['typ', 'text', 'centValue', 'wertstellungsDatum']
+        fields = ['typ', 'text', 'centWert', 'wertstellungsdatum']
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -25,7 +20,7 @@ def listumsaetze(request, reverse = True):
         inform = UmsatzForm(request.POST)
         inform.save()
   
-    all_umsaetze = Umsatz.objects.order_by('wertstellungsDatum')
+    all_umsaetze = Umsatz.objects.order_by('wertstellungsdatum')
         
     current_val = 0;
     
@@ -34,7 +29,7 @@ def listumsaetze(request, reverse = True):
         
         umsaetzeinfos.append({'umsatz': umsatz,
                               'before': current_val / 100.0,
-                              'after':  (current_val+umsatz.centValue) / 100.0 , 
+                              'after':  (current_val+umsatz.centWert) / 100.0 , 
                               'amount': umsatz.centValue / 100.0,})   
         current_val += umsatz.centValue
         

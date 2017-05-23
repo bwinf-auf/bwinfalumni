@@ -6,12 +6,12 @@
 {% if mitglieder %}
   <ul class="bl">
   {% for mitglied in mitglieder %}
-    <li><a href="{% url 'mitglieder:detail' mitglied.mitgliedsNummer %}">{{ mitglied }}</a></li>
+    <li><a href="{% url 'mitglieder:detail' mitglied.mitgliedsnummer %}">{{ mitglied }}</a></li>
   {% endfor %}
   <li><a href="{% url 'mitglieder:add' %}">+</a>
   </ul>
 {% else %}
-  <p>No polls are available.</p>
+  <p>Keine Mitglieder vorhanden.</p>
 {% endif %}
 
 <p>
