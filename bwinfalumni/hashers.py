@@ -14,7 +14,7 @@ class MiaPlazaPasswordHasher(BasePasswordHasher):
         assert password is not None
         hash = hashlib.sha1(base64.b64encode(hashlib.sha1(password).digest()))
         hash = base64.b64encode(hash).decode('ascii').strip()
-        return "%s$%d$%s$%s" % (self.algorithm, 1, "", hash)
+        return "%s$%s" % (self.algorithm, hash)
 
     def verify(self, password, encoded):
         algorithm, hash = encoded.split('$', 1)

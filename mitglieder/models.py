@@ -6,7 +6,7 @@ from umsaetze.models import Umsatz
 
 class Mitglied(models.Model):
 
-    mitgliedsnummer = models.IntegerField(default=0, unique=True)
+    mitgliedsnummer = models.IntegerField(unique=True)
     antragsdatum    = models.DateField(default=date.today)
     beitrittsdatum  = models.DateField(default=date.today)
     austrittsdatum  = models.DateField(default=date(3000,1,1))
