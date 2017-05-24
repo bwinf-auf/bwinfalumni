@@ -6,6 +6,7 @@ from datetime import date
 class UmsatzTyp(models.Model):
     
     typname             = models.CharField(max_length=200)
+    beschreibung        = models.CharField(max_length=200)
     
     def __str__(self):
         return self.typname
@@ -16,12 +17,30 @@ class UmsatzTyp(models.Model):
 
 
 
+class Konto(models.Model):
+    
+    kontoname           = models.CharField(max_length=200)
+    beschreibung        = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return self.typname
+
+    class Meta:
+        verbose_name = "Konto"
+        verbose_name_plural = "Konten"
+
+
+
 class Umsatz(models.Model):
     
+    konto               = models.ForeignKey(Konto, on_delete=models.PROTECT)
     typ                 = models.ForeignKey(UmsatzTyp, on_delete=models.PROTECT)
     text                = models.CharField(max_length=200)
     centWert            = models.IntegerField(default=0)
+    rechnung            = models.CharField(max_length=200)
+    geschaeftspartner   = models.CharField(max_length=200)
     wertstellungsdatum  = models.DateField(default=date.today)
+    kommentar           = models.CharField(max_length=200, blank=True)
     
     def __str__(self):
         return str(self.wertstellungsdatum)+ ": " + str(self.text) + " (" + str(self.typ) + ") " + str(self.centWert) + " ct"
