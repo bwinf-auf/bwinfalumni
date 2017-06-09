@@ -13,6 +13,7 @@ Zuerst muss eine Datenbank angelegt werden und ein Account erstellt
 werden
 
     cd bwinf-alumni
+    python3 manage.py makemigrations benutzer mitglieder umsaetze # vorläufig
     python3 manage.py migrate            # Datenbank anlegen (sqlite)
     python3 manage.py createsuperuser    # Test-Admin erstellen 
     
@@ -30,7 +31,8 @@ Datenbank anlegt.
 
 ## Funktionalität hinzufügen
 
-Dafür bitte eine neue App erstellen.
+Dafür bitte eine neue App erstellen und in INSTALLED_APPS eintragen 
+(bwinfalumni/settings.py)
 
     python3 manage.py startapp <name>
     

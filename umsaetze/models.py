@@ -12,6 +12,7 @@ class UmsatzTyp(models.Model):
         return self.typname
 
     class Meta:
+        db_table = "umsatztyp"
         verbose_name = "Umsatztyp"
         verbose_name_plural = "Umsatztypen"
 
@@ -26,6 +27,7 @@ class Konto(models.Model):
         return self.typname
 
     class Meta:
+        db_table = "konto"
         verbose_name = "Konto"
         verbose_name_plural = "Konten"
 
@@ -46,6 +48,7 @@ class Umsatz(models.Model):
         return str(self.wertstellungsdatum)+ ": " + str(self.text) + " (" + str(self.typ) + ") " + str(self.centWert) + " ct"
     
     class Meta:
+        db_table = "umsatz"
         verbose_name = "Umsatz"
         verbose_name_plural = "Umsätze"
 
