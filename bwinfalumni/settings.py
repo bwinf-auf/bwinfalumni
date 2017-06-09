@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'umsaetze.apps.UmsaetzeConfig',
     'mitglieder.apps.MitgliederConfig',
     'benutzer.apps.BenutzerConfig',
+    'profil.apps.ProfilConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

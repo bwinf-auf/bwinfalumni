@@ -9,7 +9,8 @@ from django.contrib.auth.models import User
 
 from django import forms
 
-
+# Keine automatisch erzeugte Form, um eigene Prüfung an benutzernamen zu implementieren und
+# Djangos automatische "Benutzername existiert schon"-Kontrolle zu umgehen.
 class BenutzerForm(forms.Form):
     username = forms.CharField(label='Login-Name', max_length=200)
     email    = forms.EmailField(label='Email-Adresse', max_length=200)

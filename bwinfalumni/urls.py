@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^umsaetze/', include('umsaetze.urls')),
     url(r'^mitglieder/', include('mitglieder.urls')),
     url(r'^benutzer/', include('benutzer.urls')),
+    url(r'^profil/', include('profil.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', admin.site.urls),
 ]
