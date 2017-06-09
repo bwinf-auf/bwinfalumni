@@ -39,6 +39,7 @@ class Mitglied(models.Model):
         return str(self.mitgliedsnummer) + ": " + self.vorname + " " + self.nachname
     
     class Meta:
+        db_table = "mitglied"
         verbose_name = "Mitglied"
         verbose_name_plural = "Mitglieder"
 
@@ -52,6 +53,7 @@ class MitgliedskontoBuchungstyp(models.Model):
         return self.typname
     
     class Meta:
+        db_table = "mitgliedskontoBuchungstyp"
         verbose_name = "Mitgliedskonto-Buchungstyp"
         verbose_name_plural = "Mitgliedskonto-Buchungstypen"
 
@@ -70,6 +72,7 @@ class MitgliedskontoBuchung(models.Model):
         return str(self.buchungsDatum)+ " (" + str(self.typ) + ") " + str(self.centWert) + " ct"
     
     class Meta:
+        db_table = "mitgliedskontoBuchung"
         verbose_name = "Mitgliedskonto-Buchung"
         verbose_name_plural = "Mitgliedskonto-Buchungen"
 
@@ -86,5 +89,6 @@ class Lastschriftmandat(models.Model):
     gueltigBis      = models.DateField(default=date(3000,1,1))
 
     class Meta:
+        db_table = "lastschriftmandat"
         verbose_name = "Lastschriftmandat"
         verbose_name_plural = "Lastschriftmandate"
