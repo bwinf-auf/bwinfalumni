@@ -24,7 +24,7 @@ class Konto(models.Model):
     beschreibung        = models.CharField(max_length=200)
     
     def __str__(self):
-        return self.typname
+        return self.kontoname
 
     class Meta:
         db_table = "konto"
