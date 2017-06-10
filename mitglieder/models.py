@@ -23,7 +23,7 @@ class Mitglied(models.Model):
     stadt           = models.CharField(max_length=200)
     land            = models.CharField(max_length=200, default="Deutschland") 
     telefon         = models.CharField(max_length=200)
-    email           = models.EmailField
+    email           = models.EmailField()
     beruf           = models.CharField(max_length=200, blank=True)
     
     studienort      = models.CharField(max_length=200, blank=True)
