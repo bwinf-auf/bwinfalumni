@@ -19,26 +19,31 @@ def mitglieder(request):
     all_mitglieder = Mitglied.objects.order_by('mitgliedsnummer')
     return render(request, 'mitglieder/mitgliederliste.html', {'mitglieder': all_mitglieder})  
 
+class TestFailed(Exception):
+    def __init__(self, m):
+        self.message = m
+    def __str__(self):
+        return self.message
 
 
 @login_required
 def mitglied(request, mitgliedsnummer):
     benutzer = request.user
     try:
-        mitglied = benutzer.benutzerinformation.mitglied
+        mitglied = benutzer.benutzermitglied.mitglied
     except:
         if not benutzer.is_superuser:
             raise Http404("Keine Benutzerinformationen vorhanden.")
 
-    if mitglied.mitgliedsnummer != mitgliedsnummer and not benutzer.is_superuser:
-        raise PermissionDenied
+    if mitglied.mitgliedsnummer != int(mitgliedsnummer) and not benutzer.is_superuser:
+        raise TestFailed(str(mitglied.mitgliedsnummer))
     
     mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer)
     all_transactions = []
     value = 0
     for buchung in mitglied.mitgliedskontobuchung_set.all(): 
-        value += buchung.centValue
-        all_transactions.append({'amount': buchung.centValue / 100.0,
+        value += buchung.centWert
+        all_transactions.append({'amount': buchung.centWert / 100.0,
                                  'comment': buchung.kommentar,
                                  'value': value / 100.0})    
     return render(request, 'mitglieder/mitglied.html', {'mitglied': mitglied, 'transactions': all_transactions, 'before': 0.0, 'after': value/100.0})
