@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from django.contrib.auth.models import User
-from mitglied.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp, Lastschriftmandat
+from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp, Lastschriftmandat
 from benutzer.models import BenutzerMitglied
 from umsaetze.models import Umsatz, UmsatzTyp, Konto
 
@@ -12,10 +12,10 @@ import psycopg2
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def index(request):
+def bootstrap(request):
     infostring = ""
     
-    conn = psycopg2.connect(dbname="alumni_neu", user="alumni", password="alumni")
+    conn = psycopg2.connect(dbname="alumni_neu", user="alumni", password="alumni", host="localhost")
     cur = conn.cursor()
     
     mbuchungstyp_default = MitgliedskontoBuchungstyp(typname = "unspezifiziert")
@@ -64,11 +64,11 @@ def index(request):
     member_rows = cur.fetchall()
     for member in member_rows:
         
-        teileInfo = "" + ("telefon" if member[17] else "") + ""
-                    "" + (",email" if member[18] else "") + ""
-                    "" + (",adresse" if member[19] else "") + ""
-                    "" + (",beruf" if member[20] else "") + ""
-                    "" + (",vorname" if member[20] else "") + ""
+        teileInfo = "" + ("telefon" if member[17] else "") + ""\
+                    "" + (",email" if member[18] else "") + ""\
+                    "" + (",adresse" if member[19] else "") + ""\
+                    "" + (",beruf" if member[20] else "") + ""\
+                    "" + (",vorname" if member[20] else "") + ""\
                     "" + (",nachname" if member[20] else "")
         if teileInfo[0] == ",":
             teileInfo = teileInfo[1:]
@@ -79,7 +79,7 @@ def index(request):
                             vorname = member[4],
                             nachname = member[5],
                             anrede = member[6],
-                            geburtsdatum = member[7],
+                            geburtsdatum = member[7] if member[7] else date(1970,1,1),
                             strasse = member[8],
                             plz = member[9],
                             stadt = member[10],
@@ -148,7 +148,6 @@ def index(request):
                 "\"Description\" "
                 "FROM \"Account\" ORDER BY \"Id\" ;")
     account_rows = cur.fetchall()
-    assert len(account_rows) == 1
     konto_default = Konto(kontoname = account_rows[0][0], beschreibung = account_rows[0][1])
     konto_default.save()
     

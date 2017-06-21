@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from . import views
 
-app_name = 'mitglieder'
+app_name = 'bootstrap_from_old_database'
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^$', views.bootstrap, name='index'),
 ]
