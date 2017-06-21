@@ -8,8 +8,9 @@ class Mitglied(models.Model):
 
     mitgliedsnummer = models.IntegerField(unique=True)
     antragsdatum    = models.DateField(default=date.today)
-    beitrittsdatum  = models.DateField(default=date.today)
-    austrittsdatum  = models.DateField(default=date(3000,1,1))
+    beitrittsdatum  = models.DateField(null=True, blank=True, default=date.today)
+    istBeigetreten  = models.BooleanField(default=True)
+    austrittsdatum  = models.DateField(null=True, blank=True)
     istAusgetreten  = models.BooleanField(default=False)
 
     vorname         = models.CharField(max_length=200)
