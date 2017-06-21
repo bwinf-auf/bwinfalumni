@@ -22,42 +22,45 @@ def mitglieder(request):
     mbuchungstyp_default.save()
     
     # TODO: Field Type?
+    # -> Ist immer 0
     cur.execute("SELECT "
-                "Id, " #0
-                "Application, "
-                "Admission, "
-                "Deleted, "
-                "Firstname, "
-                "Lastname, " #5
-                "Salutation, "
-                "Birthday, "
-                "StreetAddress, "
-                "ZIP, "
-                "City, " #10
-                "Country, "
-                "Phone, "
-                "EMail, "
-                "Occupation, "
-                "TertiaryEducationCity, " #15
-                "TertiaryEducationSubject, "
-                "PhoneSL, "
-                "EMailSL, "
-                "AddressSL, "
-                "NameAndOccupationSL, " #20
-                "IsInfoSharedWithBWInf, "
-                "AdminComment, "
-                "DunningCount, "
-                "Nickname, " 
-                "Password, " #25
-                "Disabled, "
-                "LastLogin, "
-                "DirectDebit_AccountOwner, "
-                "DirectDebit_BankName, "
-                "DirectDebit_AccountNumber, "  # 30
-                "DirectDebit_BankCode, "
-                "DirectDebit_ValidFrom, "
-                "DirectDebit_ValidTo "
-                "FROM Member ORDER BY Id;")
+                "\"Member\".\"Id\", " #0
+                "\"Member\".\"Application\", "
+                "\"Member\".\"Admission\", "
+                "\"Member\".\"Deleted\", "
+                "\"Member\".\"Firstname\", "
+                "\"Member\".\"Lastname\", " #5
+                "\"Member\".\"Salutation\", "
+                "\"Member\".\"Birthday\", "
+                "\"Member\".\"StreetAddress\", "
+                "\"Member\".\"ZIP\", "
+                "\"Member\".\"City\", " #10
+                "\"Country\".\"Code\", "
+                "\"Member\".\"Phone\", "
+                "\"Member\".\"EMail\", "
+                "\"Member\".\"Occupation\", "
+                "\"Member\".\"TertiaryEducationCity\", " #15
+                "\"Member\".\"TertiaryEducationSubject\", "
+                "\"Member\".\"PhoneSL\", "
+                "\"Member\".\"EMailSL\", "
+                "\"Member\".\"AddressSL\", "
+                "\"Member\".\"NameAndOccupationSL\", " #20
+                "\"Member\".\"IsInfoSharedWithBWInf\", "
+                "\"Member\".\"AdminComment\", "
+                "\"Member\".\"DunningCount\", "
+                "\"Member\".\"Nickname\", " 
+                "\"Member\".\"Password\", " #25
+                "\"Member\".\"Disabled\", "
+                "\"Member\".\"LastLogin\", "
+                "\"Member\".\"DirectDebit_AccountOwner\", "
+                "\"Member\".\"DirectDebit_BankName\", "
+                "\"Member\".\"DirectDebit_AccountNumber\", "  # 30
+                "\"Member\".\"DirectDebit_BankCode\", "
+                "\"Member\".\"DirectDebit_ValidFrom\", "
+                "\"Member\".\"DirectDebit_ValidTo\" "
+                "FROM \"Member\" "
+                "JOIN \"Country\" ON \"Member\".\"Country\" = \"Country\".\"Id\" "
+                "ORDER BY \"Member\".\"Id\" ;")
     member_rows = cur.fetchall()
     for member in member_rows:
         
@@ -119,10 +122,10 @@ def mitglieder(request):
             infostring += "+"
             
         cur.execute("SELECT "
-                    "Amount, " #0
-                    "Purpose, "
-                    "Booking "
-                    "FROM MemberPosting WHERE Member = %(memberid)s ORDER BY Id;", {"memberid": member[0]})
+                    "\"Amount\", " #0
+                    "\"Purpose\", "
+                    "\"Booking\" "
+                    "FROM \"MemberPosting\" WHERE \"Member\" = %(memberid)s ORDER BY \"Id\" ;", {"memberid": member[0]})
         memberposting_rows = cur.fetchall()
         for memberposting in memberposting_rows:
             mbuchung = MitgliedskontoBuchung(mitglied = mitglied,
@@ -138,21 +141,25 @@ def mitglieder(request):
     infostring += "\n\nUmsatz"
     
     # TODO: gibt es nur einen Wert in Account?
+    # -> Nein: 1. Konto, 2. Bargeld für 1. VZ, 3. 2. VZ
+    # -> ABER: Alle Umsätze verweisen auf 1.
     cur.execute("SELECT "
-                "Title, " #0
-                "Description "
-                "FROM Account ORDER BY Id;")
+                "\"Title\", " #0
+                "\"Description\" "
+                "FROM \"Account\" ORDER BY \"Id\" ;")
     account_rows = cur.fetchall()
     assert len(account_rows) == 1
     konto_default = Konto(kontoname = account_rows[0][0], beschreibung = account_rows[0][1])
     konto_default.save()
     
     # TODO: Field Type?
+    # -> Enthält 0 für Einnahmen und 1 für Ausgaben
+    # -> Beträge sind aber trotzdem Vorzeichenbehaftet.
     cur.execute("SELECT "
-                "Title, " #0
-                "Description, "
-                "Id "
-                "FROM Purpose ORDER BY Id;")
+                "\"Title\", " #0
+                "\"Description\", "
+                "\"Id\" "
+                "FROM \"Purpose\" ORDER BY \"Id\" ;")
     purpose_rows = cur.fetchall()
     for purpose in purpose_rows:
         umsatztyp = UmsatzTyp(typname = purpose[0], beschreibung = purpose[1])
@@ -161,21 +168,23 @@ def mitglieder(request):
         infostring += "\n" + umsatztyp.typname
         
         # TODO: Was ist Author wirklich?
+        # -> Wer die Buchung eingetragen hat
         cur.execute("SELECT "
-                    "Comment, "
-                    "Amount, " #0
-                    "Receipt, "
-                    "Author, "
-                    "Booking "
-                    "FROM Posting WHERE Purpose = %(purposeid)s ORDER BY Id;", {"purposeid": purpose[2]})
+                    "\"Comment\", "
+                    "\"Amount\", " #0
+                    "\"Receipt\", "
+                    "\"Author\", "
+                    "\"Booking\" "
+                    "FROM \"Posting\" WHERE \"Purpose\" = %(purposeid)s ORDER BY \"Id\" ;", {"purposeid": purpose[2]})
         posting_rows = cur.fetchall()
         for posting in posting_rows:
             umsatz = Umsatz(konto = konto_default,
                             typ = umsatztyp,
                             text = posting[0],
                             centWert = posting[1],
-                            rechnung = posting[2],
-                            geschaeftspartner = posting[3],
+                            quittung = posting[2],
+                            author = posting[3],
+                            geschaeftspartner = "k. A.",
                             wertstellungsdatum = posting[4])
             umsatz.save();
             
