@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'mitglieder.apps.MitgliederConfig',
     'benutzer.apps.BenutzerConfig',
     'mockverein.apps.MockvereinConfig',
+    'bootstrap_from_old_database.apps.BootstrapFromOldDatabaseConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

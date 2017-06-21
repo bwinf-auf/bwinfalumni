@@ -12,10 +12,10 @@ import psycopg2
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def mitglieder(request):
+def index(request):
     infostring = ""
     
-    conn = psycopg2.connect("dbname=alumni user=alumni")
+    conn = psycopg2.connect(dbname="alumni_neu", user="alumni", password="alumni")
     cur = conn.cursor()
     
     mbuchungstyp_default = MitgliedskontoBuchungstyp(typname = "unspezifiziert")
