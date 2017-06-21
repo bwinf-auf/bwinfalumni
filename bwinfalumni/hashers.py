@@ -1,6 +1,7 @@
 import hashlib
 import base64
 from django.contrib.auth.hashers import BasePasswordHasher
+from django.utils.crypto import constant_time_compare
 
 class MiaPlazaPasswordHasher(BasePasswordHasher):
     """
@@ -12,7 +13,7 @@ class MiaPlazaPasswordHasher(BasePasswordHasher):
 
     def encode(self, password, salt, iterations=None):
         assert password is not None
-        hash = hashlib.sha1(base64.b64encode(hashlib.sha1(password).digest()))
+        hash = hashlib.sha1(base64.b64encode(hashlib.sha1(password.encode('utf-8')).digest())).digest()
         hash = base64.b64encode(hash).decode('ascii').strip()
         return "%s$%s" % (self.algorithm, hash)
 
