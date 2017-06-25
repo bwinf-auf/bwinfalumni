@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp, Lastschriftmandat
 from benutzer.models import BenutzerMitglied
 from umsaetze.models import Umsatz, UmsatzTyp, Konto
+from profil.models import Sichtbarkeit
 
 from datetime import date
 
@@ -16,6 +17,7 @@ def run():
     mbuchungstyp_default = MitgliedskontoBuchungstyp(typname = "unspezifiziert")
     mbuchungstyp_default.save()
     
+    sichtbarkeit_dblist = []
     bm_dblist = []
     lsm_dblist = []
     mbuchung_dblist = []
@@ -63,16 +65,6 @@ def run():
                 "ORDER BY \"Member\".\"Id\" ;")
     member_rows = cur.fetchall()
     for member in member_rows:
-        
-        teileInfo = "" + ("telefon" if member[17] else "") + ""\
-                    "" + (",email" if member[18] else "") + ""\
-                    "" + (",adresse" if member[19] else "") + ""\
-                    "" + (",beruf" if member[20] else "") + ""\
-                    "" + (",vorname" if member[20] else "") + ""\
-                    "" + (",nachname" if member[20] else "")
-        if teileInfo[0] == ",":
-            teileInfo = teileInfo[1:]
-        
         mitglied = Mitglied(mitgliedsnummer = member[0],
                             antragsdatum = member[1],
                             beitrittsdatum = member[2],
@@ -97,6 +89,21 @@ def run():
         mitglied.save()
         
         print("\n" + mitglied.vorname + " " + mitglied.nachname, end='')
+    
+        if member[17]:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="telefon"))
+        if member[18]:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="email"))
+        if member[19]:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="adresse"))
+        if member[20]:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="nachname"))
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="vorname"))
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="beruf"))
+        if member[21]:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="vorname"))
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="nachname"))
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="email"))
         
         user = User(username = member[24],
                     password = "legacy$" + member[25],
@@ -190,14 +197,16 @@ def run():
             print(".", end='')
             
     print("\nSchließe DB-Transaktionen ab:")
+    Sichtbarkeit.objects.bulk_create(sichtbarkeit_dblist)
+    print("Sichtbarkeiten!")
     BenutzerMitglied.objects.bulk_create(bm_dblist)
-    print("BM")
+    print("BM!")
     Lastschriftmandat.objects.bulk_create(lsm_dblist)
-    print("LSM")
+    print("LSM!")
     MitgliedskontoBuchung.objects.bulk_create(mbuchung_dblist)
-    print("Buchungen")
+    print("Buchungen!")
     Umsatz.objects.bulk_create(umsatz_dblist)
-    print("Umsätze")
+    print("Umsätze!")
             
     print("\nAll clear!")
             
