@@ -1,0 +1,43 @@
+<style type="text/css">
+td, th {
+	border-left: 1px solid #000;
+	padding: 0px 5px;
+}
+th:first-child { 
+border-left: none;
+text-align:left;
+}
+</style>
+
+
+<h1>Profil – Sichtbarkeitseinstellungen</h1>
+
+<form action="/profil/sichtbarkeit/" method="post">
+    {% csrf_token %}
+    {{ form.management_form }}
+    <table style="border:0px; text-align:center;border: none; border-collapse: collapse;">
+      <tr><th></th><th>Alumnivereinsmitglieder</th><th>BWINF-Geschäftsstelle</th><th>Weltweit (öffentlich)</th></tr>
+      <tr><th>Vorname</th><td>{{ form.0.sichtbarkeit }} </td><td></td><td>{{ form.9.sichtbarkeit }}</td></tr>
+      <tr><th>Nachname</th><td>{{ form.1.sichtbarkeit }}</td><td></td><td>{{ form.10.sichtbarkeit }}</td></tr>
+      <tr><th>Studienort</th><td>{{ form.2.sichtbarkeit }}</td><td></td><td>{{ form.11.sichtbarkeit }}</td></tr>
+      <tr><th>Studienfach</th><td>{{ form.3.sichtbarkeit }}</td><td></td><td>{{ form.12.sichtbarkeit }}</td></tr>
+      <tr><th>Beruf</th><td>{{ form.4.sichtbarkeit }}</td><td></td><td>{{ form.13.sichtbarkeit }}</td></tr>
+      <tr><th>E-Mail</th><td>{{ form.5.sichtbarkeit }}</td><td>{{ form.8.sichtbarkeit }}</td><td>{{ form.14.sichtbarkeit }}</td></tr>
+      <tr><th>Telefon</th><td>{{ form.6.sichtbarkeit }}</td><td></td><td></td></tr>
+      <tr><th>Adresse</th><td>{{ form.7.sichtbarkeit }}</td><td></td><td></td></tr>
+    </table>
+    <input type="submit" value="Speichern" style="margin-left:10em;margin-top:2em;" />
+</form>
+
+<p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
+  <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
+
+  
+<p><a href="/profil/">Zurück zum Profil</a></p>
+  
+<p>
+  <ul>
+    <li><a href="/accounts/password_change/">Passwort ändern</a></li>
+    <li><a href="/accounts/logout/?next=/">Logout</a></li>
+  </ul>
+</p>
