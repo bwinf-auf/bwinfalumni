@@ -10,13 +10,19 @@ import psycopg2
 
 
 def run():
-    infostring = ""
-    
     conn = psycopg2.connect(dbname="alumni_neu", user="alumni", password="alumni", host="localhost")
     cur = conn.cursor()
     
     mbuchungstyp_default = MitgliedskontoBuchungstyp(typname = "unspezifiziert")
     mbuchungstyp_default.save()
+    
+    mitglieder_dblist = []
+    user_dblist = []
+    bm_dblist = []
+    lsm_dblist = []
+    mbuchung_dblist = []
+    umsatztyp_dblist = []
+    umsatz_dblist = []
     
     # TODO: Field Type?
     # -> Ist immer 0
@@ -91,9 +97,9 @@ def run():
                             teileInfoBwinf = "email,vorname,nachname" if member[21] else "",
                             kommentar = member[22],
                             anzahlMahnungen = member[23])
-        mitglied.save()
+        mitglied_dblist.append(mitglied)
         
-        infostring += "\n" + mitglied.vorname + " " + mitglied.nachname
+        print("\n" + mitglied.vorname + " " + mitglied.nachname, end='')
         
         user = User(username = member[24],
                     password = "miaplaza$" + member[25],
@@ -101,10 +107,10 @@ def run():
                     is_active = not member[26],
                     is_superuser = False,
                     last_login = member[27])
-        user.save()
+        user_dblist.append(user)
         
         bm = BenutzerMitglied(benutzer = user, mitglied = mitglied)
-        bm.save()
+        bm_dblist.append(bm)
         
         if member[30]:
             lsm = Lastschriftmandat(mitglied = mitglied,
@@ -114,9 +120,9 @@ def run():
                                     bic = member[31],
                                     gueltigAb = member[32],
                                     gueltigBis = member[33])
-            lsm.save()
+            lsm_dblist.append(lsm)
             
-            infostring += "+"
+            print("+", end='')
             
         cur.execute("SELECT "
                     "\"Amount\", " #0
@@ -130,12 +136,12 @@ def run():
                                              centWert = memberposting[0], 
                                              kommentar = memberposting[1],
                                              buchungsDatum = memberposting[2])
-            mbuchung.save()
+            mbuchung_dblist.append(mbuchung)
             
-            infostring += "."
+            print(".", end='')
 
 
-    infostring += "\n\nUmsatz"
+    print("\n\nUmsatz", end='')
     
     # TODO: gibt es nur einen Wert in Account?
     # -> Nein: 1. Konto, 2. Bargeld für 1. VZ, 3. 2. VZ
@@ -159,9 +165,9 @@ def run():
     purpose_rows = cur.fetchall()
     for purpose in purpose_rows:
         umsatztyp = UmsatzTyp(typname = purpose[0], beschreibung = purpose[1])
-        umsatztyp.save()
+        umsatztyp_dblist.append(umsatztyp)
         
-        infostring += "\n" + umsatztyp.typname
+        print("\n" + umsatztyp.typname, end='')
         
         # TODO: Was ist Author wirklich?
         # -> Wer die Buchung eingetragen hat
@@ -182,8 +188,26 @@ def run():
                             author = posting[3],
                             geschaeftspartner = "k. A.",
                             wertstellungsdatum = posting[4])
-            umsatz.save();
+            umsatz_dblist.append(umsatz)
             
-            infostring += "."
+            print(".", end='')
+            
+    print("\nBeginne DB-Transaktionen:")
+    Mitglied.objects.bulk_create(mitglieder_dblist)
+    print("Mitglieder")
+    User.objects.bulk_create(user_dblist)
+    print("User")
+    BenutzerMitglied.objects.bulk_create(bm_dblist)
+    print("BM")
+    Lastschriftmandat.objects.bulk_create(lsm_dblist)
+    print("LSM")
+    MitgliedskontoBuchung.objects.bulk_create(mbuchung_dblist)
+    print("Buchungen")
+    UmsatzTyp.objects.bulk_create(umsatztyp_dblist)
+    print("Umsatztypen")
+    Umsatz.objects.bulk_create(umsatz_dblist)
+    print("Umsätze")
+            
+    print("\nAll clear!")
             
 
