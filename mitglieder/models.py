@@ -30,9 +30,6 @@ class Mitglied(models.Model):
     studienort      = models.CharField(max_length=200, blank=True)
     studienfach     = models.CharField(max_length=200, blank=True)
     
-    teileInfoWelt   = models.CharField(max_length=2000, blank=True)
-    teileInfoAlumni = models.CharField(max_length=2000, blank=True)
-    teileInfoBwinf  = models.CharField(max_length=2000, blank=True)
     kommentar       = models.CharField(max_length=2000, blank=True)
     anzahlMahnungen = models.IntegerField(default=0)
     
