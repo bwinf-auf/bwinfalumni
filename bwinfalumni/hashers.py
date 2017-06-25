@@ -3,13 +3,13 @@ import base64
 from django.contrib.auth.hashers import BasePasswordHasher
 from django.utils.crypto import constant_time_compare
 
-class MiaPlazaPasswordHasher(BasePasswordHasher):
+class LegacyPasswordHasher(BasePasswordHasher):
     """
-    Implements the hasher for the old MiaPlaza-style passwords, which is
+    Implements the hasher for the legacy passwords, which is
         base64 . sha1 . base64 . sha1
     """
 
-    algorithm = "miaplaza"
+    algorithm = "legacy"
 
     def encode(self, password, salt, iterations=None):
         assert password is not None

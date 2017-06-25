@@ -99,7 +99,7 @@ def run():
         print("\n" + mitglied.vorname + " " + mitglied.nachname, end='')
         
         user = User(username = member[24],
-                    password = "miaplaza$" + member[25],
+                    password = "legacy$" + member[25],
                     is_staff = not member[26],
                     is_active = not member[26],
                     is_superuser = False,

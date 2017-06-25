@@ -138,5 +138,5 @@ LOGIN_URL = '/alumni/admin/login/'
 # Password hashing
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'bwinfalumni.hashers.MiaPlazaPasswordHasher',
+    'bwinfalumni.hashers.LegacyPasswordHasher',
 ]
