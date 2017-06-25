@@ -16,12 +16,9 @@ def run():
     mbuchungstyp_default = MitgliedskontoBuchungstyp(typname = "unspezifiziert")
     mbuchungstyp_default.save()
     
-    mitglieder_dblist = []
-    user_dblist = []
     bm_dblist = []
     lsm_dblist = []
     mbuchung_dblist = []
-    umsatztyp_dblist = []
     umsatz_dblist = []
     
     # TODO: Field Type?
@@ -97,7 +94,7 @@ def run():
                             teileInfoBwinf = "email,vorname,nachname" if member[21] else "",
                             kommentar = member[22],
                             anzahlMahnungen = member[23])
-        mitglied_dblist.append(mitglied)
+        mitglied.save()
         
         print("\n" + mitglied.vorname + " " + mitglied.nachname, end='')
         
@@ -107,7 +104,7 @@ def run():
                     is_active = not member[26],
                     is_superuser = False,
                     last_login = member[27])
-        user_dblist.append(user)
+        user.save()
         
         bm = BenutzerMitglied(benutzer = user, mitglied = mitglied)
         bm_dblist.append(bm)
@@ -165,7 +162,7 @@ def run():
     purpose_rows = cur.fetchall()
     for purpose in purpose_rows:
         umsatztyp = UmsatzTyp(typname = purpose[0], beschreibung = purpose[1])
-        umsatztyp_dblist.append(umsatztyp)
+        umsatztyp.save()
         
         print("\n" + umsatztyp.typname, end='')
         
@@ -192,19 +189,13 @@ def run():
             
             print(".", end='')
             
-    print("\nBeginne DB-Transaktionen:")
-    Mitglied.objects.bulk_create(mitglieder_dblist)
-    print("Mitglieder")
-    User.objects.bulk_create(user_dblist)
-    print("User")
+    print("\nSchließe DB-Transaktionen ab:")
     BenutzerMitglied.objects.bulk_create(bm_dblist)
     print("BM")
     Lastschriftmandat.objects.bulk_create(lsm_dblist)
     print("LSM")
     MitgliedskontoBuchung.objects.bulk_create(mbuchung_dblist)
     print("Buchungen")
-    UmsatzTyp.objects.bulk_create(umsatztyp_dblist)
-    print("Umsatztypen")
     Umsatz.objects.bulk_create(umsatz_dblist)
     print("Umsätze")
             
