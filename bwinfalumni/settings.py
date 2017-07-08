@@ -131,7 +131,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'staticcontent/'
-LOGIN_URL = '/alumni/admin/login/'
+#LOGIN_URL = '/alumni/admin/login/'
 
 
 

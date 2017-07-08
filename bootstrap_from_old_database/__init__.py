@@ -81,29 +81,43 @@ def run():
                             beruf = member[14],
                             studienort = member[15],
                             studienfach = member[16],
-                            teileInfoWelt = "",
-                            teileInfoAlumni = teileInfo,
-                            teileInfoBwinf = "email,vorname,nachname" if member[21] else "",
                             kommentar = member[22],
                             anzahlMahnungen = member[23])
         mitglied.save()
         
         print("\n" + mitglied.vorname + " " + mitglied.nachname, end='')
     
-        if member[17]:
+        sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="nachname"))
+        sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="vorname"))
+        sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="beruf"))
+        sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="mailingliste"))
+        
+    
+        if member[17] >= 20:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="telefon"))
-        if member[18]:
-            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="email"))
-        if member[19]:
+        if member[17] >= 100:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="telefon"))
+            
+        sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="email"))
+        if member[18] >= 100:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="email"))
+        
+        if member[19] >= 20:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="adresse"))
-        if member[20]:
-            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="nachname"))
-            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="vorname"))
-            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="beruf"))
+        if member[19] >= 100:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="adresse"))
+            
+        if member[20] >= 100:
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="nachname"))
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="vorname"))
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="beruf"))
+            
         if member[21]:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="vorname"))
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="nachname"))
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="email"))
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="telefon"))
+            sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="adresse"))
         
         user = User(username = member[24],
                     password = "legacy$" + member[25],

@@ -19,13 +19,21 @@ sichtbarkeiten   = [("alumni", "vorname"),
                     ("alumni", "email"),
                     ("alumni", "telefon"),
                     ("alumni", "adresse"),
+                    ("alumni", "mailingliste"),
+                    ("bwinf", "vorname"),
+                    ("bwinf", "name"),
                     ("bwinf", "email"),
+                    ("bwinf", "telefon"),
+                    ("bwinf", "adresse"),
                     ("welt", "vorname"),
                     ("welt", "name"),
                     ("welt", "studienort"),
                     ("welt", "studienfach"),
                     ("welt", "beruf"),
-                    ("welt", "email")]
+                    ("welt", "email"),
+                    ("welt", "telefon"),
+                    ("welt", "adresse"),
+                    ]
 
 
 
