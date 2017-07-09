@@ -10,12 +10,23 @@ from benutzer.models import BenutzerMitglied
 from datetime import date
 
 from django import forms
+from django.shortcuts import redirect
+
 
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
-def mitglieder(request):
+def index(request):
+    benutzer = request.user
+    
+    if not benutzer.is_superuser:
+        try:
+            mitglied = benutzer.benutzermitglied.mitglied
+        except:
+            raise Http404("Keine Benutzerinformationen vorhanden.")
+        #return redirect(str(mitglied.mitgliedsnummer))
+        return detail(request, mitglied.mitgliedsnummer)
+    
     all_mitglieder = Mitglied.objects.order_by('mitgliedsnummer')
     return render(request, 'mitglieder/mitgliederliste.html', {'mitglieder': all_mitglieder})  
 
@@ -27,16 +38,17 @@ class TestFailed(Exception):
 
 
 @login_required
-def mitglied(request, mitgliedsnummer):
+def detail(request, mitgliedsnummer):
     benutzer = request.user
-    try:
-        mitglied = benutzer.benutzermitglied.mitglied
-    except:
-        if not benutzer.is_superuser:
+    
+    if not benutzer.is_superuser:
+        try:
+            mitglied = benutzer.benutzermitglied.mitglied
+        except:
             raise Http404("Keine Benutzerinformationen vorhanden.")
 
-    if mitglied.mitgliedsnummer != int(mitgliedsnummer) and not benutzer.is_superuser:
-        raise TestFailed(str(mitglied.mitgliedsnummer))
+        if mitglied.mitgliedsnummer != int(mitgliedsnummer):
+            raise TestFailed(str(mitglied.mitgliedsnummer))
     
     mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer)
     all_transactions = []

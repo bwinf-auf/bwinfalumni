@@ -30,8 +30,8 @@ def listumsaetze(request, reverse = True):
         umsaetzeinfos.append({'umsatz': umsatz,
                               'before': current_val / 100.0,
                               'after':  (current_val+umsatz.centWert) / 100.0 , 
-                              'amount': umsatz.centValue / 100.0,})   
-        current_val += umsatz.centValue
+                              'amount': umsatz.centWert / 100.0,})   
+        current_val += umsatz.centWert
         
     if reverse:
         umsaetzeinfos.reverse()  

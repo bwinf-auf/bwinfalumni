@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css" />
+    <title>{% block title %}BwInf Alumni und Freunde{% endblock %}</title>
+</head>
+
+<body>
+    <div id="header">
+        {% block header %}
+
+        {% if user.is_authenticated %}
+        Eingeloggt als: <b>{{ user.username }}</b>{% if user.benutzermitglied %}, Mitgliedsnummer: <b>{{ user.benutzermitglied.mitglied.mitgliedsnummer }}</b> {% endif %}
+        (<a href="{% url 'auth:logout' %}">Ausloggen</a> | 
+        <a href="{% url 'auth:password_change' %}">Passwort ändern</a>)
+        {% else %}
+        <a href="{% url 'auth:login' %}">Einloggen</a>
+        {% endif %}
+        <hr />
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="footer">
+        {% block footer %}
+        <hr />
+        {% endblock %}
+    </div>
+</body>
+
+</html>

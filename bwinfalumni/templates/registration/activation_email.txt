@@ -1,0 +1,5 @@
+Account-Aktivierung bei {{ site.name }}:
+
+http://{{ site.domain }}{% url registration_activate activation_key %}
+
+{% blocktrans %}Dieser Link ist für {{ expiration_days }} Tage gültig.{% endblocktrans %}

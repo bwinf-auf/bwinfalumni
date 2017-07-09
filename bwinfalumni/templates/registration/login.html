@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post" action=".">
+ {% csrf_token %}
+  {{ form.as_p }}
+
+  <input type="submit" value="Einloggen" />
+  <input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+<p>Passwort vergessen? <a href="{% url 'auth:password_reset' %}">Hier klicken um es zurückzusetzen</a>.</p>
+
+{% endblock %}

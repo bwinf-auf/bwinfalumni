@@ -8,10 +8,10 @@
   <table style="border:0px">
     <tr>
       <td></td>
-      <td>{{ form.wertstellungsDatum.errors }}{{ form.wertstellungsDatum }}</td>
+      <td>{{ form.wertstellungsdatum.errors }}{{ form.wertstellungsdatum }}</td>
       <td>{{ form.text.errors }}{{ form.text }}</td>
       <td>{{ form.typ.errors }}{{ form.typ }}</td>
-      <td>{{ form.centValue.errors }}{{ form.centValue }}</td>
+      <td>{{ form.centWert.errors }}{{ form.centWert }}</td>
       <td> in Cent!</td>
       <td><input type="submit" value="Hinzufügen" /></td>
     </tr>
@@ -27,7 +27,7 @@
   {% for umsatz in umsaetze %}
     <tr>
       <td class="ra">{{ umsatz.before }} €</td>
-      <td>{{ umsatz.umsatz.wertstellungsDatum }}</td>
+      <td>{{ umsatz.umsatz.wertstellungsdatum }}</td>
       <td>{{ umsatz.umsatz.text }}</td>
       <td>{{ umsatz.umsatz.typ }}</td>
       <td class="ra">{{ umsatz.amount }} €</td>
