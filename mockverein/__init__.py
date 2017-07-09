@@ -43,7 +43,7 @@ def erstelle_mockdaten():
         o.save()
     
     umsaetze = [
-        Umsatz(konto=konto,typ=ut[1],text="Jahrebeitrag DJH", cent_wert=12203,quittung="blub",geschaeftspartner="DJH"),
+        Umsatz(konto=konto,typ=ut[1],text="Jahrebeitrag DJH", cent_wert=12203,beleg="blub",geschaeftspartner="DJH"),
         ]
     
     for o in testmitglieder:

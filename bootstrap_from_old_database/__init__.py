@@ -201,7 +201,7 @@ def run():
                             typ = umsatztyp,
                             text = posting[0],
                             cent_wert = posting[1],
-                            quittung = posting[2],
+                            beleg = posting[2],
                             author = posting[3],
                             geschaeftspartner = "k. A.",
                             wertstellungsdatum = posting[4])
