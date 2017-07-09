@@ -53,7 +53,7 @@ def detail(request, mitgliedsnummer):
     mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer)
     all_transactions = []
     value = 0
-    for buchung in mitglied.mitgliedskontobuchung_set.all().order_by('-buchungsdatum'): 
+    for buchung in mitglied.mitgliedskontobuchung_set.all().order_by('buchungsdatum'): 
         value += buchung.cent_wert
         all_transactions.append({'amount': buchung.cent_wert / 100.0,
                                  'comment': buchung.kommentar,
