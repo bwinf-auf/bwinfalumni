@@ -70,7 +70,7 @@ def run():
                             beitrittsdatum = member[2],
                             vorname = member[4],
                             nachname = member[5],
-                            anrede = member[6],
+                            anrede = "Herr" if member[6] == 1 else "Frau",
                             geburtsdatum = member[7] if member[7] else date(1970,1,1),
                             strasse = member[8],
                             plz = member[9],
