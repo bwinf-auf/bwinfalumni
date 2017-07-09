@@ -14,15 +14,15 @@ def erstelle_mockdaten():
         User.objects.create_user(username='nico', email='nico@example.com', password='nico'),
         ]
     
-    for user in testusers:
-        user.is_staff = True
-    
     testmitglieder = [
         Mitglied(mitgliedsnummer=99927, vorname="Test", nachname="Testofsky", strasse="Str", plz="12343", stadt="B.", telefon="0", email="test@example.com"),
         Mitglied(mitgliedsnummer=99928, vorname="Max", nachname="Mustermann", strasse="Str", plz="12343", stadt="B.", telefon="0", email="max@example.com"),
         Mitglied(mitgliedsnummer=99929, vorname="Willi", nachname="Vanilly", strasse="Str", plz="12343", stadt="B.", telefon="0", email="willi@example.com"),
         Mitglied(mitgliedsnummer=99930, vorname="Lena", nachname="Lane", strasse="Str", plz="12343", stadt="B.", telefon="0", email="lena@example.com"),
         ]
+    
+    for o in testmitglieder:
+        o.save()
     
     bm = [
         BenutzerMitglied(benutzer=testusers[0], mitglied=testmitglieder[0]),
@@ -45,9 +45,6 @@ def erstelle_mockdaten():
     umsaetze = [
         Umsatz(konto=konto,typ=ut[1],text="Jahrebeitrag DJH", cent_wert=12203,beleg="blub",geschaeftspartner="DJH"),
         ]
-    
-    for o in testmitglieder:
-        o.save()
     
     mkbt = [
         MitgliedskontoBuchungstyp(typname="Einzahlung"),

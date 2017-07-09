@@ -7,7 +7,7 @@ from mitglieder.models import Mitglied
 class BenutzerMitglied(models.Model):
     
     benutzer    = models.OneToOneField(User, on_delete=models.PROTECT, primary_key=True)
-    mitglied    = models.ForeignKey(Mitglied, on_delete=models.PROTECT, null=True)
+    mitglied    = models.ForeignKey(Mitglied, on_delete=models.PROTECT)
     
     class Meta:
         db_table = "benutzer_mitglied_relation"
