@@ -89,6 +89,8 @@ def run():
     
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="nachname"))
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="vorname"))
+        sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="studienfach"))
+        sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="studienort"))
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="beruf"))
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="mailingliste"))
         
