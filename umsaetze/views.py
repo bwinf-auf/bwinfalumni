@@ -11,7 +11,7 @@ from django import forms
 class UmsatzForm(forms.ModelForm):
     class Meta:
         model = Umsatz
-        fields = ['typ', 'text', 'centWert', 'wertstellungsdatum']
+        fields = ['typ', 'text', 'cent_wert', 'wertstellungsdatum']
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -29,9 +29,9 @@ def listumsaetze(request, reverse = True):
         
         umsaetzeinfos.append({'umsatz': umsatz,
                               'before': current_val / 100.0,
-                              'after':  (current_val+umsatz.centWert) / 100.0 , 
-                              'amount': umsatz.centWert / 100.0,})   
-        current_val += umsatz.centWert
+                              'after':  (current_val+umsatz.cent_wert) / 100.0 , 
+                              'amount': umsatz.cent_wert / 100.0,})   
+        current_val += umsatz.cent_wert
         
     if reverse:
         umsaetzeinfos.reverse()  

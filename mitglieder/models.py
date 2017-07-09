@@ -9,29 +9,27 @@ class Mitglied(models.Model):
     mitgliedsnummer = models.IntegerField(unique=True)
     antragsdatum    = models.DateField(default=date.today)
     beitrittsdatum  = models.DateField(null=True, blank=True, default=date.today)
-    istBeigetreten  = models.BooleanField(default=True)
     austrittsdatum  = models.DateField(null=True, blank=True)
-    istAusgetreten  = models.BooleanField(default=False)
 
-    vorname         = models.CharField(max_length=200)
-    nachname        = models.CharField(max_length=200)
-    anrede          = models.CharField(max_length=200, blank=True)
+    vorname         = models.CharField(max_length=250)
+    nachname        = models.CharField(max_length=250)
+    anrede          = models.CharField(max_length=250, blank=True)
     geburtsdatum    = models.DateField(default=date(1970,1,1))
     
-    strasse         = models.CharField(max_length=200)
-    adresszusatz    = models.CharField(max_length=200, blank=True)
+    strasse         = models.CharField(max_length=250)
+    adresszusatz    = models.CharField(max_length=250, blank=True)
     plz             = models.CharField(max_length=10) 
-    stadt           = models.CharField(max_length=200)
-    land            = models.CharField(max_length=200, default="Deutschland") 
-    telefon         = models.CharField(max_length=200)
+    stadt           = models.CharField(max_length=250)
+    land            = models.CharField(max_length=250, default="Deutschland") 
+    telefon         = models.CharField(max_length=250)
     email           = models.EmailField()
-    beruf           = models.CharField(max_length=200, blank=True)
+    beruf           = models.CharField(max_length=250, blank=True)
     
-    studienort      = models.CharField(max_length=200, blank=True)
-    studienfach     = models.CharField(max_length=200, blank=True)
+    studienort      = models.CharField(max_length=250, blank=True)
+    studienfach     = models.CharField(max_length=250, blank=True)
     
     kommentar       = models.CharField(max_length=2000, blank=True)
-    anzahlMahnungen = models.IntegerField(default=0)
+    anzahl_mahnungen = models.IntegerField(default=0)
     
     def __str__(self):
         return str(self.mitgliedsnummer) + ": " + self.vorname + " " + self.nachname
@@ -45,13 +43,13 @@ class Mitglied(models.Model):
 
 class MitgliedskontoBuchungstyp(models.Model):
     
-    typname         = models.CharField(max_length=200)
+    typname         = models.CharField(max_length=250)
     
     def __str__(self):
         return self.typname
     
     class Meta:
-        db_table = "mitgliedskontoBuchungstyp"
+        db_table = "mitgliedskonto_buchungstyp"
         verbose_name = "Mitgliedskonto-Buchungstyp"
         verbose_name_plural = "Mitgliedskonto-Buchungstypen"
 
@@ -61,16 +59,16 @@ class MitgliedskontoBuchung(models.Model):
     
     mitglied        = models.ForeignKey(Mitglied, on_delete=models.PROTECT)
     typ             = models.ForeignKey(MitgliedskontoBuchungstyp, on_delete=models.PROTECT)
-    centWert        = models.IntegerField(default=0)
-    kommentar       = models.CharField(max_length=200, blank=True)
+    cent_wert       = models.IntegerField(default=0)
+    kommentar       = models.CharField(max_length=250, blank=True)
     umsatz          = models.ForeignKey(Umsatz, on_delete=models.PROTECT, blank=True, null=True)
-    buchungsDatum   = models.DateField(default=date.today)
+    buchungsdatum   = models.DateField(default=date.today)
     
     def __str__(self):
-        return str(self.buchungsDatum)+ " (" + str(self.typ) + ") " + str(self.centWert) + " ct"
+        return str(self.buchungsdatum)+ " (" + str(self.typ) + ") " + str(self.cent_wert) + " ct"
     
     class Meta:
-        db_table = "mitgliedskontoBuchung"
+        db_table = "mitgliedskonto_buchung"
         verbose_name = "Mitgliedskonto-Buchung"
         verbose_name_plural = "Mitgliedskonto-Buchungen"
 
@@ -79,12 +77,12 @@ class MitgliedskontoBuchung(models.Model):
 class Lastschriftmandat(models.Model):
     
     mitglied        = models.ForeignKey(Mitglied, on_delete=models.PROTECT)
-    kontoinhaber    = models.CharField(max_length=200)
-    bankname        = models.CharField(max_length=200)
-    iban            = models.CharField(max_length=200)
-    bic             = models.CharField(max_length=200)
-    gueltigAb       = models.DateField(default=date.today)
-    gueltigBis      = models.DateField(default=date(3000,1,1))
+    kontoinhaber    = models.CharField(max_length=250)
+    bankname        = models.CharField(max_length=250)
+    iban            = models.CharField(max_length=250)
+    bic             = models.CharField(max_length=250)
+    gueltig_ab       = models.DateField(default=date.today)
+    gueltig_bis      = models.DateField(default=date(3000,1,1))
 
     class Meta:
         db_table = "lastschriftmandat"
