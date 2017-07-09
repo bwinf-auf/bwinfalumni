@@ -54,10 +54,13 @@ def detail(request, mitgliedsnummer):
     all_transactions = []
     value = 0
     for buchung in mitglied.mitgliedskontobuchung_set.all(): 
-        value += buchung.centWert
-        all_transactions.append({'amount': buchung.centWert / 100.0,
+        value += buchung.cent_wert
+        all_transactions.append({'amount': buchung.cent_wert / 100.0,
                                  'comment': buchung.kommentar,
-                                 'value': value / 100.0})    
+                                 'value': value / 100.0, 
+                                 'date': buchung.buchungsdatum,
+                                 'type': buchung.typ.typname,
+                                 })    
     return render(request, 'mitglieder/mitglied.html', {'mitglied': mitglied, 'transactions': all_transactions, 'before': 0.0, 'after': value/100.0})
 
 

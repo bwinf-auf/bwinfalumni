@@ -4,10 +4,20 @@
 <h1>{{ mitglied.mitgliedsnummer }}</h1>
 <h2>{{ mitglied.vorname }} {{ mitglied.nachname }}</h2>
 
-Vorher: {{ before }}
-<ul>
+<hr>
+{% load humanize %}
+
+<style>
+td, th {padding: 0px 20px;}
+</style>
+
+Umsätze:
+<table>
+  <tr><th>Art</th><th>Wertstellung</th><th>Umsatz</th><th>Kontostand</th></tr>
   {% for transaction in transactions %}
-  <li>{% if transaction.amount > 0 %}+{% endif %}{{ transaction.amount }} {{ transaction.value }}</li>
+  <tr><td>{{ transaction.type }}</td><td>{{ transaction.date }}</td><td><b>{% if transaction.amount > 0 %}+{% endif %}{{ transaction.amount|floatformat:2 }} €</b></td><td>{{ transaction.value|floatformat:2 }} €</td></tr>
   {% endfor %}
-</ul>
-Aktuell: {{ after }}
+</table>
+<hr>
+
+<b>Aktueller Konstostand: {{ after|floatformat:2 }} € </b>

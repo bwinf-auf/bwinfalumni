@@ -10,7 +10,7 @@ class BenutzerMitglied(models.Model):
     mitglied    = models.ForeignKey(Mitglied, on_delete=models.PROTECT, null=True)
     
     class Meta:
-        db_table = "benutzerMitgliedRelation"
+        db_table = "benutzer_mitglied_relation"
         verbose_name = "Benutzer-Mitglied-Relation"
         verbose_name_plural = "Benutzer-Mitglied-Relationen"
     

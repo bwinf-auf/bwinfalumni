@@ -43,7 +43,7 @@ def erstelle_mockdaten():
         o.save()
     
     umsaetze = [
-        Umsatz(konto=konto,typ=ut[1],text="Jahrebeitrag DJH", centWert=12203,quittung="blub",geschaeftspartner="DJH"),
+        Umsatz(konto=konto,typ=ut[1],text="Jahrebeitrag DJH", cent_wert=12203,quittung="blub",geschaeftspartner="DJH"),
         ]
     
     for o in testmitglieder:
@@ -59,9 +59,9 @@ def erstelle_mockdaten():
         o.save()
 
     mkb = [
-        MitgliedskontoBuchung(mitglied=testmitglieder[1],typ=mkbt[1],centWert=-10),
-        MitgliedskontoBuchung(mitglied=testmitglieder[1],typ=mkbt[0],centWert=10),
-        MitgliedskontoBuchung(mitglied=testmitglieder[1],typ=mkbt[2],centWert=-10),
+        MitgliedskontoBuchung(mitglied=testmitglieder[1],typ=mkbt[1],cent_wert=-10),
+        MitgliedskontoBuchung(mitglied=testmitglieder[1],typ=mkbt[0],cent_wert=10),
+        MitgliedskontoBuchung(mitglied=testmitglieder[1],typ=mkbt[2],cent_wert=-10),
         ]
 
     BenutzerMitglied.objects.bulk_create(bm);

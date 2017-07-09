@@ -82,7 +82,7 @@ def run():
                             studienort = member[15],
                             studienfach = member[16],
                             kommentar = member[22],
-                            anzahlMahnungen = member[23])
+                            anzahl_mahnungen = member[23])
         mitglied.save()
         
         print("\n" + mitglied.vorname + " " + mitglied.nachname, end='')
@@ -121,7 +121,6 @@ def run():
         
         user = User(username = member[24],
                     password = "legacy$" + member[25],
-                    is_staff = not member[26],
                     is_active = not member[26],
                     is_superuser = False,
                     last_login = member[27])
@@ -136,8 +135,8 @@ def run():
                                     bankname = member[29],
                                     iban = member[30],
                                     bic = member[31],
-                                    gueltigAb = member[32],
-                                    gueltigBis = member[33])
+                                    gueltig_ab = member[32],
+                                    gueltig_bis = member[33])
             lsm_dblist.append(lsm)
             
             print("+", end='')
@@ -151,9 +150,9 @@ def run():
         for memberposting in memberposting_rows:
             mbuchung = MitgliedskontoBuchung(mitglied = mitglied,
                                              typ = mbuchungstyp_default,
-                                             centWert = memberposting[0], 
+                                             cent_wert = memberposting[0], 
                                              kommentar = memberposting[1],
-                                             buchungsDatum = memberposting[2])
+                                             buchungsdatum = memberposting[2])
             mbuchung_dblist.append(mbuchung)
             
             print(".", end='')
@@ -201,7 +200,7 @@ def run():
             umsatz = Umsatz(konto = konto_default,
                             typ = umsatztyp,
                             text = posting[0],
-                            centWert = posting[1],
+                            cent_wert = posting[1],
                             quittung = posting[2],
                             author = posting[3],
                             geschaeftspartner = "k. A.",
