@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^mitglieder/', include('mitglieder.urls', namespace='mitglieder')),
     url(r'^benutzer/', include('benutzer.urls', namespace='benutzer')),
     url(r'^profil/', include('profil.urls', namespace='profil')),
-    
+    url(r'^mailinglistenadressen/', include('mailinglistenadressen.urls', namespace='mailinglistenadressen')),
 
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', { 'template_name': 'registration/logout.html',}, name='logout' ),
     url(r'^accounts/resetpassword/passwordsent/$', 'django.contrib.auth.views.password_reset_done', name='password_reset_done'),

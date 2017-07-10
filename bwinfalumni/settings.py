@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'mitglieder.apps.MitgliederConfig',
     'benutzer.apps.BenutzerConfig',
     'profil.apps.ProfilConfig',
+    'mailinglistenadressen.apps.MailinglistenadressenConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
