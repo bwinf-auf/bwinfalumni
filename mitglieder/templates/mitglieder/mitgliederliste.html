@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
 
@@ -20,3 +24,5 @@
     <li><a href="/accounts/logout/?next=/">Logout</a></li>
   </ul>
 </p>
+
+{% endblock %}

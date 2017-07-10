@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
   <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
 
@@ -8,3 +12,5 @@
     <li><a href="/accounts/logout/?next=/">Logout</a></li>
   </ul>
 </p>
+
+{% endblock %}

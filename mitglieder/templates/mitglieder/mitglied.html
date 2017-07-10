@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
 
@@ -21,3 +25,5 @@ Umsätze:
 <hr>
 
 <b>Aktueller Konstostand: {{ after|floatformat:2 }} € </b>
+
+{% endblock %}

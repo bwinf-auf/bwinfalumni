@@ -10,14 +10,15 @@
 <body>
     <div id="header">
         {% block header %}
-
+        <div style="float:right; margin-right:50px;">
         {% if user.is_authenticated %}
         Eingeloggt als: <b>{{ user.username }}</b>{% if user.benutzermitglied %}, Mitgliedsnummer: <b>{{ user.benutzermitglied.mitglied.mitgliedsnummer }}</b> {% endif %}
-        (<a href="{% url 'auth:logout' %}">Ausloggen</a> | 
-        <a href="{% url 'auth:password_change' %}">Passwort ändern</a>)
+        (<a href="{% url 'auth:logout' %}">Ausloggen</a>) 
         {% else %}
         <a href="{% url 'auth:login' %}">Einloggen</a>
         {% endif %}
+        </div>
+        <a href="/">Zurück zur Startseite</a>
         <hr />
         {% endblock %}
     </div>
@@ -28,7 +29,7 @@
 
     <div id="footer">
         {% block footer %}
-        <hr />
+        <!--hr /-->
         {% endblock %}
     </div>
 </body>
