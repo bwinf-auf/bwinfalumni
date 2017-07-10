@@ -109,11 +109,11 @@ def sichtbarkeit(request):
         if form.is_valid():
             i = 0
             for sichtbarkeit in sichtbarkeiten:
-                if Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=sichtbarkeit[0]).filter(sache=sichtbarkeit[1]).exists():
+                if i >= 6 and Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=sichtbarkeit[0]).filter(sache=sichtbarkeit[1]).exists():
                     if not form[i].cleaned_data["sichtbarkeit"]:
                         Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=sichtbarkeit[0]).filter(sache=sichtbarkeit[1]).delete()
                 else:
-                    if form[i].cleaned_data["sichtbarkeit"]:
+                    if i < 6 or form[i].cleaned_data["sichtbarkeit"]:
                         neu = Sichtbarkeit.objects.create(mitglied=mitglied,
                                                           bereich=sichtbarkeit[0],
                                                           sache=sichtbarkeit[1])
