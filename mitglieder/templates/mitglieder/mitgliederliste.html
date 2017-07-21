@@ -5,6 +5,13 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
 
+<h1>Mitgliedsbeiträge</h1>
+  <ul class="bl">
+  <li><a href="{% url 'mitglieder:beitraege' %}">Mitgliedsbeiträge einziehen</a></li>
+  <li><a href="{% url 'mitglieder:beitragsmails' 'beitragsrechnung' %}">Mails mit Beitragsrechnung verschicken</a></li>
+  <li><a href="{% url 'mitglieder:beitragsmailsschulden' 'zahlungserinnerung' %}">Mails mit Zahlungserinnerung verschicken</a></li>
+</ul>
+
 <h1>Alle Mitglieder</h1>
 
 {% if mitglieder %}
@@ -12,7 +19,7 @@
   {% for mitglied in mitglieder %}
     <li><a href="{% url 'mitglieder:detail' mitglied.mitgliedsnummer %}">{{ mitglied }}</a></li>
   {% endfor %}
-  <li><a href="{% url 'mitglieder:add' %}">+</a>
+  <li><a href="{% url 'mitglieder:add' %}">+</a></li>
   </ul>
 {% else %}
   <p>Keine Mitglieder vorhanden.</p>

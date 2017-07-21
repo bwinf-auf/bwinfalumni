@@ -4,13 +4,19 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from django.contrib.auth.models import User
-from .models import Mitglied
+from .models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
 from benutzer.models import BenutzerMitglied
+
+from django.core.mail.backends.smtp import EmailBackend
 
 from datetime import date
 
 from django import forms
 from django.shortcuts import redirect
+from django.forms import ModelForm
+
+from django.core.mail import send_mail
+
 
 
 
@@ -117,4 +123,97 @@ def addmitglied(request):
                                                                                   'beitrittsdatum': date.today()}),
                                                            'pform': AddUserForm(),
                                                            'bform': UserForm()}) 
-  
+
+class BeitraegeForm(ModelForm):
+    class Meta:
+        model = MitgliedskontoBuchung
+        fields = ['cent_wert', 'kommentar', 'buchungsdatum']
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def beitraegeeinziehen(request):
+    if request.method == 'POST':
+        bform = BeitraegeForm(request.POST)
+        
+        errormessage = ""
+        successmessage = ""
+        
+        if not bform.is_valid():
+            errormessage = "Die eingegebenen Daten sind ungültig. " + mform.errors.as_json(escape_html=True)
+        else:
+            typ = MitgliedskontoBuchungstyp(typname = bform.cleaned_data['kommentar'])
+            typ.save()
+            today = date.today()
+            mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today)
+            numBeitraege = 0
+            for mitglied in mitglieder:
+                buchung = MitgliedskontoBuchung(mitglied = mitglied,
+                                                typ = typ,
+                                                cent_wert = bform.cleaned_data['cent_wert'], 
+                                                kommentar = bform.cleaned_data['kommentar'],
+                                                buchungsdatum = bform.cleaned_data['buchungsdatum'])
+                buchung.save()
+                numBeitraege += 1
+        
+        if errormessage == "":
+            successmessage = "Beitraeg von " + str(numBeitraege) + " Mitgliedern wurden erfolgreich abgebucht."
+        
+        return render(request, 'mitglieder/adddone.html', {'errormessage': errormessage,
+                                                           'successmessage': successmessage,})
+    else:
+        return render(request, 'mitglieder/beitraege.html', {'bform': BeitraegeForm({'cent_wert': -1000,
+                                                                                   'kommentar': "Mitgliedsbeitrag " + str(date.today().year), 
+                                                                                   'buchungsdatum': date.today()})})
+
+
+class EmailForm(forms.Form):
+    betreff = forms.CharField()
+    text = forms.CharField(widget=forms.Textarea)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)    
+def zahlungsaufforderungen(request, template, schulden):
+    if request.method == 'POST':
+        cform = EmailForm(request.POST)
+        
+        errormessage = ""
+        successmessage = ""
+        
+        if not cform.is_valid():
+            errormessage = "Es müssen Text und Titel angegeben werden. " + mform.errors.as_json(escape_html=True)
+        else:
+            today = date.today()
+            mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today)
+            numEmails = 0
+            for mitglied in mitglieder:
+                kontostand = 0
+                buchungen = mitglied.mitgliedskontobuchung_set.all()
+                for buchung in buchungen:
+                    kontostand += buchung.cent_wert
+                if kontostand < 0 or not schulden:
+                    data = {'vorname': mitglied.vorname,
+                            'nachname': mitglied.nachname,
+                            'anrede': mitglied.anrede,
+                            'mitgliedsnummer': mitglied.mitgliedsnummer,
+                            'datum': str(date.today),
+                            'kontostand': kontostand / 100.0,
+                            'schulden': -kontostand / 100.0,
+                            'email': mitglied.email}
+                    betreff = cform.cleaned_data['betreff'].format(**data)
+                    text = cform.cleaned_data['text'].format(**data)
+                    
+                    if mitglied.email == "robert@czecho.de":
+                        send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [mitglied.email], connection=EmailBackend(host="czecho.de"))
+                    numEmails += 1
+        
+        if errormessage == "":
+            successmessage = "Email an " + str(numEmails) + " Mitglieder wurde erfolgreich versandt."
+        
+        return render(request, 'mitglieder/adddone.html', {'errormessage': errormessage,
+                                                           'successmessage': successmessage,})
+    else: 
+        text = ""
+        with open ("mitglieder/" + template + ".txt", "r") as templatefile:
+            text = templatefile.read()
+        return render(request, 'mitglieder/email.html', {'cform': EmailForm({'betreff': "Mitgliedsbeitrag BwInf Alumni und Freunde e. V.",
+                                                                            'text': text}), 'schulden': schulden})

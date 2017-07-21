@@ -1,0 +1,38 @@
+Hallo {vorname} {nachname},
+
+
+wir haben soeben von Ihrem Mitgliedskonto bei dem "BWINF Alumni und
+Freunde e.V." den diesjährigen Mitgliedsbeitrag berechnet. Der Beitrag
+beträgt zur Zeit 10,00 € für ordentliche Mitglieder.
+
+Ihr neuer Kontostand beträgt damit nun insgesamt:
+
+  {kontostand} €.
+
+Sofern Ihr Konto im Minus ist, bitten wir darum, den Betrag möglichst
+bald zu begleichen. Die Kontodaten finde Sie am unteren Ende dieser
+E-Mail. Bitte vergessen Sie nicht, Ihre Mitgliedsummer ({mitgliedsnummer})
+anzugeben, damit Ihre Überweisung zugeordnet werden kann.
+
+Wenn Sie uns eine Einzugsermächtigung erteilt haben, werden wir den
+Betrag in den nächsten Tagen von Ihrem Konto einziehen. Wenn Sie uns
+eine Einzugsermächtigung erteilen möchten, finden Sie dafür einen
+Vordruck auf der Vereinswebseite https://alumni.bwinf.de unter
+Intern/Dokumente (nach Anmeldung sichtbar).
+
+Ihre Kontohistorie können Sie mit Ihren Zugangsdaten unter
+https://alumni.bwinf.de/alumni/mitglieder/ einsehen.
+
+
+Vielen Dank und viele Grüße,
+Steven Keuchel und Robert Czechowski
+(Vorstand)
+
+
+---
+Kontodaten: BWINF Alumni und Freunde e.V.
+IBAN: DE77 3207 0024 0231 7071 00
+BIC: DEUTDEDB320
+Deutsche Bank Krefeld
+
+Verwendungszweck: "Beitrag Mitglied {mitgliedsnummer}"

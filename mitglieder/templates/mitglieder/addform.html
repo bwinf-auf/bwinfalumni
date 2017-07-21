@@ -5,7 +5,7 @@
 
 <h1>Mitglied hinzufügen</h1>
 
-<form action="/mitglieder/add/" method="post">
+<form action="." method="post">
     {% csrf_token %}
     <table style="border:0px">
       {{ mform.as_table }}

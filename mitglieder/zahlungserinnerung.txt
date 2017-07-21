@@ -1,0 +1,41 @@
+Hallo {vorname} {nachname},
+
+
+nach gründlicher Prüfung haben wir festgestellt, dass auf Ihrem
+Mitgliedskonto bei dem "BWINF Alumni und Freunde e.V." noch ein Betrag
+offen ist.
+
+Der offene Betrag beträgt zur Zeit:
+
+  {schulden} €.
+
+Wir möchten Sie bitten, diesen offen Betrag zu begleichen. Die
+Kontodaten des Vereins finde Sie am unteren Ende dieser E-Mail. Bitte
+vergessen Sie nicht, Ihre Mitgliedsummer ({mitgliedsnummer}) anzugeben, damit
+Ihre Überweisung zugeordnet werden kann.
+
+Da der BWINF Alumni und Freunde e. V. als gemeinnütziger Verein
+anerkannt ist, können die Mitgliedsbeiträge steuerlich geltend gemacht
+werden. Wenn Sie eine Zuwendungsbescheinigung wünschen, teilen Sie uns
+dies bitte mit.
+
+Falls Sie den Betrag in der Zwischenzeit auf unser Konto überwiesen
+haben, ist diese Zahlungserinnerung natürlich gegenstandslos.
+  
+Ihre Kontohistorie können Sie mit Ihren Zugangsdaten unter
+https://alumni.bwinf.de/alumni/mitglieder/ einsehen.
+
+
+Vielen Dank und viele Grüße,
+Steven Keuchel und Robert Czechowski
+(Vorstand)
+
+
+---
+Kontodaten: BWINF Alumni und Freunde e.V.
+IBAN: DE77 3207 0024 0231 7071 00
+BIC: DEUTDEDB320
+Deutsche Bank Krefeld
+
+Verwendungszweck: "Beitrag Mitglied {mitgliedsnummer}"
+Betrag: {schulden} €
