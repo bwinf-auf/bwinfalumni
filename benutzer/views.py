@@ -61,7 +61,7 @@ def index(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def listusers(request):
     all_mitglieder = Mitglied.objects.order_by('mitgliedsnummer')
     return render(request, 'benutzer/mitgliederliste.html', {'mitglieder': all_mitglieder})
@@ -93,7 +93,7 @@ class UserInfoForm(forms.ModelForm):
         fields = ['mitglied']
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def addbenutzer(request, mitgliedsnummer = -1):
     if not DEBUG:
         raise Http404("Benutzer-Anlegen zur Zeit noch nicht verfügbar.")

@@ -97,7 +97,7 @@ class UserForm(forms.ModelForm):
         fields = ['username', 'email']
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def addmitglied(request):
     if not DEBUG:
         raise Http404("Mitglieder-Anlegen zur Zeit noch nicht verfügbar.")
@@ -144,7 +144,7 @@ class BeitraegeForm(ModelForm):
         fields = ['cent_wert', 'kommentar', 'buchungsdatum']
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def beitraegeeinziehen(request):
     if request.method == 'POST':
         bform = BeitraegeForm(request.POST)
@@ -185,7 +185,7 @@ class EmailForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)    
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())    
 def zahlungsaufforderungen(request, template, schulden):
     if request.method == 'POST':
         cform = EmailForm(request.POST)
