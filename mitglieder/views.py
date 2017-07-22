@@ -18,20 +18,19 @@ from django.forms import ModelForm
 from django.core.mail import send_mail
 
 
-
+from django.core.urlresolvers import reverse
 
 
 @login_required
 def index(request):
     benutzer = request.user
     
-    if not benutzer.is_superuser:
+    if not benutzer.is_superuser and not benutzer.groups.filter(name='vorstand').exists():
         try:
             mitglied = benutzer.benutzermitglied.mitglied
         except:
             raise Http404("Keine Benutzerinformationen vorhanden.")
-        #return redirect(str(mitglied.mitgliedsnummer))
-        return detail(request, mitglied.mitgliedsnummer)
+        return redirect(reverse('mitglieder:detail', kwargs={'mitgliedsnummer': mitglied.mitgliedsnummer}))
     
     all_mitglieder = Mitglied.objects.order_by('mitgliedsnummer')
     return render(request, 'mitglieder/mitgliederliste.html', {'mitglieder': all_mitglieder})  
