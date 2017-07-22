@@ -3,22 +3,59 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import Umsatz
+from mitglieder.models import MitgliedskontoBuchung
 
 from django import forms
 
 
 
+class MitgliedskontoBuchungForm(forms.ModelForm):
+    class Meta:
+        model = MitgliedskontoBuchung
+        fields = ['mitglied', 'typ']
+
 class UmsatzForm(forms.ModelForm):
     class Meta:
         model = Umsatz
-        fields = ['typ', 'text', 'cent_wert', 'wertstellungsdatum']
+        fields = ['konto', 'typ', 'text', 'cent_wert', 'beleg', 'author', 'geschaeftspartner', 'wertstellungsdatum', 'kommentar']
+    
+    def __init__(self, *args, **kwargs):
+        super(UmsatzForm, self).__init__(*args, **kwargs) 
+        self.fields['wertstellungsdatum'].widget.attrs['style'] = 'width:100px;'
+        self.fields['cent_wert'].widget.attrs['style'] = 'width:80px;'
+        self.fields['text'].widget.attrs['style'] = 'width:300px;'
+        self.fields['beleg'].widget.attrs['style'] = 'width:200px;'
+        self.fields['author'].widget.attrs['style'] = 'width:200px;'
+        self.fields['geschaeftspartner'].widget.attrs['style'] = 'width:200px;'
+        self.fields['kommentar'].widget.attrs['style'] = 'width:200px;'
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def listumsaetze(request, reverse = True):
     if request.method == 'POST':
-        inform = UmsatzForm(request.POST)
-        inform.save()
+        neu_umsatz = UmsatzForm(request.POST)
+        mkbuchung = MitgliedskontoBuchungForm(request.POST)
+        if neu_umsatz.is_valid():
+            if mkbuchung.data['mitglied'] or mkbuchung.data['typ'] or mkbuchung.data['kommentar']:
+                if neu_umsatz.is_valid():
+                    umsatz = neu_umsatz.save()
+                    buchung = mkbuchung.save(commit=False)
+                    buchung.umsatz = umsatz
+                    buchung.buchungsdatum = umsatz.wertstellungsdatum
+                    buchung.cent_wert = umsatz.cent_wert
+                    buchung.kommentar = umsatz.text
+                    buchung.save()
+            else:
+                neu_umsatz.save()
+                neu_umsatz = UmsatzForm()
+        else: 
+            if mkbuchung.data['mitglied'] or mkbuchung.data['typ'] or mkbuchung.data['kommentar']:
+                pass
+            else:
+                mkbuchung = MitgliedskontoBuchungForm()
+    else:
+        neu_umsatz = UmsatzForm()
+        mkbuchung = MitgliedskontoBuchungForm()
   
     all_umsaetze = Umsatz.objects.order_by('wertstellungsdatum')
         
@@ -30,9 +67,10 @@ def listumsaetze(request, reverse = True):
         umsaetzeinfos.append({'umsatz': umsatz,
                               'before': current_val / 100.0,
                               'after':  (current_val+umsatz.cent_wert) / 100.0 , 
-                              'amount': umsatz.cent_wert / 100.0,})   
+                              'amount': umsatz.cent_wert / 100.0,})
         current_val += umsatz.cent_wert
         
     if reverse:
         umsaetzeinfos.reverse()  
-    return render(request, 'umsaetze/werstellungen.html', {'umsaetze': umsaetzeinfos, 'form': UmsatzForm()})
+    return render(request, 'umsaetze/werstellungen.html', {'umsaetze': umsaetzeinfos, 'form': neu_umsatz, 'mbform': mkbuchung})
+
