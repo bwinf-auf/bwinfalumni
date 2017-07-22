@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
 
 <h1>Benutzerdaten</h1>
 
@@ -15,9 +20,5 @@
   <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
 
 
-<p>
-  <ul>
-    <li><a href="/accounts/password_change/">Passwort ändern</a></li>
-    <li><a href="/accounts/logout/?next=/">Logout</a></li>
-  </ul>
-</p>
+  
+{% endblock %}

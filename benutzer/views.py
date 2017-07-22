@@ -9,6 +9,8 @@ from django.contrib.auth.models import User
 
 from django import forms
 
+from bwinfalumni.settings import DEBUG
+
 # Keine automatisch erzeugte Form, um eigene Prüfung an benutzernamen zu implementieren und
 # Djangos automatische "Benutzername existiert schon"-Kontrolle zu umgehen.
 class BenutzerForm(forms.Form):
@@ -93,6 +95,9 @@ class UserInfoForm(forms.ModelForm):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def addbenutzer(request, mitgliedsnummer = -1):
+    if not DEBUG:
+        raise Http404("Benutzer-Anlegen zur Zeit noch nicht verfügbar.")
+    
     if request.method == 'POST':
         bform = UserForm(request.POST)
         biform = UserInfoForm(request.POST)

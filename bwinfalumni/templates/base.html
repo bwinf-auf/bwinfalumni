@@ -29,7 +29,22 @@
 
     <div id="footer">
         {% block footer %}
-        <!--hr /-->
+        
+        {% if user.is_superuser or user.is_staff %}
+        <hr />
+        
+        <h2>Admin-Bereich</h2>
+        <p>
+        <ul>
+            <li><a href="{% url 'mitglieder:index' %}">Mitgliederübersicht</a></li>
+            <li><a href="{% url 'benutzer:benutzerliste' %}">Benutzerübersicht</a></li>
+            <li><a href="{% url 'umsaetze:index' %}">Umsatzübersicht</a></li>
+        </ul>
+        </p>
+        {% endif %}
+        
+        
+        
         {% endblock %}
     </div>
 </body>

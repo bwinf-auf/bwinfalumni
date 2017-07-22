@@ -17,8 +17,10 @@ from django.forms import ModelForm
 
 from django.core.mail import send_mail
 
+from bwinfalumni.settings import DEBUG
 
 from django.core.urlresolvers import reverse
+# in neuern django versionen from django.urls import reverse
 
 
 @login_required
@@ -30,32 +32,43 @@ def index(request):
             mitglied = benutzer.benutzermitglied.mitglied
         except:
             raise Http404("Keine Benutzerinformationen vorhanden.")
-        return redirect(reverse('mitglieder:detail', kwargs={'mitgliedsnummer': mitglied.mitgliedsnummer}))
+        return redirect(reverse('mitglieder:detail', kwargs={'mitgliedsnummer':mitglied.mitgliedsnummer}))
     
     all_mitglieder = Mitglied.objects.order_by('mitgliedsnummer')
     return render(request, 'mitglieder/mitgliederliste.html', {'mitglieder': all_mitglieder})  
 
-class TestFailed(Exception):
-    def __init__(self, m):
-        self.message = m
-    def __str__(self):
-        return self.message
+
+
+class MitgliedskontoBuchungForm(ModelForm):
+    class Meta:
+        model = MitgliedskontoBuchung
+        fields = ['typ', 'cent_wert', 'kommentar', 'buchungsdatum']
 
 
 @login_required
 def detail(request, mitgliedsnummer):
     benutzer = request.user
     
-    if not benutzer.is_superuser:
+    if not benutzer.is_superuser and not benutzer.groups.filter(name='vorstand').exists():
         try:
             mitglied = benutzer.benutzermitglied.mitglied
         except:
             raise Http404("Keine Benutzerinformationen vorhanden.")
-
         if mitglied.mitgliedsnummer != int(mitgliedsnummer):
-            raise TestFailed(str(mitglied.mitgliedsnummer))
+            raise Http404("Kein Zugriff (" + str(mitglied.mitgliedsnummer) + ")")
     
     mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer)
+    
+    if request.method == 'POST':
+        mkbuchung = MitgliedskontoBuchungForm(request.POST)
+        if mkbuchung.is_valid():
+            buchung = mkbuchung.save(commit=False)
+            buchung.mitglied = mitglied
+            buchung.save()
+            mkbuchung = MitgliedskontoBuchungForm()
+    else:
+        mkbuchung = MitgliedskontoBuchungForm()
+    
     all_transactions = []
     value = 0
     for buchung in mitglied.mitgliedskontobuchung_set.all().order_by('buchungsdatum'): 
@@ -66,7 +79,7 @@ def detail(request, mitgliedsnummer):
                                  'date': buchung.buchungsdatum,
                                  'type': buchung.typ.typname,
                                  })    
-    return render(request, 'mitglieder/mitglied.html', {'mitglied': mitglied, 'transactions': all_transactions, 'before': 0.0, 'after': value/100.0})
+    return render(request, 'mitglieder/mitglied.html', {'mitglied': mitglied, 'transactions': all_transactions, 'before': 0.0, 'after': value/100.0, 'form': mkbuchung})
 
 
 
@@ -86,6 +99,8 @@ class UserForm(forms.ModelForm):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def addmitglied(request):
+    if not DEBUG:
+        raise Http404("Mitglieder-Anlegen zur Zeit noch nicht verfügbar.")
     if request.method == 'POST':
         mform = MitgliedForm(request.POST)
         pform = AddUserForm(request.POST)
