@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/style.css" />
     <title>{% block title %}BwInf Alumni und Freunde{% endblock %}</title>
+    <base target="_top">
 </head>
 
 <body>
@@ -49,4 +50,10 @@
     </div>
 </body>
 
+<script>
+if (window.top!=window.self)
+{
+    document.getElementById("header").style.display = "none";
+}
+</script>
 </html>
