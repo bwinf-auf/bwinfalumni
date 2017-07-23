@@ -34,9 +34,9 @@ class UmsatzForm(forms.ModelForm):
 def listumsaetze(request, reverse = True):
     if request.method == 'POST':
         neu_umsatz = UmsatzForm(request.POST, prefix='umsatz')
-        mkbuchung = MitgliedskontoBuchungForm(request.POST, prefix='mkbuchung')
+        mkbuchung = MitgliedskontoBuchungForm(request.POST, prefix='buchung')
         if neu_umsatz.is_valid():
-            if mkbuchung.data['mitglied'] or mkbuchung.data['typ']:
+            if mkbuchung.data['buchung-mitglied'] or mkbuchung.data['buchung-typ']:
                 if neu_umsatz.is_valid():
                     umsatz = neu_umsatz.save()
                     buchung = mkbuchung.save(commit=False)
@@ -45,17 +45,23 @@ def listumsaetze(request, reverse = True):
                     buchung.cent_wert = umsatz.cent_wert
                     buchung.kommentar = umsatz.text
                     buchung.save()
+                    neu_umsatz = UmsatzForm(prefix='umsatz')
+                    mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
             else:
                 neu_umsatz.save()
-                neu_umsatz = UmsatzForm()
+                neu_umsatz = UmsatzForm(prefix='umsatz')
+                mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
         else: 
-            if mkbuchung.data['mitglied'] or mkbuchung.data['typ']:
+            if mkbuchung.data['buchung-mitglied'] or mkbuchung.data['buchung-typ']:
+                # ICH HABE KEINE IDEE, WARUM AN DIESER STELLE DAS PREFIX
+                # STEHEN MUSS UND AN JEDER ANDEREN STELLE NICHT … ABER SO
+                # FUNKTIONIERT ES
                 pass
             else:
-                mkbuchung = MitgliedskontoBuchungForm(prefix='mkbuchung')
+                mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
     else:
         neu_umsatz = UmsatzForm(prefix='umsatz')
-        mkbuchung = MitgliedskontoBuchungForm(prefix='mkbuchung')
+        mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
   
     all_umsaetze = Umsatz.objects.order_by('wertstellungsdatum')
         
