@@ -33,10 +33,10 @@ class UmsatzForm(forms.ModelForm):
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def listumsaetze(request, reverse = True):
     if request.method == 'POST':
-        neu_umsatz = UmsatzForm(request.POST)
-        mkbuchung = MitgliedskontoBuchungForm(request.POST)
+        neu_umsatz = UmsatzForm(request.POST, prefix='umsatz')
+        mkbuchung = MitgliedskontoBuchungForm(request.POST, prefix='mkbuchung')
         if neu_umsatz.is_valid():
-            if mkbuchung.data['mitglied'] or mkbuchung.data['typ'] or mkbuchung.data['kommentar']:
+            if mkbuchung.data['mitglied'] or mkbuchung.data['typ']:
                 if neu_umsatz.is_valid():
                     umsatz = neu_umsatz.save()
                     buchung = mkbuchung.save(commit=False)
@@ -49,13 +49,13 @@ def listumsaetze(request, reverse = True):
                 neu_umsatz.save()
                 neu_umsatz = UmsatzForm()
         else: 
-            if mkbuchung.data['mitglied'] or mkbuchung.data['typ'] or mkbuchung.data['kommentar']:
+            if mkbuchung.data['mitglied'] or mkbuchung.data['typ']:
                 pass
             else:
-                mkbuchung = MitgliedskontoBuchungForm()
+                mkbuchung = MitgliedskontoBuchungForm(prefix='mkbuchung')
     else:
-        neu_umsatz = UmsatzForm()
-        mkbuchung = MitgliedskontoBuchungForm()
+        neu_umsatz = UmsatzForm(prefix='umsatz')
+        mkbuchung = MitgliedskontoBuchungForm(prefix='mkbuchung')
   
     all_umsaetze = Umsatz.objects.order_by('wertstellungsdatum')
         
