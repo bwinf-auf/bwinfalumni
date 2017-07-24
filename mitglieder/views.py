@@ -200,7 +200,7 @@ def zahlungsaufforderungen(request, template, schulden):
             mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today)
             numEmails = 0
             failEmails = 0
-            with open('maillog', 'w') as f:
+            with open('listen/maillog', 'a') as f:
                 for mitglied in mitglieder:
                     kontostand = 0
                     buchungen = mitglied.mitgliedskontobuchung_set.all()
