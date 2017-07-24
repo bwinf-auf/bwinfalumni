@@ -200,7 +200,7 @@ def zahlungsaufforderungen(request, template, schulden):
             mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today)
             numEmails = 0
             failEmails = 0
-            with open('listen/mitgliederliste', 'w') as f:
+            with open('maillog', 'w') as f:
                 for mitglied in mitglieder:
                     kontostand = 0
                     buchungen = mitglied.mitgliedskontobuchung_set.all()
@@ -211,7 +211,7 @@ def zahlungsaufforderungen(request, template, schulden):
                                 'nachname': mitglied.nachname,
                                 'anrede': mitglied.anrede,
                                 'mitgliedsnummer': mitglied.mitgliedsnummer,
-                                'datum': str(date.today),
+                                'datum': str(date.today()),
                                 'kontostand': kontostand / 100.0,
                                 'schulden': -kontostand / 100.0,
                                 'email': mitglied.email}
@@ -220,14 +220,14 @@ def zahlungsaufforderungen(request, template, schulden):
                         
                         try:
                             send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [mitglied.email])
-                            f.write("Date: " + str(date.today) + "\n")
+                            f.write("Date: " + str(date.today()) + "\n")
                             f.write("To: " + mitglied.email + "\n")
                             f.write("From: vorstand@alumni.bwinf.de\n")
                             f.write("Subject: " + betreff + "\n\n")
                             f.write(text + "\n\n")
                             numEmails += 1
                         except:
-                            f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today) + ": " + betreff + ")\n\n")
+                            f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ")\n\n")
                             failEmails += 1;
         
         if errormessage == "":
