@@ -199,29 +199,39 @@ def zahlungsaufforderungen(request, template, schulden):
             today = date.today()
             mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today)
             numEmails = 0
-            for mitglied in mitglieder:
-                kontostand = 0
-                buchungen = mitglied.mitgliedskontobuchung_set.all()
-                for buchung in buchungen:
-                    kontostand += buchung.cent_wert
-                if kontostand < 0 or not schulden:
-                    data = {'vorname': mitglied.vorname,
-                            'nachname': mitglied.nachname,
-                            'anrede': mitglied.anrede,
-                            'mitgliedsnummer': mitglied.mitgliedsnummer,
-                            'datum': str(date.today),
-                            'kontostand': kontostand / 100.0,
-                            'schulden': -kontostand / 100.0,
-                            'email': mitglied.email}
-                    betreff = cform.cleaned_data['betreff'].format(**data)
-                    text = cform.cleaned_data['text'].format(**data)
-                    
-                    if mitglied.email == "robert@czecho.de":
-                        send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [mitglied.email], connection=EmailBackend(host="czecho.de"))
-                    numEmails += 1
+            failEmails = 0
+            with open('listen/mitgliederliste', 'w') as f:
+                for mitglied in mitglieder:
+                    kontostand = 0
+                    buchungen = mitglied.mitgliedskontobuchung_set.all()
+                    for buchung in buchungen:
+                        kontostand += buchung.cent_wert
+                    if kontostand < 0 or not schulden:
+                        data = {'vorname': mitglied.vorname,
+                                'nachname': mitglied.nachname,
+                                'anrede': mitglied.anrede,
+                                'mitgliedsnummer': mitglied.mitgliedsnummer,
+                                'datum': str(date.today),
+                                'kontostand': kontostand / 100.0,
+                                'schulden': -kontostand / 100.0,
+                                'email': mitglied.email}
+                        betreff = cform.cleaned_data['betreff'].format(**data)
+                        text = cform.cleaned_data['text'].format(**data)
+                        
+                        try:
+                            send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [mitglied.email])
+                            f.write("Date: " + str(date.today) + "\n")
+                            f.write("To: " + mitglied.email + "\n")
+                            f.write("From: vorstand@alumni.bwinf.de\n")
+                            f.write("Subject: " + betreff + "\n\n")
+                            f.write(text + "\n\n")
+                            numEmails += 1
+                        except:
+                            f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today) + ": " + betreff + ")\n\n")
+                            failEmails += 1;
         
         if errormessage == "":
-            successmessage = "Email an " + str(numEmails) + " Mitglieder wurde erfolgreich versandt."
+            successmessage = "E-Mail an " + str(numEmails) + " Mitglieder wurde erfolgreich versandt. " + str(failEmails) + " E-Mails konnten nicht versandt werden."
         
         return render(request, 'mitglieder/adddone.html', {'errormessage': errormessage,
                                                            'successmessage': successmessage,})
