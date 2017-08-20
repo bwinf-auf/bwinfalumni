@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Alle Umsätze</h1>
+
+{% if num %}{{ num }} Einzahlungen erfolgreich eingetragen! {% endif %}
+<form action="." method="post">
+  {% csrf_token %}
+
+  <table>
+    {{ umsatzeinzahlung }}
+  </table>
+
+  <table>
+    {{ kontoeinzahlung }}
+  </table>
+
+  <table>
+    {{ einzahlungen }}
+  </table>
+
+  <input type="submit" value="Hinzufügen" />
+  
+</form>  
+{% endblock %}
+

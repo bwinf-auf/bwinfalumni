@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import Umsatz
+from .models import Umsatz, Konto, UmsatzTyp
 from mitglieder.models import MitgliedskontoBuchung
 
 from django import forms
@@ -29,6 +29,8 @@ class UmsatzForm(forms.ModelForm):
         self.fields['geschaeftspartner'].widget.attrs['style'] = 'width:200px;'
         self.fields['kommentar'].widget.attrs['style'] = 'width:200px;'
 
+
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def listumsaetze(request, reverse = True):
@@ -37,7 +39,7 @@ def listumsaetze(request, reverse = True):
         mkbuchung = MitgliedskontoBuchungForm(request.POST, prefix='buchung')
         if neu_umsatz.is_valid():
             if mkbuchung.data['buchung-mitglied'] or mkbuchung.data['buchung-typ']:
-                if neu_umsatz.is_valid():
+                if mkbuchung.is_valid():
                     umsatz = neu_umsatz.save()
                     buchung = mkbuchung.save(commit=False)
                     buchung.umsatz = umsatz
@@ -80,3 +82,71 @@ def listumsaetze(request, reverse = True):
         umsaetzeinfos.reverse()  
     return render(request, 'umsaetze/werstellungen.html', {'umsaetze': umsaetzeinfos, 'form': neu_umsatz, 'mbform': mkbuchung})
 
+
+class UmsatzEinzahlungenForm(forms.ModelForm):
+    class Meta:
+        model = Umsatz
+        fields = ['konto', 'typ', 'beleg', 'author']
+
+class MitgliedskontoBuchungEinzahlungenForm(forms.ModelForm):
+    class Meta:
+        model = MitgliedskontoBuchung
+        fields = ['typ']
+
+class MitgliedskontoBuchungEineEinzahlungForm(forms.ModelForm):
+    text = forms.CharField(max_length=250)
+    geschaeftspartner = forms.CharField(max_length=250)
+    
+    class Meta:
+        model = MitgliedskontoBuchung
+        fields = ['mitglied', 'buchungsdatum', 'cent_wert', 'kommentar']
+
+from django.forms import formset_factory
+    
+EinzahlungenFormSet = formset_factory(MitgliedskontoBuchungEineEinzahlungForm, extra=99)
+        
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def einzahlungen(request, reverse = True):
+    num = 0
+    if request.method == 'POST':
+        umsatzeinzahlung = UmsatzEinzahlungenForm(request.POST, prefix='umsatz')
+        kontoeinzahlung  = MitgliedskontoBuchungEinzahlungenForm(request.POST, prefix='konto')
+        einzahlungen     = EinzahlungenFormSet(request.POST, prefix='einzahlungen')
+        if umsatzeinzahlung.is_valid() and kontoeinzahlung.is_valid() and einzahlungen.is_valid():
+            for form in einzahlungen.forms:
+                if form.has_changed():
+                    umsatz = Umsatz()
+                    
+                    buchung = MitgliedskontoBuchung()
+
+                    umsatz.konto               = umsatzeinzahlung.cleaned_data['konto']
+                    umsatz.typ                 = umsatzeinzahlung.cleaned_data['typ']
+                    umsatz.text                = form.cleaned_data['text']
+                    umsatz.cent_wert           = form.cleaned_data['cent_wert']
+                    umsatz.beleg               = umsatzeinzahlung.cleaned_data['beleg']
+                    umsatz.author              = umsatzeinzahlung.cleaned_data['author']
+                    umsatz.geschaeftspartner   = form.cleaned_data['geschaeftspartner']
+                    umsatz.wertstellungsdatum  = form.cleaned_data['buchungsdatum']
+
+                    umsatz.save()
+                    
+                    buchung.mitglied           = form.cleaned_data['mitglied']
+                    buchung.typ                = kontoeinzahlung.cleaned_data['typ']
+                    buchung.cent_wert          = form.cleaned_data['cent_wert']
+                    buchung.kommentar          = form.cleaned_data['kommentar']
+                    buchung.umsatz             = umsatz
+                    buchung.buchungsdatum      = form.cleaned_data['buchungsdatum']
+
+                    buchung.save()
+                    
+                    num += 1
+            umsatzeinzahlung = UmsatzEinzahlungenForm(prefix='umsatz')
+            kontoeinzahlung  = MitgliedskontoBuchungEinzahlungenForm(prefix='konto')
+            einzahlungen     = EinzahlungenFormSet(prefix='einzahlungen')
+    else:
+        umsatzeinzahlung = UmsatzEinzahlungenForm(prefix='umsatz')
+        kontoeinzahlung  = MitgliedskontoBuchungEinzahlungenForm(prefix='konto')
+        einzahlungen     = EinzahlungenFormSet(prefix='einzahlungen')
+
+    return render(request, 'umsaetze/einzahlungen.html', {'umsatzeinzahlung': umsatzeinzahlung, 'kontoeinzahlung': kontoeinzahlung, 'einzahlungen': einzahlungen, 'num':num})
