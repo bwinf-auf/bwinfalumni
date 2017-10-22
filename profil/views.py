@@ -109,8 +109,8 @@ def sichtbarkeit(request):
         if form.is_valid():
             i = 0
             for sichtbarkeit in sichtbarkeiten:
-                if i >= 6 and Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=sichtbarkeit[0]).filter(sache=sichtbarkeit[1]).exists():
-                    if not form[i].cleaned_data["sichtbarkeit"]:
+                if Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=sichtbarkeit[0]).filter(sache=sichtbarkeit[1]).exists():
+                    if i >= 6 and not form[i].cleaned_data["sichtbarkeit"]:
                         Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=sichtbarkeit[0]).filter(sache=sichtbarkeit[1]).delete()
                 else:
                     if i < 6 or form[i].cleaned_data["sichtbarkeit"]:
