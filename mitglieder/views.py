@@ -158,7 +158,7 @@ def beitraegeeinziehen(request):
             typ = MitgliedskontoBuchungstyp(typname = bform.cleaned_data['kommentar'])
             typ.save()
             today = date.today()
-            mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today)
+            mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = datetime.date.today())
             numBeitraege = 0
             for mitglied in mitglieder:
                 buchung = MitgliedskontoBuchung(mitglied = mitglied,
@@ -197,7 +197,7 @@ def zahlungsaufforderungen(request, template, schulden):
             errormessage = "Es müssen Text und Titel angegeben werden. " + mform.errors.as_json(escape_html=True)
         else:
             today = date.today()
-            mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today)
+            mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today)
             numEmails = 0
             failEmails = 0
             with open('listen/maillog', 'a') as f:
