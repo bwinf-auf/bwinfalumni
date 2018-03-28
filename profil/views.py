@@ -11,6 +11,8 @@ from django.contrib.auth.models import User
 from django import forms
 from django.forms import formset_factory
 
+from datetime import date
+
 sichtbarkeiten   = [("alumni", "vorname"),
                     ("alumni", "nachname"),
                     ("alumni", "studienort"),
@@ -87,6 +89,23 @@ def showuser(request, userid):
     return render(request, 'benutzer/anzeige.html', {'benutzer': benutzer,
                                                         'mitglied': mitglied,
                                                         })
+
+def sichtbar(mitglied, bereich, sache):
+    return Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=bereich).filter(sache=sache).exists()
+
+def showallusers(request):
+    is_authenticated = request.user.is_authenticated()
+    scope = "alumni" if is_authenticated else "welt"
+    
+    today = date.today()
+    mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today).order_by(vorname)
+    for mitglied in mitglieder:
+        info = {}
+        keine_info = True
+        for sache in ["vorname", "nachname", "studienort", "studienfach", "beruf", "email", "telefon", "adresse"]:
+            if sichtbar(mitglied, scope, sache):
+                keine_info = False
+                info[sache] = True
 
 class SichtbarkeitForm(forms.Form):
     sichtbarkeit = forms.BooleanField(required=False)
