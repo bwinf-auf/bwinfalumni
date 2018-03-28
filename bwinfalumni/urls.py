@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^umsaetze/', include('umsaetze.urls', namespace='umsaetze')),
@@ -23,11 +24,11 @@ urlpatterns = [
     url(r'^profil/', include('profil.urls', namespace='profil')),
     url(r'^mailinglistenadressen/', include('mailinglistenadressen.urls', namespace='mailinglistenadressen')),
 
-    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', { 'template_name': 'registration/logout.html',}, name='logout' ),
-    url(r'^accounts/resetpassword/passwordsent/$', 'django.contrib.auth.views.password_reset_done', name='password_reset_done'),
-    url(r'^accounts/resetpassword/passwordchanged/$', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
+    url(r'^accounts/logout/$', auth_views.logout, { 'template_name': 'registration/logout.html',}, name='logout' ),
+    url(r'^accounts/resetpassword/passwordsent/$', auth_views.password_reset_done, name='password_reset_done'),
+    url(r'^accounts/resetpassword/passwordchanged/$', auth_views.password_change_done, name='password_change_done'),
     url(r'^accounts/', include('django.contrib.auth.urls', namespace='auth')),
-    url(r'^accounss/reset/done/$', 'django.contrib.auth.views.password_change_done', name='password_reset_complete'),
+    url(r'^accounss/reset/done/$', auth_views.password_change_done, name='password_reset_complete'),
     url(r'^admin/', admin.site.urls),
 ]
 
