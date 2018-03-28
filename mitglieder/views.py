@@ -141,7 +141,7 @@ def addmitglied(request):
 class BeitraegeForm(ModelForm):
     class Meta:
         model = MitgliedskontoBuchung
-        fields = ['cent_wert', 'kommentar', 'buchungsdatum']
+        fields = ['kommentar', 'buchungsdatum']
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
@@ -158,12 +158,12 @@ def beitraegeeinziehen(request):
             typ = MitgliedskontoBuchungstyp(typname = bform.cleaned_data['kommentar'])
             typ.save()
             today = date.today()
-            mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = datetime.date.today())
+            mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today)
             numBeitraege = 0
             for mitglied in mitglieder:
                 buchung = MitgliedskontoBuchung(mitglied = mitglied,
                                                 typ = typ,
-                                                cent_wert = bform.cleaned_data['cent_wert'], 
+                                                cent_wert = -mitglied.beitrag_cent, 
                                                 kommentar = bform.cleaned_data['kommentar'],
                                                 buchungsdatum = bform.cleaned_data['buchungsdatum'])
                 buchung.save()
@@ -175,9 +175,8 @@ def beitraegeeinziehen(request):
         return render(request, 'mitglieder/adddone.html', {'errormessage': errormessage,
                                                            'successmessage': successmessage,})
     else:
-        return render(request, 'mitglieder/beitraege.html', {'bform': BeitraegeForm({'cent_wert': -1000,
-                                                                                   'kommentar': "Mitgliedsbeitrag " + str(date.today().year), 
-                                                                                   'buchungsdatum': date.today()})})
+        return render(request, 'mitglieder/beitraege.html', {'bform': BeitraegeForm({'kommentar': "Mitgliedsbeitrag " + str(date.today().year), 
+                                                                                     'buchungsdatum': date.today()})})
 
 
 class EmailForm(forms.Form):
