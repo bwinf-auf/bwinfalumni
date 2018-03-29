@@ -59,7 +59,7 @@ def index(request):
         form = MitgliedForm(instance=mitglied, data=request.POST)
         if form.is_valid():
             form.save()
-            successmessage = "Profil aktualisiert."
+            successmessage = "Profil aktualisiert. Bitte überprüfe, ob deine Daten in der Mitgliederliste richtig angezeigt werden."
         else:
             errormessage = "Es sind Fehler aufgetreten."
     else:
@@ -78,17 +78,26 @@ def index(request):
                                                   'sichtbar': sichtbar})  
 
 
-@login_required
-def showuser(request, userid):
-    benutzer = get_object_or_404(User, id__exact = userid)
-    try:
-        mitglied = benutzer.benutzermitglied.mitglied
-    except:
+def showuser(request, mitgliedid):
+    is_authenticated = request.user.is_authenticated()
+    scope = "alumni" if is_authenticated else "welt"
+
+    mitglied = get_object_or_404(Mitglied, id__exact = mitgliedid)
+    info = {}
+    keine_info = True
+    for sache in ["vorname", "nachname", "studienort", "studienfach", "beruf", "email", "telefon", "adresse"]:
+        if sichtbar(mitglied, scope, sache):
+            keine_info = False
+            info[sache] = True
+    if keine_info:
         raise Http404("Keine Benutzerinformationen vorhanden.")
+
+    info['land_fett'] = mitglied.land.upper()
+    info['email_sanitised'] = mitglied.email.replace("@", " [ bei ] ")
+    info["mitglied"] = mitglied
+    info["initiale"] = mitglied.vorname[0].upper()
     
-    return render(request, 'benutzer/anzeige.html', {'benutzer': benutzer,
-                                                        'mitglied': mitglied,
-                                                        })
+    return render(request, 'profil/anzeige.html', {'info': info})
 
 def sichtbar(mitglied, bereich, sache):
     return Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=bereich).filter(sache=sache).exists()
@@ -98,7 +107,8 @@ def showallusers(request):
     scope = "alumni" if is_authenticated else "welt"
     
     today = date.today()
-    mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today).order_by(vorname)
+    mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today).order_by('vorname')
+    infos = []
     for mitglied in mitglieder:
         info = {}
         keine_info = True
@@ -106,6 +116,11 @@ def showallusers(request):
             if sichtbar(mitglied, scope, sache):
                 keine_info = False
                 info[sache] = True
+        if not keine_info:
+            info["mitglied"] = mitglied
+            info["initiale"] = mitglied.vorname[0].upper()
+            infos.append(info)
+    return render(request, 'profil/mitgliederliste.html', {'infos': infos})
 
 class SichtbarkeitForm(forms.Form):
     sichtbarkeit = forms.BooleanField(required=False)
@@ -139,7 +154,7 @@ def sichtbarkeit(request):
                 
                 i += 1
             
-            successmessage = "Einstellungen aktualisiert."
+            successmessage = "Einstellungen aktualisiert. Bitte überprüfe, ob deine Daten in der Mitgliederliste richtig angezeigt werden."
         else:
             errormessage = "Es sind Fehler aufgetreten."
     else:

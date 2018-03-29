@@ -1,0 +1,13 @@
+
+{% if infos %}
+  <ul>
+  {% for info in infos %}
+    <li><a href="{% url 'profil:detail' info.mitglied.id %}">
+    {% if info.vorname %}{{ info.mitglied.vorname }}{% else %}{{info.initiale }}.{% endif %}
+    {% if info.nachname %}{{ info.mitglied.nachname }}{% endif %}
+    </a></li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>Keine Mitglieder zum Anzeigen vorhanden.</p>
+{% endif %}

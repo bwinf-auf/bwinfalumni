@@ -1,0 +1,16 @@
+
+<h1>{% if info.vorname %}{{ info.mitglied.vorname }}{% else %}{{info.initiale }}.{% endif %}
+    {% if info.nachname %}{{ info.mitglied.nachname }}{% endif %}</h1>
+
+<table style="border:0px">
+{% if info.studienort or info.studienfach %}<tr><th>Studium:</th><td>{% if info.studienfach %}{{ info.mitglied.studienfach }}{% endif %} {% if info.studienort %} in {{ info.mitglied.studienort }}{% endif %}</td></tr>{% endif %}
+{% if info.beruf %}<tr><th>Beschäftigung:</th><td>{{ info.mitglied.beruf }}</td></tr>{% endif %}
+{% if info.email %}<tr><th>E-Mail-Adresse:</th><td>{{ info.email_sanitised }}</td></tr>{% endif %}
+{% if info.telefon %}<tr><th>Telefonnummer:</th><td>{{ info.mitglied.telefon }}</td></tr>{% endif %}
+{% if info.adresse %}<tr><th>Adresse:</th><td>
+{{ info.mitglied.strasse }}
+{% if info.mitglied.adresszusatz %}<br />{{ info.mitglied.adresszusatz }}{% endif %}
+<br />{{ info.mitglied.plz }} {{ info.mitglied.stadt }}
+{% if info.mitglied.adresszusatz != "Deutschland" %}<br />{{ info.land_fett }}{% endif %}
+</td></tr>{% endif %}
+</table>
