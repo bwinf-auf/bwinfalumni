@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from benutzer.models import BenutzerMitglied
 from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp, Lastschriftmandat
 from umsaetze.models import Umsatz, UmsatzTyp, Konto
+from profil.models import Sichtbarkeit
 
 
 
@@ -15,10 +16,10 @@ def erstelle_mockdaten():
         ]
     
     testmitglieder = [
-        Mitglied(mitgliedsnummer=99927, vorname="Test", nachname="Testofsky", strasse="Str", plz="12343", stadt="B.", telefon="0", email="test@example.com"),
-        Mitglied(mitgliedsnummer=99928, vorname="Max", nachname="Mustermann", strasse="Str", plz="12343", stadt="B.", telefon="0", email="max@example.com"),
-        Mitglied(mitgliedsnummer=99929, vorname="Willi", nachname="Vanilly", strasse="Str", plz="12343", stadt="B.", telefon="0", email="willi@example.com"),
-        Mitglied(mitgliedsnummer=99930, vorname="Lena", nachname="Lane", strasse="Str", plz="12343", stadt="B.", telefon="0", email="lena@example.com"),
+        Mitglied(mitgliedsnummer=99927, vorname="Test", nachname="Testofsky", strasse="AStr", plz="12343", stadt="Berlin", telefon="00123", email="test@example.com", studienort="Bonn", studienfach="Mathe", beruf="Geiler Hecht"),
+        Mitglied(mitgliedsnummer=99928, vorname="Max", nachname="Mustermann", strasse="BStr", plz="12343", stadt="Marburg", telefon="0049123", email="max@example.com", studienort="Göttingen", studienfach="Physik"),
+        Mitglied(mitgliedsnummer=99929, vorname="Willi", nachname="Vanilly", strasse="CStr", plz="12343", stadt="G-Town", telefon="57213", email="willi@example.com", studienort="Aachen", studienfach="Informatik"),
+        Mitglied(mitgliedsnummer=99930, vorname="Lena", nachname="Lane", strasse="DStr", plz="12343", stadt="Erlangen", telefon="1", email="lena@example.com", studienort="Greifswald", studienfach="Spirituelle Energie"),
         ]
     
     for o in testmitglieder:
@@ -61,9 +62,58 @@ def erstelle_mockdaten():
         MitgliedskontoBuchung(mitglied=testmitglieder[1],typ=mkbt[2],cent_wert=-10),
         ]
 
+    sbk = [
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="vorname"),
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="nachname"),
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="studienort"),
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="studienfach"),
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="beruf"),
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="email"),
+
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="telefon"),
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="adresse"),
+
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="vorname"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="nachname"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="studienort"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="studienfach"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="beruf"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="email"),
+
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="welt",sache="vorname"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="welt",sache="nachname"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="welt",sache="studienort"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="welt",sache="studienfach"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="welt",sache="beruf"),
+        Sichtbarkeit(mitglied=testmitglieder[1],bereich="welt",sache="email"),
+
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="alumni",sache="vorname"),
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="alumni",sache="nachname"),
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="alumni",sache="studienort"),
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="alumni",sache="studienfach"),
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="alumni",sache="beruf"),
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="alumni",sache="email"),
+
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="welt",sache="vorname"),
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="welt",sache="studienort"),
+        Sichtbarkeit(mitglied=testmitglieder[2],bereich="welt",sache="email"),
+
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="alumni",sache="vorname"),
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="alumni",sache="nachname"),
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="alumni",sache="studienort"),
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="alumni",sache="studienfach"),
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="alumni",sache="beruf"),
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="alumni",sache="email"),
+
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="welt",sache="nachname"),
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="welt",sache="studienfach"),
+        Sichtbarkeit(mitglied=testmitglieder[3],bereich="welt",sache="beruf"),
+        ]
+
     BenutzerMitglied.objects.bulk_create(bm);
     Umsatz.objects.bulk_create(umsaetze)
     MitgliedskontoBuchung.objects.bulk_create(mkb)
+    Sichtbarkeit.objects.bulk_create(sbk);
 
     
 def loesche_nutzer():
@@ -110,6 +160,40 @@ def loesche_nutzer():
     except:
         pass
     
+    try:
+        Sichtbarkeit.objects.filter(mitglied__mitgliedsummer=99927).delete()
+    except:
+        pass
+    try:
+        Sichtbarkeit.objects.filter(mitglied__mitgliedsummer=99928).delete()
+    except:
+        pass
+    try:
+        Sichtbarkeit.objects.filter(mitglied__mitgliedsummer=99929).delete()
+    except:
+        pass
+    try:
+        Sichtbarkeit.objects.filter(mitglied__mitgliedsummer=99930).delete()
+    except:
+        pass
+
+    try:
+        MitgliedskontoBuchung.objects.filter(mitglied__mitgliedsummer=99927).delete()
+    except:
+        pass
+    try:
+        MitgliedskontoBuchung.objects.filter(mitglied__mitgliedsummer=99928).delete()
+    except:
+        pass
+    try:
+        MitgliedskontoBuchung.objects.filter(mitglied__mitgliedsummer=99929).delete()
+    except:
+        pass
+    try:
+        MitgliedskontoBuchung.objects.filter(mitglied__mitgliedsummer=99930).delete()
+    except:
+        pass
+
     try:
         Mitglied.objects.filter(mitgliedsnummer=99927).delete()
     except:
