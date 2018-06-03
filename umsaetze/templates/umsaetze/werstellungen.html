@@ -7,6 +7,8 @@
 
 <h1>Alle Umsätze</h1>
 
+<a href="{% url 'umsaetze:einzahlungen' %}">Mitgliedsbeitrag-Einzahlungen eintragen</a>
+
 <form action="." method="post">
   {% csrf_token %}
 

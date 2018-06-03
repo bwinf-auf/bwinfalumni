@@ -5,9 +5,11 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
 
-<h1>Alle Umsätze</h1>
+<h1>Einzahlungen eintragen</h1>
 
-{% if num %}{{ num }} Einzahlungen erfolgreich eingetragen! {% endif %}
+<a href="{% url 'umsaetze:index' %}">Umsatzübersicht</a>
+
+{% if num %}{{ num }} <br /> <br /> Einzahlungen erfolgreich eingetragen! {% endif %}
 <form action="." method="post">
   {% csrf_token %}
 

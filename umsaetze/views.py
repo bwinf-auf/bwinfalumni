@@ -7,6 +7,8 @@ from mitglieder.models import MitgliedskontoBuchung
 
 from django import forms
 
+from datetime import date
+
 
 
 class MitgliedskontoBuchungForm(forms.ModelForm):
@@ -84,6 +86,8 @@ def listumsaetze(request, reverse = True):
 
 
 class UmsatzEinzahlungenForm(forms.ModelForm):
+    text = forms.CharField(max_length=250, initial="Mitglied {mitgliedsnummer} ({vorname_initiale}. {nachname}): Beitragszahlung")
+    
     class Meta:
         model = Umsatz
         fields = ['konto', 'typ', 'beleg', 'author']
@@ -91,15 +95,14 @@ class UmsatzEinzahlungenForm(forms.ModelForm):
 class MitgliedskontoBuchungEinzahlungenForm(forms.ModelForm):
     class Meta:
         model = MitgliedskontoBuchung
-        fields = ['typ']
+        fields = ['typ', 'kommentar']
 
 class MitgliedskontoBuchungEineEinzahlungForm(forms.ModelForm):
-    text = forms.CharField(max_length=250)
     geschaeftspartner = forms.CharField(max_length=250)
     
     class Meta:
         model = MitgliedskontoBuchung
-        fields = ['mitglied', 'buchungsdatum', 'cent_wert', 'kommentar']
+        fields = ['mitglied', 'buchungsdatum', 'cent_wert']
 
 from django.forms import formset_factory
     
@@ -116,13 +119,25 @@ def einzahlungen(request, reverse = True):
         if umsatzeinzahlung.is_valid() and kontoeinzahlung.is_valid() and einzahlungen.is_valid():
             for form in einzahlungen.forms:
                 if form.has_changed():
+                    mitglied = form.cleaned_data['mitglied']
+                    
+                    data = {'vorname': mitglied.vorname,
+                            'vorname_initiale': mitglied.vorname[0:1] or "?",
+                            'nachname': mitglied.nachname,
+                            'nachname_initiale': mitglied.nachname[0:1] or "?",
+                            'anrede': mitglied.anrede,
+                            'mitgliedsnummer': mitglied.mitgliedsnummer,
+                            'datum': str(date.today()),
+                            'email': mitglied.email}
+                    text = umsatzeinzahlung.cleaned_data['text'].format(**data)    
+                
                     umsatz = Umsatz()
                     
                     buchung = MitgliedskontoBuchung()
 
                     umsatz.konto               = umsatzeinzahlung.cleaned_data['konto']
                     umsatz.typ                 = umsatzeinzahlung.cleaned_data['typ']
-                    umsatz.text                = form.cleaned_data['text']
+                    umsatz.text                = text
                     umsatz.cent_wert           = form.cleaned_data['cent_wert']
                     umsatz.beleg               = umsatzeinzahlung.cleaned_data['beleg']
                     umsatz.author              = umsatzeinzahlung.cleaned_data['author']
@@ -131,10 +146,10 @@ def einzahlungen(request, reverse = True):
 
                     umsatz.save()
                     
-                    buchung.mitglied           = form.cleaned_data['mitglied']
+                    buchung.mitglied           = mitglied
                     buchung.typ                = kontoeinzahlung.cleaned_data['typ']
                     buchung.cent_wert          = form.cleaned_data['cent_wert']
-                    buchung.kommentar          = form.cleaned_data['kommentar']
+                    buchung.kommentar          = kontoeinzahlung.cleaned_data['kommentar']
                     buchung.umsatz             = umsatz
                     buchung.buchungsdatum      = form.cleaned_data['buchungsdatum']
 
