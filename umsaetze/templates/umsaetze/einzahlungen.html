@@ -9,7 +9,7 @@
 
 <a href="{% url 'umsaetze:index' %}">Umsatzübersicht</a>
 
-{% if num %}{{ num }} <br /> <br /> Einzahlungen erfolgreich eingetragen! {% endif %}
+{% if num %}<br /> <br /> {{ num }} Einzahlungen erfolgreich eingetragen! {% endif %}
 <form action="." method="post">
   {% csrf_token %}
 
