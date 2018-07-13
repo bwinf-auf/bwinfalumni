@@ -5,7 +5,8 @@
 <table style="border:0px">
 {% if info.studienort or info.studienfach %}
 {% if info.mitglied.studienort or info.mitglied.studienfach %}
-<tr><th>Studium:</th><td>{% if info.studienfach %}{{ info.mitglied.studienfach }}{% endif %} {% if info.studienort and info.mitglied.studienfach %} in {{ info.mitglied.studienort }}{% endif %}</td></tr>{% endif %}
+<tr><th>Studium:</th><td>{% if info.studienfach %}{{ info.mitglied.studienfach }}{% endif %} {% if info.studienort and info.mitglied.studienfach %} in {{ info.mitglied.studienort }}{% endif %}</td></tr>
+{% endif %}{% endif %}
 {% if info.beruf %}<tr><th>Beschäftigung:</th><td>{{ info.mitglied.beruf }}</td></tr>{% endif %}
 {% if info.email %}<tr><th>E-Mail-Adresse:</th><td>{{ info.email_sanitised }}</td></tr>{% endif %}
 {% if info.telefon %}<tr><th>Telefonnummer:</th><td>{{ info.mitglied.telefon }}</td></tr>{% endif %}
