@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import Umsatz, Konto, UmsatzTyp
-from mitglieder.models import MitgliedskontoBuchung
+from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
 
 from django import forms
 
@@ -12,9 +12,13 @@ from datetime import date
 
 
 class MitgliedskontoBuchungForm(forms.ModelForm):
+    # Set form elements to not-required:
+    mitglied = forms.ModelChoiceField(queryset=Mitglied.objects.all(), required=False)
+    typ      = forms.ModelChoiceField(queryset=MitgliedskontoBuchungstyp.objects.all(), required=False)
     class Meta:
         model = MitgliedskontoBuchung
         fields = ['mitglied', 'typ']
+    # TODO: Add validation method that check if both of the fields are defined or none is!
 
 class UmsatzForm(forms.ModelForm):
     class Meta:
