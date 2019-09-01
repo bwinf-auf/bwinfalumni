@@ -199,7 +199,7 @@ def zahlungsaufforderungen(request, template, schulden):
             mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today)
             numEmails = 0
             failEmails = 0
-            with open('listen/maillog', 'a') as f:
+            with open('listen/maillog', 'a', encoding='utf8') as f:
                 for mitglied in mitglieder:
                     kontostand = 0
                     buchungen = mitglied.mitgliedskontobuchung_set.all()
@@ -236,7 +236,7 @@ def zahlungsaufforderungen(request, template, schulden):
                                                            'successmessage': successmessage,})
     else: 
         text = ""
-        with open ("mitglieder/" + template + ".txt", "r") as templatefile:
+        with open ("mitglieder/" + template + ".txt", "r", encoding='utf8') as templatefile:
             text = templatefile.read()
         return render(request, 'mitglieder/email.html', {'cform': EmailForm({'betreff': "Mitgliedsbeitrag BwInf Alumni und Freunde e. V.",
                                                                             'text': text}), 'schulden': schulden})

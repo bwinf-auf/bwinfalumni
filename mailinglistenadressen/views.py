@@ -6,7 +6,7 @@ import datetime
 def index(request):
     today = datetime.datetime.today()
     
-    with open('listen/mitgliederliste', 'w') as f:
+    with open('listen/mitgliederliste', 'w', encoding='utf8') as f:
     
         m = Mitglied.objects \
                     .filter(sichtbarkeit__bereich='alumni', sichtbarkeit__sache='mailingliste') \
@@ -16,7 +16,7 @@ def index(request):
         for mitglied in m:
             f.write(mitglied.email + "\n")
             
-    with open('listen/ankuendigungenliste', 'w') as f:
+    with open('listen/ankuendigungenliste', 'w', encoding='utf8') as f:
     
         m = Mitglied.objects \
                     .filter(beitrittsdatum__lte=today) \
@@ -25,7 +25,7 @@ def index(request):
         for mitglied in m:
             f.write(mitglied.email + "\n")
     
-    with open('listen/bwinfadressen', 'w') as f:
+    with open('listen/bwinfadressen', 'w', encoding='utf8') as f:
     
         m = Mitglied.objects \
                     .filter(sichtbarkeit__bereich='bwinf', sichtbarkeit__sache='vorname') \
