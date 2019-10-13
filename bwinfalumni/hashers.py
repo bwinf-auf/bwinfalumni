@@ -1,7 +1,9 @@
 import hashlib
 import base64
-from django.contrib.auth.hashers import BasePasswordHasher
+from collections import OrderedDict
+from django.contrib.auth.hashers import BasePasswordHasher, mask_hash
 from django.utils.crypto import constant_time_compare
+from django.utils.translation import ugettext_noop as _
 
 class LegacyPasswordHasher(BasePasswordHasher):
     """
