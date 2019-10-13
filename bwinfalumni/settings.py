@@ -140,9 +140,18 @@ PASSWORD_HASHERS = [
     'bwinfalumni.hashers.LegacyPasswordHasher',
 ]
 
+
+# Authentication
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'bwinfalumni.authentication_backends.MitgliedsnummerBackend',
+]
+
+
 BWINFALUMNI_LOGS_DIR = './log/'
 BWINFALUMNI_MAIL_ADDRESSES_DIR = './listen/'
 BWINFALUMNI_MAIL_TEMPLATE_DIR = './mailtemplates/'
+
 
 LOGGING = {
     'version': 1,
