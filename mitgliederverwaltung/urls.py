@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from . import views
 
-app_name = 'benutzer'
+app_name = 'mitgliederverwaltung'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^alle/$', views.listusers, name='benutzerliste'),

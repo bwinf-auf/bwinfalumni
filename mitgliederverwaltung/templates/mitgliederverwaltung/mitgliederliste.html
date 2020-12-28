@@ -12,16 +12,16 @@
 {% if mitglieder %}
 <ul class="bl">
   {% for mitglied in mitglieder %}
-  <li><a href="{% url 'mitglieder:detail' mitglied.mitgliedsnummer %}">{{ mitglied }}</a>
+  <li><a href="{% url 'mitgliedskonto:detail' mitglied.mitgliedsnummer %}">{{ mitglied }}</a>
     <ul class="bl">
       {% for benutzermitglied in mitglied.benutzermitglied_set.all %}
-      <li><a href="{% url 'benutzer:detail' benutzermitglied.benutzer.id %}">{{ benutzermitglied.benutzer.username }}</a></li>
+      <li><a href="{% url 'mitgliederverwaltung:detail' benutzermitglied.benutzer.id %}">{{ benutzermitglied.benutzer.username }}</a></li>
       {% endfor %}
-      <li><a href="{% url 'benutzer:addmitgliedsnummer' mitglied.mitgliedsnummer %}">+</a></li>
+      <li><a href="{% url 'mitgliederverwaltung:addmitgliedsnummer' mitglied.mitgliedsnummer %}">+</a></li>
     </ul>
   </li>
   {% endfor %}
-  <li><a href="{% url 'mitglieder:add' %}">+</a>
+  <li><a href="{% url 'mitgliedskonto:add' %}">+</a>
 </ul>
 {% endif %}
 

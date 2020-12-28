@@ -49,8 +49,9 @@ Dafür bitte eine neue App erstellen und in INSTALLED_APPS eintragen
 
     python3 manage.py startapp <name>
     
-Bestehende Apps als Referenz sind: `mitglieder`, `benutzer`, `umsaetze`.
+Bestehende Apps als Referenz sind:
+`benutzer`, `mitglieder`, `mitgliederverwaltung`, `mitgliedskonto`, `profil`, `umsaetze`.
     
 Für alle weiteren Schritte, bitte die Django-Dokumentation zu rate
-ziehen: https://docs.djangoproject.com/en/1.11/
+ziehen: https://docs.djangoproject.com/en/2.2/
 

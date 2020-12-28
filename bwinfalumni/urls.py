@@ -19,9 +19,9 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^umsaetze/', include('umsaetze.urls', namespace='umsaetze')),
-    url(r'^mitglieder/', include('mitglieder.urls', namespace='mitglieder')),
-    url(r'^benutzer/', include('benutzer.urls', namespace='benutzer')),
     url(r'^profil/', include('profil.urls', namespace='profil')),
+    url(r'^verwaltung/', include('mitgliederverwaltung.urls', namespace='mitgliederverwaltung')),
+    url(r'^konto/', include('mitgliedskonto.urls', namespace='mitgliedskonto')),
     url(r'^mailinglistenadressen/', include('mailinglistenadressen.urls', namespace='mailinglistenadressen')),
 
     url(r'^accounts/logout/$', auth_views.LogoutView.as_view(), { 'template_name': 'registration/logout.html',}, name='logout' ),

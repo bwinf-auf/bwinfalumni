@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Mitgliedsbeiträge</h1>
+  <ul class="bl">
+  <li><a href="{% url 'mitgliedskonto:beitraege' %}">Mitgliedsbeiträge einziehen</a></li>
+  <li><a href="{% url 'mitgliedskonto:beitragsmails' 'beitragsrechnung' %}">Mails mit Beitragsrechnung verschicken</a></li>
+  <li><a href="{% url 'mitgliedskonto:beitragsmailsschulden' 'zahlungserinnerung' %}">Mails mit Zahlungserinnerung verschicken</a></li>
+</ul>
+
+<h1>Alle Mitglieder</h1>
+
+{% if mitglieder %}
+  <ul class="bl">
+  {% for mitglied in mitglieder %}
+    <li><a href="{% url 'mitgliedskonto:detail' mitglied.mitgliedsnummer %}">{{ mitglied }}</a></li>
+  {% endfor %}
+  <li><a href="{% url 'mitgliedskonto:add' %}">+</a></li>
+  </ul>
+{% else %}
+  <p>Keine Mitglieder vorhanden.</p>
+{% endif %}
+
+{% endblock %}
