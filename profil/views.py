@@ -79,7 +79,7 @@ def index(request):
 
 
 def showuser(request, mitgliedid):
-    is_authenticated = request.user.is_authenticated()
+    is_authenticated = request.user.is_authenticated
     scope = "alumni" if is_authenticated else "welt"
 
     mitglied = get_object_or_404(Mitglied, id__exact = mitgliedid)
@@ -103,7 +103,7 @@ def sichtbar(mitglied, bereich, sache):
     return Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=bereich).filter(sache=sache).exists()
 
 def showallusers(request):
-    is_authenticated = request.user.is_authenticated()
+    is_authenticated = request.user.is_authenticated
     scope = "alumni" if is_authenticated else "welt"
     
     today = date.today()

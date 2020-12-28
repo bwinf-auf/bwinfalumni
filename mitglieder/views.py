@@ -19,8 +19,9 @@ from django.core.mail import send_mail
 
 from bwinfalumni.settings import DEBUG
 
-from django.core.urlresolvers import reverse
+#from django.core.urlresolvers import reverse
 # in neuern django versionen from django.urls import reverse
+from django.urls import reverse
 
 
 @login_required
