@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Kontostatistik</h1>
+<h2>Saldo aller Mitgliedsbeiträge</h2>
+
+<b>Aktueller Saldo: {{ saldo|floatformat:2 }} € </b>
+
+<h2>Größte Sünder:</h2>
+
+<hr>
+{% load humanize %}
+
+<style>
+td, th {padding: 0px 20px;}
+</style>
+
+<table>
+  <tr><th>Mitglied</th><th>Saldo</th></tr>
+  {% for val in values %}
+  <tr><td><a href="{% url 'mitgliedskonto:detail' val.mitglied.mitgliedsnummer %}">{{ val.mitglied }}</a></td><td>{{ val.betrag|floatformat:2 }} €</td></tr>
+  {% endfor %}
+</table>
+<hr>
+
+{% endblock %}
