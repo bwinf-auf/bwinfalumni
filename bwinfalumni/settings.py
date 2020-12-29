@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'mitgliedschaftsantrag.apps.MitgliedschaftsantragConfig',
     'mailinglistenadressen.apps.MailinglistenadressenConfig',
     'mitgliederkarte.apps.MitgliederkarteConfig',
+    'kontostatistik.apps.KontostatistikConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

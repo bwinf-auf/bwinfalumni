@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import include, url
 
 from . import views
 
@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^(?P<userid>[0-9]+)/$', views.showuser, name='detail'),
     url(r'^add/$', views.addbenutzer, name='add'),
     url(r'^add/(?P<mitgliedsnummer>[0-9]+)/$', views.addbenutzer, name='addmitgliedsnummer'),
+    url(r'^kontostatistik/', include('kontostatistik.urls', namespace='kontostatistik')),
 ]
