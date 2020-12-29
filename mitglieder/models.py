@@ -35,10 +35,28 @@ class Mitglied(models.Model):
     def __str__(self):
         return str(self.mitgliedsnummer) + ": " + self.vorname + " " + self.nachname
     
+    def aktiv(self):
+        #Ist Aktiv, falls Beitrittsdatum <= today < Austrittsdatum
+        if self.beitrittsdatum is None:
+            return False
+        
+        if self.beitrittsdatum > date.today():
+            return False
+        
+        if self.austrittsdatum is None:
+            return True
+        
+        if self.austrittsdatum <= date.today():
+            return False
+        
+        return True
+    
     class Meta:
         db_table = "mitglied"
         verbose_name = "Mitglied"
         verbose_name_plural = "Mitglieder"
+        
+    
 
 
 
