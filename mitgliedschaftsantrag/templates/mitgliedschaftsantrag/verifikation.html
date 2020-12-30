@@ -1,0 +1,18 @@
+<h1>E-Mailverifikation</h1>
+
+<p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
+  <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
+
+<form action="." method="post">
+    {% csrf_token %}
+      <p>Eine E-Mail wurde zur Verfikation  an die von Ihnen angebenene E-Mailadresse gesendet.</p>
+    
+      <p>Bitte geben Sie ihren Verifikationscode an, der an Ihre E-Mailadresse gesendet wurde:</p>
+      
+      {{ form.as_p }} 
+      
+      <p>
+      <input type="submit" value="Verifizieren!" />
+      </p>
+</form>
+

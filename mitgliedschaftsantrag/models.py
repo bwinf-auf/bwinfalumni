@@ -22,7 +22,7 @@ class Mitgliedschaftsantrag(models.Model):
     plz               = models.CharField(max_length=10) 
     stadt             = models.CharField(max_length=250)
     land              = models.CharField(max_length=250, default="Deutschland") 
-    telefon           = models.CharField(max_length=250)
+    telefon           = models.CharField(max_length=250, blank=True)
     email             = models.EmailField()
     verifikationscode = models.CharField(max_length=250)
     beruf             = models.CharField(max_length=250, blank=True)

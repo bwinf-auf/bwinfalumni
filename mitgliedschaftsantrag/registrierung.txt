@@ -1,0 +1,48 @@
+Hallo {vorname} {nachname},
+
+
+wir freuen uns, dass Sie dem Verein „BwInf Alumni und Freunde“ beitreten
+wollen!
+
+Ihre vorläufige Mitgliedsnummer lautet:  {mitgliedsnummer}
+
+Bitte überweisen Sie den Mitgliedsbeitrag für das laufende Jahr in Höhe
+von {mitgliedsbeitrag} € auf das unten angegebene Konto. Sobald wir Ihre Zahlung
+registriert haben, senden wir Ihnen Ihre persönlichen Zugangsdaten für
+den Mitgliederbereich unserer Homepage zu.
+
+Auf der Überweisung unbedingt die Mitgliedsnummer „{mitgliedsnummer}“ angeben, da wir
+sonst die Zahlung nicht zuordnen können!
+
+
+Bankverbindung:
+
+BWINF Alumni und Freunde e. V.
+IBAN: DE77 3207 0024 0231 7071 00 
+BIC:  DEUTDEDB320 
+Bank: Deutsche Bank Krefeld
+
+Betrag: {mitgliedsbeitrag} €
+Verwendungszweck: Beitrag Mitglied {mitgliedsnummer}
+
+Vielen Dank!
+
+
+Viele Grüße,
+Steven Keuchel und Robert Czechowski
+(Vorstand)
+
+
+--
+
+Bundeswettbewerb Informatik Alumni und Freunde e. V.
+
+Vereinsregister-Nr: 4442, Vereinsregister Saarbrücken
+
+Kontodaten
+Inhaber: BWINF Alumni und Freunde e. V.
+Bank:    Deutsche Bank Krefeld
+IBAN:    DE77 3207 0024 0231 7071 00
+BIC:     DEUTDEDB320
+
+Verwendungszweck „Beitrag Mitglied {mitgliedsnummer}“

@@ -1,0 +1,40 @@
+Hallo {vorname} {nachname},
+
+
+Ihr Verifikationscode lautet:
+
+  {code}
+
+Zur Verifikation Ihrer E-Mailadresse können Sie auch direkt diesen Link
+verwenden:
+
+  https://alumni.bwinf.de/mitgliedschaftsantrag/verifiziere/{code}
+  
+Alternativ können Sie den oben stehenden Coden kopieren und in das
+Feld zur Verifikation Ihrer E-Mail eingeben: 
+
+  https://alumni.bwinf.de/mitgliedschaftsantrag/verifiziere/
+
+Anschließend erhalten Sie eine vorläufige Mitgliedsnummer und 
+Informationen zur Überweisung Ihres Mitgliedbeitrages. Sobald der
+Mitgliedsbeitrag bei uns eingegangen ist und Ihr Antrag vom Vorstand
+geprüft wurde, werden Sie in den Verein aufgenommen und erhalten Ihre
+Zugangsdaten zur Vereinswebseite.
+
+
+Viele Grüße,
+Nikolai Wyderka und Robert Czechowski
+(Vorstand)
+
+
+--
+
+Bundeswettbewerb Informatik Alumni und Freunde e. V.
+
+Vereinsregister-Nr: 4442, Vereinsregister Saarbrücken
+
+Kontodaten
+Inhaber: BWINF Alumni und Freunde e. V.
+Bank:    Deutsche Bank Krefeld
+IBAN:    DE77 3207 0024 0231 7071 00
+BIC:     DEUTDEDB320

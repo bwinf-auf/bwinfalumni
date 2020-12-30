@@ -8,7 +8,7 @@
       <p>Ja, ich will Mitglied im „Bundeswettbewerb Informatik Alumni und Freunde e. V.“ werden:</p>
 
       <p>
-      {{ form.anrede.label_tag }} &nbsp; {{ form.vorname }} &nbsp; {{ form.vorname.errors }} 
+      {{ form.anrede.label_tag }} &nbsp; {{ form.anrede }} &nbsp; {{ form.anrede.errors }} 
       {{ form.vorname.label_tag }} &nbsp; {{ form.vorname }} &nbsp; {{ form.vorname.errors }}
       {{ form.nachname.label_tag }} &nbsp; {{ form.nachname }} &nbsp; {{ form.nachname.errors }}
       <br />
@@ -59,7 +59,7 @@
       <p>
       {{ form.mailingliste }} <label for="{{ form.mailingliste.id_for_label }}">Ich möchte in die Mailingliste aufgenommen werden, um mich mit anderen Vereinsmitgliedern austauschen zu können. (Empfohlen; zur Zeit nur wenig Traffic.)</label> &nbsp; {{ form.mailingliste.errors }}
       <br />
-      {{ form.adresse_verein }} <label for="{{ form.adresse_verein.id_for_label }}">Ich möchte meine Adresse auch anderen Vereinsmitgliedern anzeigen lassen.</label> &nbsp; {{ form.adresse_verein.errors }}
+      {{ form.adresse_verein }} <label for="{{ form.adresse_verein.id_for_label }}">Ich möchte meine Adresse und meine Telenfonnummer auch anderen Vereinsmitgliedern anzeigen lassen.</label> &nbsp; {{ form.adresse_verein.errors }}
       <br />
       {{ form.adresse_bwinf }} <label for="{{ form.adresse_bwinf.id_for_label }}">Ich möchte meine Adresse vom Verein an die BWINF-Geschäftsstelle weitergeben lassen. (Für den Versand der aktuellen Aufgaben des Bundeswettbewerb Informatik und Anfragen an Vereinsmitglieder.)</label> &nbsp; {{ form.adresse_bwinf.errors }}
       <br />
