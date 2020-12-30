@@ -1,0 +1,75 @@
+<h1>Mitgliedschaftsantrag</h1>
+
+
+
+<form action="." method="post">
+    {% csrf_token %}
+    
+      <p>Ja, ich will Mitglied im „Bundeswettbewerb Informatik Alumni und Freunde e. V.“ werden:</p>
+
+      <p>
+      {{ form.anrede.label_tag }} &nbsp; {{ form.vorname }} &nbsp; {{ form.vorname.errors }} 
+      {{ form.vorname.label_tag }} &nbsp; {{ form.vorname }} &nbsp; {{ form.vorname.errors }}
+      {{ form.nachname.label_tag }} &nbsp; {{ form.nachname }} &nbsp; {{ form.nachname.errors }}
+      <br />
+      {{ form.strasse.label_tag }} &nbsp; {{ form.strasse }} &nbsp; {{ form.strasse.errors }}
+      {{ form.adresszusatz.label_tag }} &nbsp; {{ form.adresszusatz }} &nbsp; {{ form.adresszusatz.errors }}
+      <br />
+      {{ form.plz.label_tag }} &nbsp; {{ form.plz }} &nbsp; {{ form.plz.errors }}
+      {{ form.stadt.label_tag }} &nbsp; {{ form.stadt }} &nbsp; {{ form.stadt.errors }}
+      {{ form.land.label_tag }} &nbsp; {{ form.land }} &nbsp; {{ form.land.errors }}
+      <br />
+      {{ form.email.label_tag }} &nbsp; {{ form.email }} &nbsp; {{ form.email.errors }}
+      {{ form.telefon.label_tag }} &nbsp; {{ form.telefon }} &nbsp; {{ form.telefon.errors }}
+      {{ form.geburtsdatum.label_tag }} &nbsp; {{ form.geburtsdatum }} &nbsp; {{ form.geburtsdatum.errors }}
+      </p>
+      
+      <p>
+      {{ form.mitgliedschaft.label_tag }} &nbsp; {{ form.mitgliedschaft }} {{ form.mitgliedschaft.errors }}
+      <span id="mitgliedsbeitrag_hide">{{ form.mitgliedsbeitrag.label_tag }} &nbsp; € {{ form.mitgliedsbeitrag }} &nbsp; </span>{{ form.mitgliedsbeitrag.errors }}
+      <script>
+        var mbh = document.getElementById("mitgliedsbeitrag_hide");
+        var rb0 = document.getElementById("id_mitgliedschaft_0");
+        var rb1 = document.getElementById("id_mitgliedschaft_1");
+        
+        function change_hide() {
+          if (rb1.checked) {
+            mbh.style.display = "";
+          } else {
+            mbh.style.display = "none";
+          }
+        }
+        change_hide();
+        
+        rb0.onclick = change_hide;
+        rb1.onclick = change_hide;
+      </script>
+      <p>
+      Der Mitgliedsbeitrag beträgt für ordentliche Mitglieder zur Zeit 10 € pro Jahr. Fördermitglieder bestimmen ihren Beitrag selber, dieser sollte aber 50 € pro Jahr nicht unterschreiten
+      </p>
+      
+      <p>
+      Informationen für andere Vereinsmitglieder:
+      </p>
+      <p>
+      {{ form.beruf.label_tag }} &nbsp; {{ form.beruf }} &nbsp; {{ form.beruf.errors }}
+      {{ form.studienort.label_tag }} &nbsp; {{ form.studienort }} &nbsp; {{ form.studienort.errors }}
+      {{ form.studienfach.label_tag }} &nbsp; {{ form.studienfach }} &nbsp; {{ form.studienfach.errors }}
+      </p>
+      <p>
+      {{ form.mailingliste }} <label for="{{ form.mailingliste.id_for_label }}">Ich möchte in die Mailingliste aufgenommen werden, um mich mit anderen Vereinsmitgliedern austauschen zu können. (Empfohlen; zur Zeit nur wenig Traffic.)</label> &nbsp; {{ form.mailingliste.errors }}
+      <br />
+      {{ form.adresse_verein }} <label for="{{ form.adresse_verein.id_for_label }}">Ich möchte meine Adresse auch anderen Vereinsmitgliedern anzeigen lassen.</label> &nbsp; {{ form.adresse_verein.errors }}
+      <br />
+      {{ form.adresse_bwinf }} <label for="{{ form.adresse_bwinf.id_for_label }}">Ich möchte meine Adresse vom Verein an die BWINF-Geschäftsstelle weitergeben lassen. (Für den Versand der aktuellen Aufgaben des Bundeswettbewerb Informatik und Anfragen an Vereinsmitglieder.)</label> &nbsp; {{ form.adresse_bwinf.errors }}
+      <br />
+      {{ form.name_welt }} <label for="{{ form.name_welt.id_for_label }}">Ich möchte in den öffentlich einsehbaren Mitgliederliste aufgeführt werden. (In der vereinsinternen Mitgliederliste werden alle Mitglieder aufgeführt.)</label> &nbsp; {{ form.name_welt.errors }}
+      </p>
+      <p>Die Angaben zur Anzeige und Weitergabe der einzelnen persönlichen Daten können bei Wunsch nach Aufnahme in den Verein noch genauer eingestellt werden.</p>
+      
+      <p>
+      <input type="submit" value="Abschicken!" />
+      </p>
+</form>
+<p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
+  <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>

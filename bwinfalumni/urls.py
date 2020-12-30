@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^profil/', include('profil.urls', namespace='profil')),
     url(r'^verwaltung/', include('mitgliederverwaltung.urls', namespace='mitgliederverwaltung')),
     url(r'^konto/', include('mitgliedskonto.urls', namespace='mitgliedskonto')),
+    url(r'^mitgliedschaftsantrag/', include('mitgliedschaftsantrag.urls', namespace='mitgliedschaftsantrag')),
     url(r'^mailinglistenadressen/', include('mailinglistenadressen.urls', namespace='mailinglistenadressen')),
     url(r'^mitgliederkarte/', include('mitgliederkarte.urls', namespace='mitgliederkarte')),
     url(r'^lastschriftmandate/', include('lastschriftmandatverwaltung.urls', namespace='lastschriftmandatverwaltung')),
