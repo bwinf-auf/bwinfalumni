@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Alle Mitglieder</h1>
+
+{% if mitglieder %}
+  <ul class="bl">
+  {% for mitglied in mitglieder %}
+    <li><a href="{% url 'lastschriftmandatverwaltung:detail' mitglied.mitgliedsnummer %}">{{ mitglied }}</a></li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>Keine Mitglieder vorhanden.</p>
+{% endif %}
+
+{% endblock %}
