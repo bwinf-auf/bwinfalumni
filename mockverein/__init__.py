@@ -16,10 +16,10 @@ def erstelle_mockdaten():
         ]
     
     testmitglieder = [
-        Mitglied(mitgliedsnummer=99927, vorname="Test", nachname="Testofsky", strasse="AStr", plz="12343", stadt="Berlin", telefon="00123", email="test@example.com", studienort="Bonn", studienfach="Mathe", beruf="Geiler Hecht"),
-        Mitglied(mitgliedsnummer=99928, vorname="Max", nachname="Mustermann", strasse="BStr", plz="12343", stadt="Marburg", telefon="0049123", email="max@example.com", studienort="Göttingen", studienfach="Physik"),
-        Mitglied(mitgliedsnummer=99929, vorname="Willi", nachname="Vanilly", strasse="CStr", plz="12343", stadt="G-Town", telefon="57213", email="willi@example.com", studienort="Aachen", studienfach="Informatik"),
-        Mitglied(mitgliedsnummer=99930, vorname="Lena", nachname="Lane", strasse="DStr", plz="12343", stadt="Erlangen", telefon="1", email="lena@example.com", studienort="Greifswald", studienfach="Spirituelle Energie"),
+        Mitglied(mitgliedsnummer=99927, vorname="Test", nachname="Testofsky", strasse="AStr", plz="37073", stadt="Berlin", telefon="00123", email="test@example.com", studienort="Bonn", studienfach="Mathe", beruf="Geiler Hecht"),
+        Mitglied(mitgliedsnummer=99928, vorname="Max", nachname="Mustermann", strasse="BStr", plz="57074", stadt="Marburg", telefon="0049123", email="max@example.com", studienort="Göttingen", studienfach="Physik"),
+        Mitglied(mitgliedsnummer=99929, vorname="Willi", nachname="Vanilly", strasse="CStr", plz="57074", stadt="G-Town", telefon="57213", email="willi@example.com", studienort="Aachen", studienfach="Informatik"),
+        Mitglied(mitgliedsnummer=99930, vorname="Lena", nachname="Lane", strasse="DStr", plz="40822", stadt="Erlangen", telefon="1", email="lena@example.com", studienort="Greifswald", studienfach="Spirituelle Energie"),
         ]
     
     for o in testmitglieder:
@@ -72,6 +72,8 @@ def erstelle_mockdaten():
 
         Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="telefon"),
         Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="adresse"),
+        Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="wohnort"),
+        
 
         Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="vorname"),
         Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="nachname"),

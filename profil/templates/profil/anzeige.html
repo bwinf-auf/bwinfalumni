@@ -14,8 +14,13 @@
 {{ info.mitglied.strasse }}
 {% if info.mitglied.adresszusatz %}<br />{{ info.mitglied.adresszusatz }}{% endif %}
 <br />{{ info.mitglied.plz }} {{ info.mitglied.stadt }}
-{% if info.mitglied.adresszusatz != "Deutschland" %}<br />{{ info.land_fett }}{% endif %}
-</td></tr>{% endif %}
+{% if info.mitglied.land != "Deutschland" %}<br />{{ info.land_fett }}{% endif %}
+</td></tr>
+{% elif info.wohnort %}<tr><th>Wohnort:</th><td>
+{{ info.mitglied.plz }} {{ info.mitglied.stadt }}
+{% if info.mitglied.land != "Deutschland" %}<br />{{ info.land_fett }}{% endif %}
+</td></tr>
+{% endif %}
 </table>
 
 

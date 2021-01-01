@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+{% load l10n %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitgliederkarte/map.css' %}"></link>
+
+<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+<script type="text/javascript" src="{% static 'mitgliederkarte/tom.js' %}"></script>
+ 
+<script type="text/javascript">
+    window.onload = function () {
+        drawmap();
+    }
+
+    var map;
+    var layer_mapnik;
+    var layer_tah;
+    var layer_markers;
+    
+    var icon;
+    var icon_red;
+    
+
+    function drawmap() {
+        var popuptext="<font color=\"black\">"
+        var popuptext2 = "</font>";
+
+        OpenLayers.Lang.setCode('de');
+        
+        // Position und Zoomstufe der Karte
+        var lon = 9.641389;
+        var lat = 51.756667;
+        var zoom = 5;
+
+        map = new OpenLayers.Map('map', {
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            displayProjection: new OpenLayers.Projection("EPSG:4326"),
+            controls: [
+                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.LayerSwitcher(),
+                new OpenLayers.Control.PanZoomBar()],
+            maxExtent:
+                new OpenLayers.Bounds(-20037508.34,-20037508.34,
+                                        20037508.34, 20037508.34),
+            numZoomLevels: 18,
+            maxResolution: 156543,
+            units: 'meters'
+        });
+        
+        layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+        layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true, displayInLayerSwitcher: false });
+        
+        var size = new OpenLayers.Size(48,45);
+        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+        icon = new OpenLayers.Icon("{% static 'mitgliederkarte/biber.png' %}", size, offset);
+        icon_red = new OpenLayers.Icon("{% static 'mitgliederkarte/biber_red.png' %}", size, offset);
+        
+        map.addLayers([layer_mapnik, layer_markers]);
+        jumpTo(lon, lat, zoom);
+        {% for m in coords %}
+        {% if m.0 %}
+        addMarker(layer_markers, {{ m.1|unlocalize }}, {{ m.2|unlocalize }}, popuptext + "<iframe height=\"160px\" src=\"{{ m.3.4 }}\">", icon_red.clone());
+        {% else %}
+        addMarker(layer_markers, {{ m.1|unlocalize }}, {{ m.2|unlocalize }}, popuptext + "<iframe height=\"160px\" src=\"{{ m.3.4 }}\">", icon.clone());
+        {% endif %}
+        {% endfor %}
+        // Position des Markers
+        
+        layer_ov = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+        var options = {layers: [layer_ov]};
+        map.addControl(new OpenLayers.Control.OverviewMap(options));
+    }
+</script>
+
+<h2>Mitgliederkarte</h2>
+<div id="map">
+</div>
+<div id="header">
+    <div id="osm">© <a href="http://www.openstreetmap.org">OpenStreetMap</a>
+        und <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>,
+        <a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA</a>
+    </div>
+</div>
+
+{% endblock %}

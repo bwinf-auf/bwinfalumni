@@ -35,6 +35,8 @@ sichtbarkeiten   = [("alumni", "vorname"),
                     ("welt", "email"),
                     ("welt", "telefon"),
                     ("welt", "adresse"),
+                    ("alumni", "wohnort"),
+                    ("welt", "wohnort"),
                     ]
 
 
@@ -82,10 +84,10 @@ def showuser(request, mitgliedid):
     is_authenticated = request.user.is_authenticated
     scope = "alumni" if is_authenticated else "welt"
 
-    mitglied = get_object_or_404(Mitglied, id__exact = mitgliedid)
+    mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedid)
     info = {}
     keine_info = True
-    for sache in ["vorname", "nachname", "studienort", "studienfach", "beruf", "email", "telefon", "adresse"]:
+    for sache in ["vorname", "nachname", "studienort", "studienfach", "beruf", "email", "telefon", "adresse", "wohnort"]:
         if sichtbar(mitglied, scope, sache):
             keine_info = False
             info[sache] = True
@@ -112,7 +114,7 @@ def showallusers(request):
     for mitglied in mitglieder:
         info = {}
         keine_info = True
-        for sache in ["vorname", "nachname", "studienort", "studienfach", "beruf", "email", "telefon", "adresse"]:
+        for sache in ["vorname", "nachname", "studienort", "studienfach", "beruf", "email", "telefon", "adresse", "wohnort"]:
             if sichtbar(mitglied, scope, sache):
                 keine_info = False
                 info[sache] = True

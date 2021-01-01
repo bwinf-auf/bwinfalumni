@@ -23,12 +23,14 @@ urlpatterns = [
     url(r'^verwaltung/', include('mitgliederverwaltung.urls', namespace='mitgliederverwaltung')),
     url(r'^konto/', include('mitgliedskonto.urls', namespace='mitgliedskonto')),
     url(r'^mailinglistenadressen/', include('mailinglistenadressen.urls', namespace='mailinglistenadressen')),
+    
+    url(r'^mitgliederkarte/', include('mitgliederkarte.urls', namespace='mitgliederkarte')),
 
     url(r'^accounts/logout/$', auth_views.LogoutView.as_view(), { 'template_name': 'registration/logout.html',}, name='logout' ),
     url(r'^accounts/resetpassword/passwordsent/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     url(r'^accounts/resetpassword/passwordchanged/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
     url(r'^accounts/', include(('django.contrib.auth.urls','auth'), namespace='auth')),
-    url(r'^accounss/reset/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_reset_complete'),
+    url(r'^accounts/reset/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_reset_complete'),
     url(r'^admin/', admin.site.urls),
 ]
 
