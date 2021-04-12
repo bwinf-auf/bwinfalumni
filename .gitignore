@@ -1,0 +1,7 @@
+__pycache__
+*~
+*.pyc
+.directory
+db.sqlite3
+log/django_debug.log
+notizen
