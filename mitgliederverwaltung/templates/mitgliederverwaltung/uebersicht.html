@@ -6,7 +6,7 @@
 
 <h1>Benutzerdaten</h1>
 
-<form action="/benutzer/" method="post">
+<form action="" method="post">
     {% csrf_token %}
     <table style="border:0px">
       <tr><th>Name:</th><td>{{ mitglied.vorname }} {{ mitglied.nachname }}</td></tr>
@@ -20,5 +20,5 @@
   <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
 
 
-  
+
 {% endblock %}

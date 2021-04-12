@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 import re
@@ -61,8 +62,11 @@ def index(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def listusers(request):
+    benutzer = request.user
+    if not benutzer.is_superuser and not benutzer.groups.filter(name='vorstand').exists():
+        return redirect(reverse('mitgliederverwaltung:account'))
+
     all_mitglieder = Mitglied.objects.order_by('mitgliedsnummer')
     return render(request, 'mitgliederverwaltung/mitgliederliste.html', {'mitglieder': all_mitglieder})
 
