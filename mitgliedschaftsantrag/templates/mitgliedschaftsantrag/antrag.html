@@ -1,3 +1,29 @@
+{% if antraege %}
+<h1>Offene Anträge</h1>
+<table>
+  <tr><th>Datum</th><th>Mitgliedsnummer</th><th>Name</th><th>Bestätigen und Zugangsdaten zusenden</th></tr>
+    {% for antrag in antraege %}
+  <tr><td>{{antrag.datum}}</td><td>{{antrag.mitgliedsnummer}}</td><td>{{antrag.name}}</td><td><form method="POST" action="{{antrag.id}}">
+        {% csrf_token %}
+        <input type="submit" value="Zahlungseingang bestätigen & Mitglied aufnehmen" />
+      </form>
+    </td></tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+
+{% if verifikationen %}
+<h1>Offene E-Mailverifikationen</h1>
+<table>
+  <tr><th>Datum</th><th>Name</th><th>E-Mail</th><th>Code</th></tr>
+    {% for veri in verifikationen %}
+    <tr><td>{{veri.datum}}</td><td>{{veri.name}}</td><td>{{veri.email}}</td><td>{{veri.code}}</td></tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+
 <h1>Mitgliedschaftsantrag</h1>
 
 

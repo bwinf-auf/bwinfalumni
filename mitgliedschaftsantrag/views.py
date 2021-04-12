@@ -30,6 +30,31 @@ class MitgliedschaftsantragForm(forms.ModelForm):
             'beruf': "Beschäftigung" }
 
 def antrag(request):
+    antraege = None
+    verifikationen = None
+
+    benutzer = request.user
+    if benutzer.is_superuser or benutzer.groups.filter(name='vorstand').exists():
+        verifikationen = []
+        for ma in Mitgliedschaftsantrag.objects.all():
+            verifikationen.append({
+                "id": ma.id,
+                "name": ma.vorname + " " + ma.nachname,
+                "datum": ma.antragsdatum,
+                "code": ma.verifikationscode,
+                "email": ma.email,
+            })
+        antraege = []
+        for m in Mitglied.objects.filter(beitrittsdatum__isnull=True):
+            antraege.append({
+                "id": m.id,
+                "mitgliedsnummer": m.mitgliedsnummer,
+                "name": m.vorname + " " + m.nachname,
+                "datum": m.antragsdatum,
+            })
+
+
+
     errormessage = ""
     successmessage = ""
 
@@ -55,6 +80,8 @@ def antrag(request):
                   {'form': form,
                    'errormessage': errormessage,
                    'successmessage': successmessage,
+                   'verifikationen': verifikationen,
+                   'antraege': antraege,
                   })
 
 class VerifikationForm(forms.Form):
@@ -124,7 +151,7 @@ def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
                 f.write("Subject: " + betreff + "\n\n")
                 f.write(text + "\n\n")
             except:
-                f.write("ERROR: Could not send mail to: " + mitgliedschaftsantrag.email + "(" + str(date.today()) + ": " + betreff + ")\n\n")
+                f.write("ERROR: Could not send mail to: " + mitgliedschaftsantrag.email + "(" + str(date.today()) + ": " + betreff + ") (code: " +  mitgliedschaftsantrag.verifikationscode + ")\n\n")
 
 def sende_email_mit_zahlungsinformationen(mitglied):
     with open('listen/maillog', 'a', encoding='utf8') as f:
