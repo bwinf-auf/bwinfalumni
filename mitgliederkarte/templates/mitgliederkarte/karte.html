@@ -9,7 +9,7 @@
 <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
 <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
 <script type="text/javascript" src="{% static 'mitgliederkarte/tom.js' %}"></script>
- 
+
 <script type="text/javascript">
     window.onload = function () {
         drawmap();
@@ -19,17 +19,16 @@
     var layer_mapnik;
     var layer_tah;
     var layer_markers;
-    
+
     var icon;
     var icon_red;
-    
 
     function drawmap() {
         var popuptext="<font color=\"black\">"
         var popuptext2 = "</font>";
 
         OpenLayers.Lang.setCode('de');
-        
+
         // Position und Zoomstufe der Karte
         var lon = 9.641389;
         var lat = 51.756667;
@@ -49,15 +48,15 @@
             maxResolution: 156543,
             units: 'meters'
         });
-        
+
         layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
         layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true, displayInLayerSwitcher: false });
-        
+
         var size = new OpenLayers.Size(48,45);
         var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
         icon = new OpenLayers.Icon("{% static 'mitgliederkarte/biber.png' %}", size, offset);
         icon_red = new OpenLayers.Icon("{% static 'mitgliederkarte/biber_red.png' %}", size, offset);
-        
+
         map.addLayers([layer_mapnik, layer_markers]);
         jumpTo(lon, lat, zoom);
         {% for m in coords %}
@@ -68,7 +67,7 @@
         {% endif %}
         {% endfor %}
         // Position des Markers
-        
+
         layer_ov = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
         var options = {layers: [layer_ov]};
         map.addControl(new OpenLayers.Control.OverviewMap(options));

@@ -5,11 +5,11 @@
 <style type="text/css">
 td, th {
 	border-left: 1px solid #000;
-	padding: 0px 5px;
+	padding: 5px 5px;
 }
-th:first-child { 
+th:first-child {
 border-left: none;
-text-align:left;
+text-align:right;
 }
 </style>
 
@@ -20,7 +20,7 @@ text-align:left;
     {% csrf_token %}
     {{ form.management_form }}
     <table style="border:0px; text-align:center;border: none; border-collapse: collapse;">
-      <tr><th></th><th>Alumnivereinsmitglieder</th><th>BWINF-Geschäftsstelle</th><th>Weltweit (öffentlich)</th></tr>
+      <tr><th></th><th>Alumni-<br />vereins-<br />mitglieder</th><th>BWINF-<br />Geschäfts-<br />stelle<sup>1</sup></th><th>Weltweit<br />(öffentlich)</th></tr>
       <tr><th>Vorname</th><td><input type="checkbox" disabled="disabled" checked="checked"></td><td>{{ form.9.sichtbarkeit }}</td><td>{{ form.14.sichtbarkeit }}</td></tr>
       <tr><th>Nachname</th><td><input type="checkbox" disabled="disabled" checked="checked"></td><td>{{ form.10.sichtbarkeit }}</td><td>{{ form.15.sichtbarkeit }}</td></tr>
       <tr><th>Studienort</th><td><input type="checkbox" disabled="disabled" checked="checked"></td><td></td><td>{{ form.16.sichtbarkeit }}</td></tr>
@@ -28,8 +28,8 @@ text-align:left;
       <tr><th>Beschäftigung</th><td><input type="checkbox" disabled="disabled" checked="checked"></td><td></td><td>{{ form.18.sichtbarkeit }}</td></tr>
       <tr><th>E-Mail</th><td><input type="checkbox" disabled="disabled" checked="checked"></td><td>{{ form.11.sichtbarkeit }}</td><td>{{ form.19.sichtbarkeit }}</td></tr>
       <tr><th>Telefon</th><td>{{ form.6.sichtbarkeit }}</td><td>{{ form.12.sichtbarkeit }}</td><td>{{ form.20.sichtbarkeit }}</td></tr>
-      <tr><th>Adresse (inkl. Wohnort)</th><td>{{ form.7.sichtbarkeit }}</td><td>{{ form.13.sichtbarkeit }}</td><td>{{ form.21.sichtbarkeit }}</td></tr>
-      <tr><th>Wohnort</th><td>{{ form.22.sichtbarkeit }}</td><td></td><td>{{ form.23.sichtbarkeit }}</td></tr>
+      <tr><th>Adresse</th><td>{{ form.7.sichtbarkeit }}</td><td>{{ form.13.sichtbarkeit }}</td><td>{{ form.21.sichtbarkeit }}</td></tr>
+      <tr><th>Mitgliederkarte<sup>2</sup></th><td>{{ form.22.sichtbarkeit }}</td><td></td><td>{{ form.23.sichtbarkeit }}</td></tr>
       <tr><th>Mailingliste</th><td>{{ form.8.sichtbarkeit }}</td><td></td><td></td></tr>
     </table>
     <input type="submit" value="Speichern" style="margin-left:10em;margin-top:2em;" />
@@ -37,11 +37,13 @@ text-align:left;
 
 <p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
   <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
-  
-<p>Die BWINF-Geschäftsstelle nutzt die Daten einmal im Jahr, um im August die neuen Aufgaben der ersten Runde an die Vereinsmitglieder zu versenden.
-Die Aufgaben können nur versandt werden, wenn <b>der volle Name</b> und <b>die Adresse</b> an die Geschäftsstelle weitergegeben werden.</p>
 
-  
+<p><sup>1</sup> Die BWINF-Geschäftsstelle nutzt die Daten einmal im Jahr, um im August die neuen Aufgaben der ersten Runde an die Vereinsmitglieder zu versenden.
+  Die Aufgaben können nur versandt werden, wenn <b>Vorname</b>, <b>Nachname</b> und die <b>Adresse</b> an die Geschäftsstelle weitergegeben werden.</p>
+
+<p><sup>2</sup> Die Karte verwendet außschließlich die Postleitzahl um eine ungefähre räumliche Übersicht über die Mitglieder zu geben.</p>
+
+
 <p><a href="..">Zurück zum Profil</a></p>
 
 

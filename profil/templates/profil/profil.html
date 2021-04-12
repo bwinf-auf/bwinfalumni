@@ -23,9 +23,9 @@ td.False::before {
 }
 
 
-th:first-child { 
+th:first-child {
 border-left: none;
-text-align:left;
+text-align:right;
 }
 </style>
 
@@ -44,7 +44,7 @@ text-align:left;
 </form>
 <p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
   <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
-  
+
 <p><a href="{% url 'auth:password_change' %}">Passwort ändern</a></p>
 
 <p>
@@ -93,13 +93,13 @@ text-align:left;
         <td class="{{ sichtbar.20 }}"></td>
       </tr>
       <tr>
-        <th>Adresse (inkl. Wohnort)</th>
+        <th>Adresse</th>
         <td class="{{ sichtbar.7 }}">
         <td class="{{ sichtbar.13 }}"></td>
         <td class="{{ sichtbar.21 }}"></td>
       </tr>
       <tr>
-        <th>Wohnort</th>
+        <th>Mitgliederkarte</th>
         <td class="{{ sichtbar.22 }}">
         <td></td>
         <td class="{{ sichtbar.23 }}"></td>
@@ -113,7 +113,6 @@ text-align:left;
     </table>
     <a href="sichtbarkeit/">Sichtbarkeit ändern</a>
 </p>
-  
+
 
 {% endblock %}
-
