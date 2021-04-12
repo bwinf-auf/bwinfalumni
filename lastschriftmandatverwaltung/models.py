@@ -9,6 +9,7 @@ class GekuerztesLastschriftmandat(models.Model):
     
     mitglied     = models.ForeignKey(Mitglied, on_delete=models.PROTECT)
     kontoinhaber = models.CharField(max_length=250)
+    anschrift    = models.CharField(max_length=500)
     bankname     = models.CharField(max_length=250)
     iban         = models.CharField(max_length=250)
     bic          = models.CharField(max_length=250)

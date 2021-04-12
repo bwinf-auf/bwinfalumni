@@ -15,21 +15,16 @@
 td, th {padding: 0px 20px;}
 </style>
 
-<h3>Mandate:</h3>
+<h3>Lastschriftmandate:</h3>
 <table>
   <tr><th>Kontoinhaber</th><th>IBAN</th><th>BIC</th><th>Bank</th><th>Mandatsreferenz</th><th>gültig seit</th><th>gültig bis</th></tr>
   {% for mandat in mandate %}
-  <tr style="{% if mandat.gueltig %} background-color:#cfc; {% else %} background-color:#ccc; color: #444; {% endif %}"><td>{{ mandat.inhaber }}</td><td>{{ mandat.iban }}</td><td>{{ mandat.bic }}</td><td>{{ mandat.bankname }}</td><td>{{ mandat.referenz }}</td><td>{{ mandat.gueltig_ab }}</td><td>{% if mandat.gueltig %} <form action="delete/{mandat.id}" method="post">{% csrf_token %} <input type="submit" value="Mandat zurückziehen" /> </form> {% else %}{{ mandat.gueltig_bis }}{% endif %}</td></tr>
+  <tr style="{% if mandat.gueltig %} background-color:#cfc; {% elif mandat.neu %} background-color:#cff; {% else %} background-color:#ccc; color: #444; {% endif %}"><td>{{ mandat.inhaber }}</td><td>{{ mandat.iban }}</td><td>{{ mandat.bic }}</td><td>{{ mandat.bankname }}</td><td>{{ mandat.referenz }}</td><td>{{ mandat.gueltig_ab }}</td><td>{% if mandat.gueltig or mandat.neu %} <form action="../delete/{{mandat.id}}" method="post">{% csrf_token %} <input type="submit" value="{% if mandat.gueltig  %}Mandat{% else %}Antrag{% endif %} zurückziehen" /> </form> {% else %}{{ mandat.gueltig_bis }}{% endif %}</td></tr>
   {% endfor %}
-  <tr><td colspan=7><hr></td></tr>
-  <tr><td colspan=7>Neues Lastschriftmandat erteilen:</td></tr>
-  <form action="." method="post">
-  {% csrf_token %}
-  <tr><td>{{ form.kontoinhaber }}</td><td>{{ form.bankname }}</td><td>{{ form.iban }}</td><td>{{ form.bankname }}</td><td><input type="submit" value="Lastschriftmandat erteilen" /></td></tr>
-  </form>
-<tr><td>{{ form.kontoinhaber.errors }}</td><td>{{ form.bankname.errors }}</td><td>{{ form.iban.errors }}</td><td></td><td>{{ form.bankname.errors }}</td></tr>
 </table>
 
+<p>Du kannst deine Lastschriftmandate jederzeit deaktivieren. Wenn du ein neues Lastschriftmandat eingibst, wird dein vorheriges Lastschriftmandat automatisch deaktiviert, sobald das neue Mandat von uns bestätigt wurde.</p>
 
+<p><a href="neu">Neues Lastschriftmandat hinzufügen</a></p>
 
 {% endblock %}
