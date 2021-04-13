@@ -24,8 +24,8 @@ a:hover {
 }*/
 
 #map {
-  height: 600px;
-  width: 96%;
+  height: calc(100vh - 150px);
+  /*width: 96%;*/
   padding: 0; margin: 0;
 }
 
