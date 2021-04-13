@@ -145,7 +145,7 @@ def addnew(request, mitgliedsnummer):
                 mandat.iban = iban_starred
                 try:
                     with open("mandatlog", "a") as mandatlog:
-                        mandatlog.write("M" + str(mitglied.mitgliedsnummer) + " ADD IBAN: " + iban_spaced)
+                        mandatlog.write("M" + str(mitglied.mitgliedsnummer) + " ADD IBAN: " + iban_spaced + "\n")
                         mandat.save()
                 except:
                     errormessage = "Serverfehler: Mandat konnte nicht eingetragen werden. Bitte versuche es erneut oder wende dich an vorstand@alumni.bwinf.de, wenn das Problem andauert."
@@ -181,6 +181,12 @@ def delete(request, lastschriftmandat_id):
             if lsm.gueltig_bis == None:
                 lsm.gueltig_bis = date.today()
                 lsm.save()
+                try:
+                    with open("mandatlog", "a") as mandatlog:
+                        mandatlog.write("M" + str(mitglied.mitgliedsnummer) + " REMOVE IBAN: " + lsm.iban + "\n")
+                        mandat.save()
+                except:
+                    pass
 
     return redirect(reverse('lastschriftmandatverwaltung:detail', kwargs={'mitgliedsnummer':mitglied.mitgliedsnummer}))
 
