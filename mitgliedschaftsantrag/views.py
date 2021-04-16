@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django import forms
 
+from django.core.mail import send_mail
+
 from .models import Mitgliedschaftsantrag
 from mitglieder.models import Mitglied
 from profil.models import Sichtbarkeit
