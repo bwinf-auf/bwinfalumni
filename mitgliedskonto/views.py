@@ -195,11 +195,12 @@ def zahlungsaufforderungen(request, template, schulden):
         return render(request, 'mitgliedskonto/adddone.html', {'errormessage': errormessage,
                                                            'successmessage': successmessage,})
     else:
-        text = ""
-        with open ("mitgliedskonto/" + template + ".txt", "r", encoding='utf8') as templatefile:
-            text = templatefile.read()
+        template = ""
+        with open("mitgliedskonto/" + template + ".txt", "r", encoding='utf8') as templatefile:
+            for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
+                template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
         return render(request, 'mitgliedskonto/email.html', {'cform': EmailForm({'betreff': "Mitgliedsbeitrag BwInf Alumni und Freunde e. V.",
-                                                                            'text': text}), 'schulden': schulden})
+                                                                                 'text': template}), 'schulden': schulden})
 
 
 
