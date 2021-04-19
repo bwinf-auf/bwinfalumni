@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from benutzer.models import BenutzerMitglied
-from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp, Lastschriftmandat
+from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
 from umsaetze.models import Umsatz, UmsatzTyp, Konto
 from profil.models import Sichtbarkeit
 
@@ -14,45 +14,45 @@ def erstelle_mockdaten():
         User.objects.create_user(username='williadmin', email='willi@example.com', password='willi'),
         User.objects.create_user(username='nico', email='nico@example.com', password='nico'),
         ]
-    
+
     testmitglieder = [
         Mitglied(mitgliedsnummer=99927, vorname="Test", nachname="Testofsky", strasse="AStr", plz="37073", stadt="Berlin", telefon="00123", email="test@example.com", studienort="Bonn", studienfach="Mathe", beruf="Geiler Hecht"),
         Mitglied(mitgliedsnummer=99928, vorname="Max", nachname="Mustermann", strasse="BStr", plz="57074", stadt="Marburg", telefon="0049123", email="max@example.com", studienort="Göttingen", studienfach="Physik"),
         Mitglied(mitgliedsnummer=99929, vorname="Willi", nachname="Vanilly", strasse="CStr", plz="57074", stadt="G-Town", telefon="57213", email="willi@example.com", studienort="Aachen", studienfach="Informatik"),
         Mitglied(mitgliedsnummer=99930, vorname="Lena", nachname="Lane", strasse="DStr", plz="40822", stadt="Erlangen", telefon="1", email="lena@example.com", studienort="Greifswald", studienfach="Spirituelle Energie"),
         ]
-    
+
     for o in testmitglieder:
         o.save()
-    
+
     bm = [
         BenutzerMitglied(benutzer=testusers[0], mitglied=testmitglieder[0]),
         BenutzerMitglied(benutzer=testusers[1], mitglied=testmitglieder[1]),
         BenutzerMitglied(benutzer=testusers[2], mitglied=testmitglieder[2]),
         BenutzerMitglied(benutzer=testusers[3], mitglied=testmitglieder[2]),
         ]
-    
+
     konto = Konto(kontoname="Girokonto", beschreibung="Bei Deutscher Bank")
     konto.save()
-    
+
     ut = [
         UmsatzTyp(typname="Einzahlung", beschreibung="Einzahlung Mitgliedsbeitrag"),
         UmsatzTyp(typname="Rechnung", beschreibung="Begleichung von Rechnung"),
         ]
-    
+
     for o in ut:
         o.save()
-    
+
     umsaetze = [
         Umsatz(konto=konto,typ=ut[1],text="Jahrebeitrag DJH", cent_wert=12203,beleg="blub",geschaeftspartner="DJH"),
         ]
-    
+
     mkbt = [
         MitgliedskontoBuchungstyp(typname="Einzahlung"),
         MitgliedskontoBuchungstyp(typname="Gutschrift"),
         MitgliedskontoBuchungstyp(typname="Mitgliedsbeitrag 2017"),
         ]
-    
+
     for o in mkbt:
         o.save()
 
@@ -73,7 +73,7 @@ def erstelle_mockdaten():
         Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="telefon"),
         Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="adresse"),
         Sichtbarkeit(mitglied=testmitglieder[0],bereich="alumni",sache="wohnort"),
-        
+
 
         Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="vorname"),
         Sichtbarkeit(mitglied=testmitglieder[1],bereich="alumni",sache="nachname"),
@@ -117,14 +117,14 @@ def erstelle_mockdaten():
     MitgliedskontoBuchung.objects.bulk_create(mkb)
     Sichtbarkeit.objects.bulk_create(sbk);
 
-    
+
 def loesche_nutzer():
     q1 = User.objects.filter(username='test', email='test@example.com')
     q2 = User.objects.filter(username='max', email='max@example.com')
     q3 = User.objects.filter(username='willi', email='willi@example.com')
     q4 = User.objects.filter(username='williadmin', email='willi@example.com')
     q5 = User.objects.filter(username='nico', email='nico@example.com')
-    
+
     try:
         q1.get().benutzermitglied.delete()
     except:
@@ -141,10 +141,10 @@ def loesche_nutzer():
         q4.get().benutzermitglied.delete()
     except:
         pass
-    
-    
+
+
     q1.delete()
- 
+
     try:
         q2.delete()
     except:
@@ -161,7 +161,7 @@ def loesche_nutzer():
         q5.delete()
     except:
         pass
-    
+
     try:
         Sichtbarkeit.objects.filter(mitglied__mitgliedsummer=99927).delete()
     except:
@@ -212,5 +212,3 @@ def loesche_nutzer():
         Mitglied.objects.filter(mitgliedsnummer=99930).delete()
     except:
         pass
-    
-    

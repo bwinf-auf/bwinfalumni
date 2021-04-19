@@ -94,20 +94,3 @@ class MitgliedskontoBuchung(models.Model):
         db_table = "mitgliedskonto_buchung"
         verbose_name = "Mitgliedskonto-Buchung"
         verbose_name_plural = "Mitgliedskonto-Buchungen"
-
-
-
-class Lastschriftmandat(models.Model):
-
-    mitglied        = models.ForeignKey(Mitglied, on_delete=models.PROTECT)
-    kontoinhaber    = models.CharField(max_length=250)
-    bankname        = models.CharField(max_length=250)
-    iban            = models.CharField(max_length=250)
-    bic             = models.CharField(max_length=250)
-    gueltig_ab       = models.DateField(default=date.today)
-    gueltig_bis      = models.DateField(default=date(3000,1,1))
-
-    class Meta:
-        db_table = "lastschriftmandat"
-        verbose_name = "Lastschriftmandat"
-        verbose_name_plural = "Lastschriftmandate"

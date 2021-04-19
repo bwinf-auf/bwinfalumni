@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp, Lastschriftmandat
+from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
 from benutzer.models import BenutzerMitglied
 from umsaetze.models import Umsatz, UmsatzTyp, Konto
 from profil.models import Sichtbarkeit
@@ -13,16 +13,16 @@ import psycopg2
 def run():
     conn = psycopg2.connect(dbname="alumni_neu", user="alumni", password="alumni", host="localhost")
     cur = conn.cursor()
-    
+
     mbuchungstyp_default = MitgliedskontoBuchungstyp(typname = "unspezifiziert")
     mbuchungstyp_default.save()
-    
+
     sichtbarkeit_dblist = []
     bm_dblist = []
     lsm_dblist = []
     mbuchung_dblist = []
     umsatz_dblist = []
-    
+
     # TODO: Field Type?
     # -> Ist immer 0
     cur.execute("SELECT "
@@ -50,7 +50,7 @@ def run():
                 "\"Member\".\"IsInfoSharedWithBWInf\", "
                 "\"Member\".\"AdminComment\", "
                 "\"Member\".\"DunningCount\", "
-                "\"Member\".\"Nickname\", " 
+                "\"Member\".\"Nickname\", "
                 "\"Member\".\"Password\", " #25
                 "\"Member\".\"Disabled\", "
                 "\"Member\".\"LastLogin\", "
@@ -84,53 +84,53 @@ def run():
                             kommentar = member[22],
                             anzahl_mahnungen = member[23])
         mitglied.save()
-        
+
         print("\n" + mitglied.vorname + " " + mitglied.nachname, end='')
-    
+
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="nachname"))
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="vorname"))
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="studienfach"))
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="studienort"))
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="beruf"))
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="mailingliste"))
-        
-    
+
+
         if member[17] >= 20:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="telefon"))
         if member[17] >= 100:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="telefon"))
-            
+
         sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="email"))
         if member[18] >= 100:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="email"))
-        
+
         if member[19] >= 20:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="alumni", sache="adresse"))
         if member[19] >= 100:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="adresse"))
-            
+
         if member[20] >= 100:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="nachname"))
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="vorname"))
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="welt", sache="beruf"))
-            
+
         if member[21]:
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="vorname"))
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="nachname"))
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="email"))
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="telefon"))
             sichtbarkeit_dblist.append(Sichtbarkeit(mitglied=mitglied, bereich="bwinf", sache="adresse"))
-        
+
         user = User(username = member[24],
                     password = "legacy$" + member[25],
                     is_active = not member[26],
                     is_superuser = False,
                     last_login = member[27])
         user.save()
-        
+
         bm = BenutzerMitglied(benutzer = user, mitglied = mitglied)
         bm_dblist.append(bm)
-        
+
         if member[30]:
             lsm = Lastschriftmandat(mitglied = mitglied,
                                     kontoinhaber = member[28],
@@ -140,9 +140,9 @@ def run():
                                     gueltig_ab = member[32],
                                     gueltig_bis = member[33])
             lsm_dblist.append(lsm)
-            
+
             print("+", end='')
-            
+
         cur.execute("SELECT "
                     "\"Amount\", " #0
                     "\"Purpose\", "
@@ -152,16 +152,16 @@ def run():
         for memberposting in memberposting_rows:
             mbuchung = MitgliedskontoBuchung(mitglied = mitglied,
                                              typ = mbuchungstyp_default,
-                                             cent_wert = memberposting[0], 
+                                             cent_wert = memberposting[0],
                                              kommentar = memberposting[1],
                                              buchungsdatum = memberposting[2])
             mbuchung_dblist.append(mbuchung)
-            
+
             print(".", end='')
 
 
     print("\n\nUmsatz", end='')
-    
+
     # TODO: gibt es nur einen Wert in Account?
     # -> Nein: 1. Konto, 2. Bargeld für 1. VZ, 3. 2. VZ
     # -> ABER: Alle Umsätze verweisen auf 1.
@@ -172,7 +172,7 @@ def run():
     account_rows = cur.fetchall()
     konto_default = Konto(kontoname = account_rows[0][0], beschreibung = account_rows[0][1])
     konto_default.save()
-    
+
     # TODO: Field Type?
     # -> Enthält 0 für Einnahmen und 1 für Ausgaben
     # -> Beträge sind aber trotzdem Vorzeichenbehaftet.
@@ -185,9 +185,9 @@ def run():
     for purpose in purpose_rows:
         umsatztyp = UmsatzTyp(typname = purpose[0], beschreibung = purpose[1])
         umsatztyp.save()
-        
+
         print("\n" + umsatztyp.typname, end='')
-        
+
         # TODO: Was ist Author wirklich?
         # -> Wer die Buchung eingetragen hat
         cur.execute("SELECT "
@@ -208,9 +208,9 @@ def run():
                             geschaeftspartner = "k. A.",
                             wertstellungsdatum = posting[4])
             umsatz_dblist.append(umsatz)
-            
+
             print(".", end='')
-            
+
     print("\nSchließe DB-Transaktionen ab:")
     Sichtbarkeit.objects.bulk_create(sichtbarkeit_dblist)
     print("Sichtbarkeiten!")
@@ -222,7 +222,5 @@ def run():
     print("Buchungen!")
     Umsatz.objects.bulk_create(umsatz_dblist)
     print("Umsätze!")
-            
-    print("\nAll clear!")
-            
 
+    print("\nAll clear!")
