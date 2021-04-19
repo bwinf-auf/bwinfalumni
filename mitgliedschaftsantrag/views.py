@@ -31,7 +31,7 @@ class MitgliedschaftsantragForm(forms.ModelForm):
 
             'beruf': "Beschäftigung" }
 
-def antrag(request):
+def neuerantrag(request):
     antraege = None
     verifikationen = None
 
@@ -124,18 +124,70 @@ def zahlungsinformationen(request, mitgliedsnummer):
     # 404 wenn Mitgliedschaft schon bestätigt, damit keine Beitragsinformationen extrahiert werden können.
     mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer, beitrittsdatum__exact = None)
 
-
     return render(request, 'mitgliedschaftsantrag/zahlungsinformationen.html',
                   {'mitgliedsnummer': mitglied.mitgliedsnummer,
                    'mitgliedsbeitrag': mitglied.beitrag_cent / 100.0,
                   })
+
+class EmptyForm(forms.Form):
+    pass
+
+from django.contrib.auth.decorators import login_required, user_passes_test
+from random import choice
+from django.contrib.auth.models import User
+from benutzer.models import BenutzerMitglied
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def antrag(request, mitgliedsnummer):
+    # 404 wenn Mitgliedschaft schon bestätigt
+    mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer, beitrittsdatum__exact = None)
+
+    if request.method == 'POST':
+        empty = EmptyForm(request.POST)
+        if empty.is_valid():
+            mitglied.beitrittsdatum = date.today()
+            mitglied.save()
+            benutzername = "m" + str(mitglied.mitgliedsnummer)
+            passwort = ''.join(choice("ABCDEFGHKMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz23456789") for _ in range(16))
+            benutzer = User.objects.create_user(username=benutzername, email=mitglied.email, password=passwort)
+            benutzermitglied = BenutzerMitglied(benutzer=benutzer, mitglied=mitglied)
+            benutzermitglied.save()
+            sende_email_mit_zugangsdaten(mitglied, passwort, benutzername)
+            return redirect(reverse('mitgliedschaftsantrag:neuerantrag'))
+        return render(request, 'mitgliedschaftsantrag/showantrag.html', {'antrag': antrag, 'errormessage': errormessage})
+    else:
+        antrag = {
+            "id": mitglied.id,
+            "mitgliedsnummer": mitglied.mitgliedsnummer,
+            "name": mitglied.vorname + " " + mitglied.nachname,
+            "datum": mitglied.antragsdatum,
+            "beitrag_cent": mitglied.beitrag_cent,
+            'vorname': mitglied.vorname,
+            'nachname': mitglied.nachname,
+            'anrede': mitglied.anrede,
+            'geburtsdatum': mitglied.geburtsdatum,
+            'strasse': mitglied.strasse,
+            'adresszusatz': mitglied.adresszusatz,
+            'plz': mitglied.plz,
+            'stadt': mitglied.stadt,
+            'land': mitglied.land,
+            'telefon': mitglied.telefon,
+            'email': mitglied.email,
+            'beruf': mitglied.beruf,
+            'studienort': mitglied.studienort,
+            'studienfach': mitglied.studienfach,
+        }
+
+        return render(request, 'mitgliedschaftsantrag/showantrag.html', {'antrag': antrag})
 
 
 def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
     with open('listen/maillog', 'a', encoding='utf8') as f:
         with open ("mitgliedschaftsantrag/verifikation.txt", "r", encoding='utf8') as templatefile:
             template = templatefile.read()
-            data = {'vorname': mitgliedschaftsantrag.vorname,
+            data = {'name': mitgliedschaftsantrag.vorname + " " + mitgliedschaftsantrag.nachname,
+                    'vorname': mitgliedschaftsantrag.vorname,
                     'nachname': mitgliedschaftsantrag.nachname,
                     'anrede': mitgliedschaftsantrag.anrede,
                     'datum': str(date.today()),
@@ -159,7 +211,8 @@ def sende_email_mit_zahlungsinformationen(mitglied):
     with open('listen/maillog', 'a', encoding='utf8') as f:
         with open ("mitgliedschaftsantrag/registrierung.txt", "r", encoding='utf8') as templatefile:
             template = templatefile.read()
-            data = {'vorname': mitglied.vorname,
+            data = {'name': mitglied.vorname + " " + mitglied.nachname,
+                    'vorname': mitglied.vorname,
                     'nachname': mitglied.nachname,
                     'anrede': mitglied.anrede,
                     'mitgliedsnummer': mitglied.mitgliedsnummer,
@@ -179,6 +232,33 @@ def sende_email_mit_zahlungsinformationen(mitglied):
             except:
                 f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ")\n\n")
 
+def sende_email_mit_zugangsdaten(mitglied, passwort, benutzername):
+    with open('listen/maillog', 'a', encoding='utf8') as f:
+        with open ("mitgliedschaftsantrag/aufnahmebestaetigung.txt", "r", encoding='utf8') as templatefile:
+            template = templatefile.read()
+            data = {'name': mitglied.vorname + " " + mitglied.nachname,
+                    'vorname': mitglied.vorname,
+                    'nachname': mitglied.nachname,
+                    'anrede': mitglied.anrede,
+                    'mitgliedsnummer': mitglied.mitgliedsnummer,
+                    'datum': str(date.today()),
+                    'mitgliedsbeitrag': mitglied.beitrag_cent / 100.0,
+                    'benutzername': benutzername,
+                    'passwort': passwort,
+                    'email': mitglied.email}
+            betreff = "Zugangsdaten für Mitgliederbereich BwInf Alumni und Freunde e. V.".format(**data)
+            text = template.format(**data)
+
+            try:
+                send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [mitglied.email])
+                f.write("Date: " + str(date.today()) + "\n")
+                f.write("To: " + mitglied.email + "\n")
+                f.write("From: vorstand@alumni.bwinf.de\n")
+                f.write("Subject: " + betreff + "\n\n")
+                f.write(text + "\n\n")
+            except:
+                f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ") (" +  benutzername + ":" + passwort + ")\n\n")
+
 
 def vorlaeufiges_mitglied(ma):
     mitgliedsnummer = Mitglied.objects.order_by('-mitgliedsnummer')[0].mitgliedsnummer + 1
@@ -191,7 +271,7 @@ def vorlaeufiges_mitglied(ma):
     m.nachname     = ma.nachname
     m.anrede       = ma.anrede
     m.geburtsdatum = ma.geburtsdatum
-    m.adresse      = ma.strasse
+    m.strasse      = ma.strasse
     m.adresszusatz = ma.adresszusatz
     m.plz          = ma.plz
     m.stadt        = ma.stadt

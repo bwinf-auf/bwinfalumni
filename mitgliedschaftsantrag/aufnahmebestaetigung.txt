@@ -1,0 +1,25 @@
+Hallo {vorname} {nachname},
+
+
+vielen Dank für Ihre Beitragszahlung! Sie erhalten nun Ihre Zugangsdaten
+für den Mitgliederbereich:
+
+Benutzername: {benutzername}
+Passwort:     {passwort}
+
+Sie erreichen den Mitgliederbereich über die Webseite des Vereins, und
+zwar
+
+    https://alumni.bwinf.de/
+
+Dort können Sie dann Ihr Passwort und Ihren Benutzernamen ändern.
+
+Sofern Sie sich nicht aus Mitglieder-Mailingliste austragen, können Sie
+über die folgende Adresse E-Mails an alle Mitglieder senden:
+
+      mitglieder@alumni.bwinf.de
+
+
+Viele Grüße
+Steven Keuchel und Robert Czechowski
+(Vorstand)

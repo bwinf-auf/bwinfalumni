@@ -1,0 +1,34 @@
+<h1>Antrag {{antrag.mitgliedsnummer}}: {{antrag.name}}</h1>
+
+<p>Antragsdatum: {{antrag.datum}}</p>
+<p>Mitgliedsnummer: {{antrag.mitgliedsnummer}}</p>
+<p>Name: {{antrag.name}}</p>
+
+<p>Beitrag (in Cent): {{antrag.beitrag_cent}}</p>
+
+<p>Angegebene Daten:<br />
+Vorname: {{antrag.vorname}}<br />
+Nachname: {{antrag.nachname}}<br />
+Anrede: {{antrag.anrede}}<br />
+Geburtsdatum: {{antrag.geburtsdatum}}<br />
+Strasse: {{antrag.strasse}}<br />
+Adresszusatz: {{antrag.adresszusatz}}<br />
+PLZ: {{antrag.plz}}<br />
+Stadt: {{antrag.stadt}}<br />
+Land: {{antrag.land}}<br />
+Telefon: {{antrag.telefon}}<br />
+E-Mail: {{antrag.email}}<br />
+Beruf: {{antrag.beruf}}<br />
+Studienort: {{antrag.studienort}}<br />
+Studienfach: {{antrag.studienfach}}<br />
+</p>
+
+
+
+
+<p>
+  <form method="POST" action="">
+    {% csrf_token %}
+    <input type="submit" value="Zahlungseingang bestätigen & Mitglied aufnehmen" />
+  </form>
+</p>
