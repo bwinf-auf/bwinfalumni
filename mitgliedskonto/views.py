@@ -145,7 +145,7 @@ class EmailForm(forms.Form):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
-def zahlungsaufforderungen(request, template, schulden):
+def zahlungsaufforderungen(request, templatename, schulden):
     if request.method == 'POST':
         cform = EmailForm(request.POST)
 
@@ -196,7 +196,7 @@ def zahlungsaufforderungen(request, template, schulden):
                                                            'successmessage': successmessage,})
     else:
         template = ""
-        with open("mitgliedskonto/" + template + ".txt", "r", encoding='utf8') as templatefile:
+        with open("mitgliedskonto/" + templatename + ".txt", "r", encoding='utf8') as templatefile:
             for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
                 template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
         return render(request, 'mitgliedskonto/email.html', {'cform': EmailForm({'betreff': "Mitgliedsbeitrag BwInf Alumni und Freunde e. V.",
