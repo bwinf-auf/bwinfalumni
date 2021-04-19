@@ -1,18 +1,18 @@
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist
-
 from django import forms
 
-from django.core.mail import send_mail
-
 from .models import Mitgliedschaftsantrag
-from mitglieder.models import Mitglied
 from profil.models import Sichtbarkeit
+from benutzer.models import BenutzerMitglied
+from mitglieder.models import Mitglied
 
 from datetime import date
-import random
-import string
+from random import choice
 
 class MitgliedschaftsantragForm(forms.ModelForm):
     class Meta:
@@ -64,7 +64,7 @@ def neuerantrag(request):
         form = MitgliedschaftsantragForm(data=request.POST)
         if form.is_valid():
             ma = form.save(commit=False)
-            ma.verifikationscode = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
+            ma.verifikationscode = ''.join(choice(ABCDEFGHKMNPQRSTUVWXYZ23456789) for _ in range(8))
             if ma.mitgliedschaft == 'O' or ma.mitgliedsbeitrag >= 50:
                 if ma.mitgliedschaft == 'O':
                     ma.mitgliedsbeitrag = 10
@@ -131,11 +131,6 @@ def zahlungsinformationen(request, mitgliedsnummer):
 
 class EmptyForm(forms.Form):
     pass
-
-from django.contrib.auth.decorators import login_required, user_passes_test
-from random import choice
-from django.contrib.auth.models import User
-from benutzer.models import BenutzerMitglied
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())

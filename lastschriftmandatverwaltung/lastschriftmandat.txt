@@ -1,0 +1,16 @@
+Hallo {vorname} {nachname},
+
+
+vielen Dank für dein SEPA-Lastschriftmandat für den
+„Bundeswettbewerb Informatik Alumni und Freunde e. V.“
+
+Wir haben das Mandat in unsere Unterlagen eingearbeitet. Es trägt
+die Mandatsreferenz „{mandatsreferenz}“. Die Lastschrift findet jährlich ein
+paar Tage nach der Fälligstellung des Mitgliedsbeitrages statt. Die
+entsprechende E-Mail ist dann auch die Vorankündigung für die Abbuchung
+des Mitgliedsbeitrages.
+
+
+Schönen Gruß,
+Nikolai Wyderka und Robert Czechowski
+(Vorstand)

@@ -1,21 +1,18 @@
-from django.shortcuts import render,get_object_or_404
-from django.http import HttpResponse, Http404
-from django.template import loader
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template import loader
+from django.forms import ModelForm
+from django.http import HttpResponse, Http404
+from django.urls import reverse
+from django import forms
 
 from .models import GekuerztesLastschriftmandat
-from django.contrib.auth.models import User
-from mitglieder.models import Mitglied
 from benutzer.models import BenutzerMitglied
+from mitglieder.models import Mitglied
 
 from datetime import date
-
-from django import forms
-from django.shortcuts import redirect
-from django.forms import ModelForm
-
-from django.urls import reverse
-
 
 @login_required
 def index(request):
@@ -208,6 +205,7 @@ def accept(request, lastschriftmandat_id):
                     ref = "{:0>4}".format(mitglied.mitgliedsnummer) + "-" + str(refnr)
                     if not GekuerztesLastschriftmandat.objects.filter(referenz=ref).exists():
                         lsm.referenz = ref
+                        sende_email_mit_mandatsreferenz(mitglied, ref)
                         break
                 for altmandat in mitglied.gekuerzteslastschriftmandat_set.all():
                     if altmandat.gueltig_ab != None and altmandat.gueltig_bis == None:
@@ -217,3 +215,34 @@ def accept(request, lastschriftmandat_id):
                 lsm.save()
 
     return redirect(reverse('lastschriftmandatverwaltung:index'))
+
+
+
+
+def sende_email_mit_mandatsreferenz(mitglied, mandatsreferenz):
+    with open('listen/maillog', 'a', encoding='utf8') as f:
+        with open ("lastschriftmandatverwaltung/lastschriftmandat.txt", "r", encoding='utf8') as templatefile:
+            template = ""
+            for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
+                template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
+            data = {'name': mitglied.vorname + " " + mitglied.nachname,
+                    'vorname': mitglied.vorname,
+                    'nachname': mitglied.nachname,
+                    'anrede': mitglied.anrede,
+                    'mitgliedsnummer': mitglied.mitgliedsnummer,
+                    'datum': str(date.today()),
+                    'mitgliedsbeitrag': mitglied.beitrag_cent / 100.0,
+                    'mandatsreferenz': mandatsreferenz,
+                    'email': mitglied.email}
+            betreff = "Lastschriftmandat für den BwInf Alumni und Freunde e. V.".format(**data)
+            text = template.format(**data)
+
+            try:
+                send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [mitglied.email])
+                f.write("Date: " + str(date.today()) + "\n")
+                f.write("To: " + mitglied.email + "\n")
+                f.write("From: vorstand@alumni.bwinf.de\n")
+                f.write("Subject: " + betreff + "\n\n")
+                f.write(text + "\n\n")
+            except:
+                f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ") (Mandat: " + mandatsreferenz + ")\n\n")
