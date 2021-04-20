@@ -65,7 +65,7 @@ def neuerantrag(request):
         form = MitgliedschaftsantragForm(data=request.POST)
         if form.is_valid():
             ma = form.save(commit=False)
-            ma.verifikationscode = ''.join(choice(ABCDEFGHKMNPQRSTUVWXYZ23456789) for _ in range(8))
+            ma.verifikationscode = ''.join(choice("ABCDEFGHKMNPQRSTUVWXYZ23456789") for _ in range(8))
             if ma.mitgliedschaft == 'O' or ma.mitgliedsbeitrag >= 50:
                 if ma.mitgliedschaft == 'O':
                     ma.mitgliedsbeitrag = 10
