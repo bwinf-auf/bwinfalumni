@@ -221,7 +221,7 @@ def accept(request, lastschriftmandat_id):
 
 def sende_email_mit_mandatsreferenz(mitglied, mandatsreferenz):
     with open('listen/maillog', 'a', encoding='utf8') as f:
-        with open ("lastschriftmandatverwaltung/lastschriftmandat.txt", "r", encoding='utf8') as templatefile:
+        with open ("mailtemplates/lastschriftmandat.txt", "r", encoding='utf8') as templatefile:
             template = ""
             for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
                 template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …

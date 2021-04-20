@@ -196,7 +196,7 @@ def zahlungsaufforderungen(request, templatename, schulden):
                                                            'successmessage': successmessage,})
     else:
         template = ""
-        with open("mitgliedskonto/" + templatename + ".txt", "r", encoding='utf8') as templatefile:
+        with open("mailtemplates/" + templatename + ".txt", "r", encoding='utf8') as templatefile:
             for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
                 template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
         return render(request, 'mitgliedskonto/email.html', {'cform': EmailForm({'betreff': "Mitgliedsbeitrag BwInf Alumni und Freunde e. V.",

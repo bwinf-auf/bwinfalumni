@@ -179,7 +179,7 @@ def antrag(request, mitgliedsnummer):
 
 def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
     with open('listen/maillog', 'a', encoding='utf8') as f:
-        with open ("mitgliedschaftsantrag/verifikation.txt", "r", encoding='utf8') as templatefile:
+        with open ("mailtemplates/verifikation.txt", "r", encoding='utf8') as templatefile:
             template = templatefile.read()
             data = {'name': mitgliedschaftsantrag.vorname + " " + mitgliedschaftsantrag.nachname,
                     'vorname': mitgliedschaftsantrag.vorname,
@@ -204,7 +204,7 @@ def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
 
 def sende_email_mit_zahlungsinformationen(mitglied):
     with open('listen/maillog', 'a', encoding='utf8') as f:
-        with open ("mitgliedschaftsantrag/registrierung.txt", "r", encoding='utf8') as templatefile:
+        with open ("mailtemplates/registrierung.txt", "r", encoding='utf8') as templatefile:
             template = templatefile.read()
             data = {'name': mitglied.vorname + " " + mitglied.nachname,
                     'vorname': mitglied.vorname,
@@ -229,7 +229,7 @@ def sende_email_mit_zahlungsinformationen(mitglied):
 
 def sende_email_mit_zugangsdaten(mitglied, passwort, benutzername):
     with open('listen/maillog', 'a', encoding='utf8') as f:
-        with open ("mitgliedschaftsantrag/aufnahmebestaetigung.txt", "r", encoding='utf8') as templatefile:
+        with open ("mailtemplates/aufnahmebestaetigung.txt", "r", encoding='utf8') as templatefile:
             template = templatefile.read()
             data = {'name': mitglied.vorname + " " + mitglied.nachname,
                     'vorname': mitglied.vorname,
