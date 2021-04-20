@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
 from django.urls import reverse
 from django import forms
 
@@ -178,8 +179,8 @@ def antrag(request, mitgliedsnummer):
 
 
 def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
-    with open('listen/maillog', 'a', encoding='utf8') as f:
-        with open ("mailtemplates/verifikation.txt", "r", encoding='utf8') as templatefile:
+    with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
+        with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'verifikation.txt', 'r', encoding='utf8') as templatefile:
             template = templatefile.read()
             data = {'name': mitgliedschaftsantrag.vorname + " " + mitgliedschaftsantrag.nachname,
                     'vorname': mitgliedschaftsantrag.vorname,
@@ -203,8 +204,8 @@ def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
                 f.write("ERROR: Could not send mail to: " + mitgliedschaftsantrag.email + "(" + str(date.today()) + ": " + betreff + ") (code: " +  mitgliedschaftsantrag.verifikationscode + ")\n\n")
 
 def sende_email_mit_zahlungsinformationen(mitglied):
-    with open('listen/maillog', 'a', encoding='utf8') as f:
-        with open ("mailtemplates/registrierung.txt", "r", encoding='utf8') as templatefile:
+    with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
+        with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'registrierung.txt', 'r', encoding='utf8') as templatefile:
             template = templatefile.read()
             data = {'name': mitglied.vorname + " " + mitglied.nachname,
                     'vorname': mitglied.vorname,
@@ -228,8 +229,8 @@ def sende_email_mit_zahlungsinformationen(mitglied):
                 f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ")\n\n")
 
 def sende_email_mit_zugangsdaten(mitglied, passwort, benutzername):
-    with open('listen/maillog', 'a', encoding='utf8') as f:
-        with open ("mailtemplates/aufnahmebestaetigung.txt", "r", encoding='utf8') as templatefile:
+    with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
+        with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'aufnahmebestaetigung.txt', 'r', encoding='utf8') as templatefile:
             template = templatefile.read()
             data = {'name': mitglied.vorname + " " + mitglied.nachname,
                     'vorname': mitglied.vorname,

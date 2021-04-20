@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.forms import ModelForm
 from django.http import HttpResponse, Http404
+from django.conf import settings
 from django.urls import reverse
 from django import forms
 
@@ -220,8 +221,8 @@ def accept(request, lastschriftmandat_id):
 
 
 def sende_email_mit_mandatsreferenz(mitglied, mandatsreferenz):
-    with open('listen/maillog', 'a', encoding='utf8') as f:
-        with open ("mailtemplates/lastschriftmandat.txt", "r", encoding='utf8') as templatefile:
+    with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
+        with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'lastschriftmandat.txt", ''r', encoding='utf8') as templatefile:
             template = ""
             for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
                 template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …

@@ -140,6 +140,10 @@ PASSWORD_HASHERS = [
     'bwinfalumni.hashers.LegacyPasswordHasher',
 ]
 
+BWINFALUMNI_LOGS_DIR = './log/'
+BWINFALUMNI_MAIL_ADDRESSES_DIR = './listen/'
+BWINFALUMNI_MAIL_TEMPLATE_DIR = './mailtemplates/'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -147,7 +151,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'log/django_debug.log',
+            'filename': BWINFALUMNI_LOGS_DIR + 'django_debug.log',
         },
     },
     'loggers': {

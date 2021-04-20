@@ -1,28 +1,19 @@
-from django.shortcuts import render,get_object_or_404
-from django.http import HttpResponse, Http404
-from django.template import loader
 from django.contrib.auth.decorators import login_required, user_passes_test
-
-from django.contrib.auth.models import User
-from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
-from benutzer.models import BenutzerMitglied
-
 from django.core.mail.backends.smtp import EmailBackend
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.shortcuts import redirect, render, get_object_or_404
+from django.template import loader
+from django.forms import ModelForm
+from django.http import HttpResponse, Http404
+from django.conf import settings
+from django.urls import reverse
+from django import forms
+
+from benutzer.models import BenutzerMitglied
+from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
 
 from datetime import date
-
-from django import forms
-from django.shortcuts import redirect
-from django.forms import ModelForm
-
-from django.core.mail import send_mail
-
-from bwinfalumni.settings import DEBUG
-
-#from django.core.urlresolvers import reverse
-# in neuern django versionen from django.urls import reverse
-from django.urls import reverse
-
 
 @login_required
 def index(request):
@@ -196,7 +187,7 @@ def zahlungsaufforderungen(request, templatename, schulden):
                                                            'successmessage': successmessage,})
     else:
         template = ""
-        with open("mailtemplates/" + templatename + ".txt", "r", encoding='utf8') as templatefile:
+        with open(settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + templatename + ".txt", "r", encoding='utf8') as templatefile:
             for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
                 template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
         return render(request, 'mitgliedskonto/email.html', {'cform': EmailForm({'betreff': "Mitgliedsbeitrag BwInf Alumni und Freunde e. V.",
@@ -223,7 +214,7 @@ class UserForm(forms.ModelForm):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def addmitglied(request):
-    if not DEBUG:
+    if not settings.DEBUG:
         raise Http404("Mitglieder-Anlegen zur Zeit noch nicht verfügbar.")
     if request.method == 'POST':
         mform = MitgliedForm(request.POST)
