@@ -181,7 +181,9 @@ def antrag(request, mitgliedsnummer):
 def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
     with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
         with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'verifikation.txt', 'r', encoding='utf8') as templatefile:
-            template = templatefile.read()
+            template = ""
+            for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
+                template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
             data = {'name': mitgliedschaftsantrag.vorname + " " + mitgliedschaftsantrag.nachname,
                     'vorname': mitgliedschaftsantrag.vorname,
                     'nachname': mitgliedschaftsantrag.nachname,
@@ -206,7 +208,9 @@ def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
 def sende_email_mit_zahlungsinformationen(mitglied):
     with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
         with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'registrierung.txt', 'r', encoding='utf8') as templatefile:
-            template = templatefile.read()
+            template = ""
+            for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
+                template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
             data = {'name': mitglied.vorname + " " + mitglied.nachname,
                     'vorname': mitglied.vorname,
                     'nachname': mitglied.nachname,
@@ -231,7 +235,9 @@ def sende_email_mit_zahlungsinformationen(mitglied):
 def sende_email_mit_zugangsdaten(mitglied, passwort, benutzername):
     with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
         with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'aufnahmebestaetigung.txt', 'r', encoding='utf8') as templatefile:
-            template = templatefile.read()
+            template = ""
+            for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
+                template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
             data = {'name': mitglied.vorname + " " + mitglied.nachname,
                     'vorname': mitglied.vorname,
                     'nachname': mitglied.nachname,
