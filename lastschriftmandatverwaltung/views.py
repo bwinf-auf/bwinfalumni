@@ -142,7 +142,7 @@ def addnew(request, mitgliedsnummer):
                 iban_starred = " ".join(iban_starred[i:i+4] for i in range(0, len(iban), 4))
                 mandat.iban = iban_starred
                 try:
-                    with open("mandatlog", "a") as mandatlog:
+                    with open(settings.BWINFALUMNI_LOGS_DIR + 'mandatlog', 'a') as mandatlog:
                         mandatlog.write("M" + str(mitglied.mitgliedsnummer) + " ADD IBAN: " + iban_spaced + "\n")
                         mandat.save()
                 except:
@@ -222,7 +222,7 @@ def accept(request, lastschriftmandat_id):
 
 def sende_email_mit_mandatsreferenz(mitglied, mandatsreferenz):
     with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
-        with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'lastschriftmandat.txt", ''r', encoding='utf8') as templatefile:
+        with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'lastschriftmandat.txt', 'r', encoding='utf8') as templatefile:
             template = ""
             for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
                 template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
