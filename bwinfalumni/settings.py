@@ -145,6 +145,8 @@ PASSWORD_HASHERS = [
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'bwinfalumni.authentication_backends.MitgliedsnummerBackend',
+    'bwinfalumni.authentication_backends.MitgliedEmailBackend',
+    'bwinfalumni.authentication_backends.EmailBackend',
 ]
 
 
