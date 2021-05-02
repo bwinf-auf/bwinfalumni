@@ -87,7 +87,7 @@ def index(request):
             mlon = coords[0] + delta*math.cos(2.*math.pi * i/num)
             mlat = coords[1] + delta*math.sin(2.*math.pi * i/num)
 
-            mtext = [m.vorname, m.nachname, m.plz, m.stadt, "/profil/"+str(m.mitgliedsnummer)]
+            mtext = [m.vorname, m.nachname, m.plz, m.stadt, "/profil/"+str(m.id)]
 
             do_highlight = (ownmitglied is not None and m.mitgliedsnummer == ownmitglied.mitgliedsnummer)
 
