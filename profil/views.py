@@ -84,7 +84,7 @@ def showuser(request, mitgliedid):
     is_authenticated = request.user.is_authenticated
     scope = "alumni" if is_authenticated else "welt"
 
-    mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedid)
+    mitglied = get_object_or_404(Mitglied, id__exact = mitgliedid)
     info = {}
     keine_info = True
     for sache in ["vorname", "nachname", "studienort", "studienfach", "beruf", "email", "telefon", "adresse", "karte"]:
