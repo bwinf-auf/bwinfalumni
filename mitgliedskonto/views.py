@@ -106,8 +106,10 @@ def beitraegeeinziehen(request):
         if not bform.is_valid():
             errormessage = "Die eingegebenen Daten sind ungültig. " + mform.errors.as_json(escape_html=True)
         else:
-            typ = MitgliedskontoBuchungstyp(typname = bform.cleaned_data['kommentar'])
-            typ.save()
+            try:
+                typ = MitgliedskontoBuchungstyp.objects.filter(typname="Mitgliedsbeitrag")[0]
+            except:
+                typ = MitgliedskontoBuchungstyp.objects.create(typname="Mitgliedsbeitrag")
             today = date.today()
             mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today)
             numBeitraege = 0

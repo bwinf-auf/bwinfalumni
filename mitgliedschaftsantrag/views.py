@@ -10,7 +10,7 @@ from django import forms
 from .models import Mitgliedschaftsantrag
 from profil.models import Sichtbarkeit
 from benutzer.models import BenutzerMitglied
-from mitglieder.models import Mitglied
+from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
 
 from datetime import date
 from random import choice
@@ -86,6 +86,79 @@ def neuerantrag(request):
                    'verifikationen': verifikationen,
                    'antraege': antraege,
                   })
+
+
+class MitgliedForm(forms.ModelForm):
+    #antragsdatum = forms.IntegerField()
+    beitrag = forms.BooleanField(required=False)
+    beitrag_text = forms.CharField(required=False)
+    gutschrift = forms.BooleanField(required=False)
+    gutschrift_text = forms.CharField(required=False)
+    gutschrift_wert_cent = forms.IntegerField(required=False)
+    mail = forms.BooleanField(required=False)
+
+    class Meta:
+        model = Mitglied
+        exclude = ["austrittsdatum", "mitgliedsnummer", "anzahl_mahnungen"]
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def neuemitgliedschaft(request):
+    errormessage = ""
+    successmessage = ""
+
+    if request.method == 'POST':
+        form = MitgliedForm(data=request.POST)
+        if form.is_valid():
+            mitgliedsnummer = Mitglied.objects.order_by('-mitgliedsnummer')[0].mitgliedsnummer + 1
+            m = form.save(commit=False)
+            m.mitgliedsnummer = mitgliedsnummer
+            m.save()
+
+            setze_default_sichtbarkeiten(m)
+
+            if form.cleaned_data['mail']:
+                if m.beitrittsdatum == None:
+                    sende_email_mit_zahlungsinformationen(m)
+                else:
+                    benutzername = "m" + str(m.mitgliedsnummer)
+                    passwort = ''.join(choice("ABCDEFGHKMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz23456789") for _ in range(16))
+                    benutzer = User.objects.create_user(username=benutzername, email=m.email, password=passwort)
+                    benutzermitglied = BenutzerMitglied(benutzer=benutzer, mitglied=m)
+                    benutzermitglied.save()
+                    sende_email_mit_zugangsdaten(m, passwort, benutzername)
+
+            if form.cleaned_data['beitrag']:
+                try:
+                    typ = MitgliedskontoBuchungstyp.objects.filter(typname="Mitgliedsbeitrag")[0]
+                except:
+                    typ = MitgliedskontoBuchungstyp.objects.create(typname="Mitgliedsbeitrag")
+                MitgliedskontoBuchung.objects.create(mitglied=m, typ=typ, cent_wert=m.beitrag_cent, kommentar=form.cleaned_data['beitrag_text'])
+            if form.cleaned_data['gutschrift']:
+                try:
+                    typ = MitgliedskontoBuchungstyp.objects.filter(typname="Gutschrift")[0]
+                except:
+                    typ = MitgliedskontoBuchungstyp.objects.create(typname="Gutschrift")
+
+                MitgliedskontoBuchung.objects.create(mitglied=m, typ=typ, cent_wert=form.cleaned_data['gutschrift_wert_cent'], kommentar=form.cleaned_data['gutschrift_text'])
+
+            return redirect('mitgliedschaftsantrag:neuerantrag')
+        else:
+            errormessage = "Es sind Fehler aufgetreten. (S. o.)"
+    else:
+        form = MitgliedForm(initial={'beitrag_text': 'Mitgliedsbeitrag 202x',
+                                     'gutschrift_text': "Gutschrift Endrundenteilnahme (Endrunde 202x)",
+                                     'gutschrift_wert_cent': 2000,
+                                     'mail': True})
+
+    return render(request, 'mitgliedschaftsantrag/mitgliedschaft.html',
+                  {'form': form,
+                   'errormessage': errormessage,
+                   'successmessage': successmessage,
+                  })
+
 
 class VerifikationForm(forms.Form):
     code = forms.CharField(label='Verifikationscode', max_length=250)
@@ -314,6 +387,12 @@ def setze_sichtbarkeiten(ma, m):
         profil += profil_welt
 
     for (bereich, sache) in profil:
+        neu = Sichtbarkeit.objects.create(mitglied=m,
+                                          bereich=bereich,
+                                          sache=sache)
+
+def setze_default_sichtbarkeiten(m):
+    for (bereich, sache) in profil_default:
         neu = Sichtbarkeit.objects.create(mitglied=m,
                                           bereich=bereich,
                                           sache=sache)
