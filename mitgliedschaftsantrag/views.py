@@ -33,31 +33,6 @@ class MitgliedschaftsantragForm(forms.ModelForm):
             'beruf': "Beschäftigung" }
 
 def neuerantrag(request):
-    antraege = None
-    verifikationen = None
-
-    benutzer = request.user
-    if benutzer.is_superuser or benutzer.groups.filter(name='vorstand').exists():
-        verifikationen = []
-        for ma in Mitgliedschaftsantrag.objects.all():
-            verifikationen.append({
-                "id": ma.id,
-                "name": ma.vorname + " " + ma.nachname,
-                "datum": ma.antragsdatum,
-                "code": ma.verifikationscode,
-                "email": ma.email,
-            })
-        antraege = []
-        for m in Mitglied.objects.filter(beitrittsdatum__isnull=True):
-            antraege.append({
-                "id": m.id,
-                "mitgliedsnummer": m.mitgliedsnummer,
-                "name": m.vorname + " " + m.nachname,
-                "datum": m.antragsdatum,
-            })
-
-
-
     errormessage = ""
     successmessage = ""
 
@@ -83,7 +58,32 @@ def neuerantrag(request):
                   {'form': form,
                    'errormessage': errormessage,
                    'successmessage': successmessage,
-                   'verifikationen': verifikationen,
+                  })
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def liste(request):
+    verifikationen = []
+    for ma in Mitgliedschaftsantrag.objects.all():
+        verifikationen.append({
+            "id": ma.id,
+            "name": ma.vorname + " " + ma.nachname,
+            "datum": ma.antragsdatum,
+            "code": ma.verifikationscode,
+            "email": ma.email,
+        })
+    antraege = []
+    for m in Mitglied.objects.filter(beitrittsdatum__isnull=True):
+        antraege.append({
+            "id": m.id,
+            "mitgliedsnummer": m.mitgliedsnummer,
+            "name": m.vorname + " " + m.nachname,
+            "datum": m.antragsdatum,
+        })
+
+    return render(request, 'mitgliedschaftsantrag/liste.html',
+                  {'verifikationen': verifikationen,
                    'antraege': antraege,
                   })
 

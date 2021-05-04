@@ -6,6 +6,7 @@ app_name = 'mitgliedschaftsantrag'
 
 urlpatterns = [
     url(r'^$', views.neuerantrag, name='neuerantrag'),
+    url(r'^liste$', views.liste, name='liste'),
     url(r'^neu$', views.neuemitgliedschaft, name='neuemitgliedschaft'),
     url(r'^verifiziere/$', views.verifikation, name='verifikation'),
     url(r'^verifiziere/(?P<code>[-a-zA-Z0-9_]+)$', views.verifikation, name='verifikationparam'),

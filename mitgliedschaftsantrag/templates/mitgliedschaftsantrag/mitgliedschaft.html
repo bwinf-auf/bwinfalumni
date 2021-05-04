@@ -1,0 +1,13 @@
+<h1>Neue Mitgliedschaft eintragen</h1>
+
+Beitrittsdatum leer lassen um Antrag zu erzeugen!
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    Hinweise: Der Beitrag kann nur berechnet werden, wenn es einen Buchungstyp mit dem Namen "Mitgliedsbeitrag" gibt. Die Gutschrift kann nur berechnet werden, wenn es einen Buchungstyp mit dem Namen "Gutschrift" gibt.
+
+    <input type="submit" value="Eintragen!" />
+</form>
