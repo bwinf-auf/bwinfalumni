@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^mailinglistenadressen/', include('mailinglistenadressen.urls', namespace='mailinglistenadressen')),
     url(r'^mitgliederkarte/', include('mitgliederkarte.urls', namespace='mitgliederkarte')),
     url(r'^lastschriftmandate/', include('lastschriftmandatverwaltung.urls', namespace='lastschriftmandatverwaltung')),
+    url(r'^logindaten/', include('emailbenutzername.urls', namespace='emailbenutzername')),
 
     url(r'^accounts/logout/$', auth_views.LogoutView.as_view(), { 'template_name': 'registration/logout.html',}, name='logout' ),
     url(r'^accounts/resetpassword/passwordsent/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
@@ -38,4 +39,3 @@ urlpatterns = [
 
 
 admin.site.site_header = 'BwInf-Alumni Login'
-
