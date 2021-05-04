@@ -8,7 +8,7 @@ class Mitglied(models.Model):
 
     mitgliedsnummer = models.IntegerField(unique=True)
     antragsdatum    = models.DateField(default=date.today)
-    beitrittsdatum  = models.DateField(null=True, blank=True, default=date.today)
+    beitrittsdatum  = models.DateField(null=True, blank=True)
     austrittsdatum  = models.DateField(null=True, blank=True)
     beitrag_cent    = models.IntegerField(default=1000)
 
