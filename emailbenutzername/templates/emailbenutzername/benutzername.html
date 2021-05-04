@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Benutzername</h1>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Speichern" />
+</form>
+
+<p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
+  <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
+
+{% endblock %}

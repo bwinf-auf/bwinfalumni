@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^mailinglistenadressen/', include('mailinglistenadressen.urls', namespace='mailinglistenadressen')),
     url(r'^mitgliederkarte/', include('mitgliederkarte.urls', namespace='mitgliederkarte')),
     url(r'^lastschriftmandate/', include('lastschriftmandatverwaltung.urls', namespace='lastschriftmandatverwaltung')),
+    url(r'^logindaten/', include('emailbenutzername.urls', namespace='emailbenutzername')),
     url(r'^directlogin/', include('passwordlesslogin.urls', namespace='passwordlesslogin')),
     path('login/', RedirectView.as_view(url='/accounts/login')),
 
