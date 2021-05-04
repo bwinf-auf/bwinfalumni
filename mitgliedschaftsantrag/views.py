@@ -135,7 +135,7 @@ def neuemitgliedschaft(request):
                     typ = MitgliedskontoBuchungstyp.objects.filter(typname="Mitgliedsbeitrag")[0]
                 except:
                     typ = MitgliedskontoBuchungstyp.objects.create(typname="Mitgliedsbeitrag")
-                MitgliedskontoBuchung.objects.create(mitglied=m, typ=typ, cent_wert=m.beitrag_cent, kommentar=form.cleaned_data['beitrag_text'])
+                MitgliedskontoBuchung.objects.create(mitglied=m, typ=typ, cent_wert=-m.beitrag_cent, kommentar=form.cleaned_data['beitrag_text'])
             if form.cleaned_data['gutschrift']:
                 try:
                     typ = MitgliedskontoBuchungstyp.objects.filter(typname="Gutschrift")[0]
