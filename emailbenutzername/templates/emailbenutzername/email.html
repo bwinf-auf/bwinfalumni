@@ -4,7 +4,7 @@
 
 <h1>E-Mailadresse ändern</h1>
 
-<form action="" method="post" autocomplete="off">
+<form action="" method="post" autocomplete="off" target="_self">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Speichern" />

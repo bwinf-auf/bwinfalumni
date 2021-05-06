@@ -45,9 +45,9 @@ text-align:right;
 <p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
   <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
 
-<p><a href="{% url 'auth:password_change' %}">Passwort ändern</a></p>
-<p><a href="{% url 'emailbenutzername:benutzername' %}">Benutzername ändern</a></p>
-<p><a href="{% url 'emailbenutzername:email' %}">E-Mailadresse ändern</a></p>
+<p><a href="{% url 'auth:password_change' %}" target="_self">Passwort ändern</a></p>
+<p><a href="{% url 'emailbenutzername:benutzername' %}" target="_self">Benutzername ändern</a></p>
+<p><a href="{% url 'emailbenutzername:email' %}" target="_self">E-Mailadresse ändern</a></p>
 
 <p>
 <table style="border:0px; text-align:center;border: none; border-collapse: collapse;" class="sbmatrix">
@@ -113,7 +113,7 @@ text-align:right;
         </td>
       </tr>
     </table>
-    <a href="sichtbarkeit/">Sichtbarkeit ändern</a>
+    <a href="sichtbarkeit/" target="_self">Sichtbarkeit ändern</a>
 </p>
 
 
