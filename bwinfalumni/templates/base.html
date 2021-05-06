@@ -14,7 +14,7 @@
         <div style="float:right; margin-right:50px;">
         {% if user.is_authenticated %}
         Eingeloggt als: <b>{{ user.username }}</b>{% if user.benutzermitglied %}, Mitgliedsnummer: <b>{{ user.benutzermitglied.mitglied.mitgliedsnummer }}</b> {% endif %}
-        (<a href="{% url 'auth:logout' %}">Ausloggen</a>) 
+        (<a href="{% url 'auth:logout' %}">Ausloggen</a>)
         {% else %}
         <a href="{% url 'auth:login' %}">Einloggen</a>
         {% endif %}
@@ -30,10 +30,10 @@
 
     <div id="footer">
         {% block footer %}
-        
+
         {% if user.is_superuser or user.is_staff %}
         <hr />
-        
+
         <h2>Admin-Bereich</h2>
         <p>
         <ul>
@@ -43,9 +43,9 @@
         </ul>
         </p>
         {% endif %}
-        
-        
-        
+
+
+
         {% endblock %}
     </div>
 </body>
@@ -54,6 +54,7 @@
 if (window.top!=window.self)
 {
     document.getElementById("header").style.display = "none";
+    document.getElementById("footer").style.display = "none";
 }
 </script>
 </html>
