@@ -16,6 +16,10 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.views.generic.base import RedirectView
+from django.urls import path
+
+
 
 urlpatterns = [
     url(r'^umsaetze/', include('umsaetze.urls', namespace='umsaetze')),
@@ -27,6 +31,7 @@ urlpatterns = [
     url(r'^mitgliederkarte/', include('mitgliederkarte.urls', namespace='mitgliederkarte')),
     url(r'^lastschriftmandate/', include('lastschriftmandatverwaltung.urls', namespace='lastschriftmandatverwaltung')),
     url(r'^directlogin/', include('passwordlesslogin.urls', namespace='passwordlesslogin')),
+    path('login/', RedirectView.as_view(url='/accounts/login')),
 
     url(r'^accounts/logout/$', auth_views.LogoutView.as_view(), { 'template_name': 'registration/logout.html',}, name='logout' ),
     url(r'^accounts/resetpassword/passwordsent/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
