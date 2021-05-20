@@ -40,7 +40,8 @@ def benutzername(request):
 
 
 class EmailForm(forms.Form):
-    email = forms.EmailField(label='Neuer E-Mailadresse', max_length=250)
+    email = forms.EmailField(label='Neue E-Mailadresse', max_length=250)
+    email2 = forms.EmailField(label='Neue E-Mailadresse wiederholen', max_length=250)
     password = forms.CharField(label='Passwort', max_length=250, widget=forms.PasswordInput)
 
     password.widget.attrs.update({'autocomplete':'new-password'})
@@ -55,20 +56,24 @@ def email(request):
         if form.is_valid():
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
+            email2 = form.cleaned_data['email2']
             benutzer = request.user
-            if check_password(password, benutzer.password):
-                benutzer.email = email
-                benutzer.save()
-                try:
-                    mitglied = benutzer.benutzermitglied.mitglied
-                    mitglied.email = email
-                    mitglied.save()
-                except:
-                    pass
-                successmessage = "E-Mailadresse erfolgreich geändert."
-                form = EmailForm()
+            if email2 == email:
+                if check_password(password, benutzer.password):
+                    benutzer.email = email
+                    benutzer.save()
+                    try:
+                        mitglied = benutzer.benutzermitglied.mitglied
+                        mitglied.email = email
+                        mitglied.save()
+                    except:
+                        pass
+                    successmessage = "E-Mailadresse erfolgreich geändert."
+                    form = EmailForm()
+                else:
+                    errormessage = "Passwort inkorrekt"
             else:
-                errormessage = "Passwort inkorrekt"
+                errormessage = "E-Mailadressen stimmen nicht überein"
         else:
             errormessage = "Es sind Fehler aufgetreten. (S. o.)"
     else:
