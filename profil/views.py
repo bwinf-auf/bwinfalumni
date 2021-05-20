@@ -75,6 +75,8 @@ def index(request):
 
     return render(request, 'profil/profil.html', {'form': form,
                                                   'mitglied': mitglied,
+                                                  'benutzername': benutzer.username,
+                                                  'benutzeremail': benutzer.email,
                                                   'errormessage': errormessage,
                                                   'successmessage': successmessage,
                                                   'sichtbar': sichtbar})

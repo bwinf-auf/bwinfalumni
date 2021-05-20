@@ -32,11 +32,14 @@ text-align:right;
 
 <h1>Profil</h1>
 
+<h2>Mitgliedsdaten</h2>
+
 <form action="." method="post">
     {% csrf_token %}
     <table style="border:0px">
       <tr><th>Name:</th><td>{{ mitglied.vorname }} {{ mitglied.nachname }}</td></tr>
       <tr><th>Mitgliedsnummer:</th><td>{{ mitglied.mitgliedsnummer }}</td></tr>
+      <tr><th>E-Mail:</th><td>{{ mitglied.email }}</td><td><a href="{% url 'emailbenutzername:email' %}" target="_self">E-Mailadresse ändern</a></td></tr>
       <tr><th></th><td>&nbsp;</td></tr>
       {{ form.as_table }}
       <tr><th></th><td><input type="submit" value="Speichern" /></td></tr>
@@ -45,11 +48,8 @@ text-align:right;
 <p><span style="color:#080;font-weight:bold;">{{successmessage}}</span>
   <span style="color:#800;font-weight:bold;">{{errormessage}}</span></p>
 
-<p><a href="{% url 'auth:password_change' %}" target="_self">Passwort ändern</a></p>
-<p><a href="{% url 'emailbenutzername:benutzername' %}" target="_self">Benutzername ändern</a></p>
-<p><a href="{% url 'emailbenutzername:email' %}" target="_self">E-Mailadresse ändern</a></p>
-
-<p>
+<h2>Sichtbarkeit</h2>
+<p><a href="sichtbarkeit/" target="_self">Sichtbarkeit ändern</a></p>
 <table style="border:0px; text-align:center;border: none; border-collapse: collapse;" class="sbmatrix">
       <tr><th></th><th>Alumni</th><th>BWINF</th><th>Welt</th></tr>
       <tr>
@@ -113,8 +113,15 @@ text-align:right;
         </td>
       </tr>
     </table>
-    <a href="sichtbarkeit/" target="_self">Sichtbarkeit ändern</a>
-</p>
 
+
+
+<h2>Logindaten</h2>
+
+<table style="border:0px">
+      <tr><th>Benutzername:</th><td>{{ benutzername }}</td><td><a href="{% url 'emailbenutzername:benutzername' %}" target="_self">Benutzername ändern</a></td></tr>
+      <tr><th>E-Mail:</th><td>{{ benutzeremail }}</td><td><a href="{% url 'emailbenutzername:email' %}" target="_self">E-Mailadresse ändern</a></td></tr>
+      <tr><th></th><td></td><td><a href="{% url 'auth:password_change' %}" target="_self">Passwort ändern</a></td></tr>
+</table>
 
 {% endblock %}
