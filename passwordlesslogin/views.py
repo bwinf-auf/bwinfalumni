@@ -86,14 +86,14 @@ def sende_email_mit_logincode(email, code):
             for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
                 template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
             data = {'code': code}
-            betreff = "E-Mail-Login BwInf Alumni und Freunde e. V.".format(**data)
+            betreff = "E-Mail-Login alumni.bwinf.de".format(**data)
             text = template.format(**data)
 
             try:
-                send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [email])
+                send_mail(betreff, text, 'donotreply@alumni.bwinf.de', [email])
                 f.write("Date: " + str(date.today()) + "\n")
-                f.write("To: " + mitgliedschaftsantrag.email + "\n")
-                f.write("From: vorstand@alumni.bwinf.de\n")
+                f.write("To: " + email + "\n")
+                f.write("From: donotreply@alumni.bwinf.de\n")
                 f.write("Subject: " + betreff + "\n\n")
                 f.write(text + "\n\n")
                 return True
