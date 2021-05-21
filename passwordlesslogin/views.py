@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.conf import settings
