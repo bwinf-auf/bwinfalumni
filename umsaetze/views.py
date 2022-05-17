@@ -71,7 +71,7 @@ def listumsaetze(request, reverse = True):
         neu_umsatz = UmsatzForm(prefix='umsatz')
         mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
   
-    all_umsaetze = Umsatz.objects.order_by('wertstellungsdatum')
+    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum')
         
     current_val = 0;
     
