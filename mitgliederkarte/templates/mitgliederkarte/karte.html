@@ -53,10 +53,10 @@
         layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
         layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true, displayInLayerSwitcher: false });
 
-        var size = new OpenLayers.Size(48,45);
+        var size = new OpenLayers.Size(33, 58);
         var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-        icon = new OpenLayers.Icon("{% static 'mitgliederkarte/biber.png' %}", size, offset);
-        icon_red = new OpenLayers.Icon("{% static 'mitgliederkarte/biber_red.png' %}", size, offset);
+        icon = new OpenLayers.Icon("{% static 'mitgliederkarte/pin.png' %}", size, offset);
+        icon_red = new OpenLayers.Icon("{% static 'mitgliederkarte/pin_red.png' %}", size, offset);
 
         map.addLayers([layer_mapnik, layer_markers]);
         jumpTo(lon, lat, zoom);
