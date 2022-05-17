@@ -104,14 +104,15 @@ def showuser(request, mitgliedid):
     return render(request, 'profil/anzeige.html', {'info': info})
 
 def sichtbar(mitglied, bereich, sache):
-    return Sichtbarkeit.objects.filter(mitglied=mitglied).filter(bereich=bereich).filter(sache=sache).exists()
+    mitglied.sichtbarkeit_set.filter(bereich=bereich).filter(sache=sache).exists()
 
 def showallusers(request):
     is_authenticated = request.user.is_authenticated
     scope = "alumni" if is_authenticated else "welt"
 
     today = date.today()
-    mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today).order_by('vorname')
+    mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today).prefetch_related('sichtbarkeit_set').order_by('vorname')
+
     infos = []
     for mitglied in mitglieder:
         info = {}
