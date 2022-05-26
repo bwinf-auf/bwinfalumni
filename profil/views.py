@@ -104,7 +104,7 @@ def showuser(request, mitgliedid):
     return render(request, 'profil/anzeige.html', {'info': info})
 
 def sichtbar(mitglied, bereich, sache):
-    mitglied.sichtbarkeit_set.filter(bereich=bereich).filter(sache=sache).exists()
+    return mitglied.sichtbarkeit_set.filter(bereich=bereich).filter(sache=sache).exists()
 
 def showallusers(request):
     is_authenticated = request.user.is_authenticated
