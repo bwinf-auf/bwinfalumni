@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<!--link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" /-->
+
+<h1>Mitglieder {{jahr}}</h1>
+
+<p>Stand: {{heute}}</p>
+
+<p>Aktuelle Mitgliederzahl: {{mitglieder}}</p>
+
+<p>Neue Mitglieder dieses Jahr: {{neu}}</p>
+
+<p>Kündigungen zum Jahresende: {{kuendigungen}}</p>
+
+<hr>
+
+<p>Neue Mitglieder letztes Jahr: {{neu_before}}</p>
+
+<p>Kündigungen letztes Jahr: {{kuendigungen_before}}</p>
+
+
+
+{% endblock %}

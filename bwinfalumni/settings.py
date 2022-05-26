@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'mailinglistenadressen.apps.MailinglistenadressenConfig',
     'mitgliederkarte.apps.MitgliederkarteConfig',
     'kontostatistik.apps.KontostatistikConfig',
+    'mitgliederstatistik.apps.MitgliederstatistikConfig',
     'emailbenutzername.apps.EmailbenutzernameConfig',
     'passwordlesslogin.apps.PasswordlessloginConfig',
     'django.contrib.auth',

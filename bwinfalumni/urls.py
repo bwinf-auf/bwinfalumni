@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^mitgliedschaftsantrag/', include('mitgliedschaftsantrag.urls', namespace='mitgliedschaftsantrag')),
     url(r'^mailinglistenadressen/', include('mailinglistenadressen.urls', namespace='mailinglistenadressen')),
     url(r'^mitgliederkarte/', include('mitgliederkarte.urls', namespace='mitgliederkarte')),
+    url(r'^mitgliederstatistik/', include('mitgliederstatistik.urls', namespace='mitgliederstatistik')),
     url(r'^kontostatistik/', include('kontostatistik.urls', namespace='kontostatistik')),
     url(r'^lastschriftmandate/', include('lastschriftmandatverwaltung.urls', namespace='lastschriftmandatverwaltung')),
     url(r'^logindaten/', include('emailbenutzername.urls', namespace='emailbenutzername')),
