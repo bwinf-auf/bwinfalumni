@@ -6,37 +6,20 @@ from mitglieder.models import Mitglied
 import math
 import datetime
 
-plzs = None
+plzs = {}
 
-def load_plz():
-    global plzs
-
-    if plzs is not None:
-        return
-
-    plzs = {}
-
-    try:
-        with open("mitgliederkarte/data/PLZ.tab", "r") as f:
-            for line in f:
-                if line.startswith("#"):
-                    continue
-                entries = line.split("\t")
-                plz = entries[1]
-                lon = float(entries[2])
-                lat = float(entries[3])
-                plzs[plz] = (lon, lat)
-    except:
-        plzs = None
-
+with open("mitgliederkarte/data/PLZ.tab", "r", encoding='utf8') as f:
+    for line in f:
+        if line.startswith("#"):
+            continue
+        entries = line.split("\t")
+        plz = entries[1]
+        lon = float(entries[2])
+        lat = float(entries[3])
+        plzs[plz] = (lon, lat)
 
 def plz_to_coord(plz):
     global plzs
-
-    load_plz()
-
-    if plzs is None:
-        return
 
     if not plz in plzs:
         return None
