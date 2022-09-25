@@ -93,12 +93,17 @@ def liste(request):
 
 class MitgliedForm(forms.ModelForm):
     #antragsdatum = forms.IntegerField()
-    beitrag = forms.BooleanField(required=False)
-    beitrag_text = forms.CharField(required=False)
-    gutschrift = forms.BooleanField(required=False)
-    gutschrift_text = forms.CharField(required=False)
+    beitrag              = forms.BooleanField(required=False)
+    beitrag_text         = forms.CharField(required=False)
+    gutschrift           = forms.BooleanField(required=False)
+    gutschrift_text      = forms.CharField(required=False)
     gutschrift_wert_cent = forms.IntegerField(required=False)
-    mail = forms.BooleanField(required=False)
+    mail                 = forms.BooleanField(required=False)
+
+    sichtbarkeit_mailingliste   = forms.BooleanField(required=False)
+    sichtbarkeit_adresse_verein = forms.BooleanField(required=False)
+    sichtbarkeit_adresse_bwinf  = forms.BooleanField(required=False)
+    sichtbarkeit_name_welt      = forms.BooleanField(required=False)
 
     class Meta:
         model = Mitglied
@@ -120,7 +125,11 @@ def neuemitgliedschaft(request):
             m.mitgliedsnummer = mitgliedsnummer
             m.save()
 
-            setze_default_sichtbarkeiten(m)
+            setze_sichtbarkeiten(m,
+                                 form.cleaned_data['sichtbarkeit_mailingliste'],
+                                 form.cleaned_data['sichtbarkeit_adresse_verein'],
+                                 form.cleaned_data['sichtbarkeit_adresse_bwinf'],
+                                 form.cleaned_data['sichtbarkeit_name_welt'])
 
             if form.cleaned_data['mail']:
                 if m.beitrittsdatum == None:
@@ -185,7 +194,7 @@ def verifikation(request, code=None):
             m = vorlaeufiges_mitglied(ma)
             sende_email_mit_zahlungsinformationen(m)
             m.save()
-            setze_sichtbarkeiten(ma, m)
+            setze_sichtbarkeiten_antrag(m, ma)
             ma.delete()
             return redirect(reverse('mitgliedschaftsantrag:zahlungsinformationen', kwargs={'mitgliedsnummer':m.mitgliedsnummer}))
         except ObjectDoesNotExist: # Kein Mitgliedschaftsantrag mit diesem Code vorhanden
@@ -370,7 +379,8 @@ profil_default = [("alumni", "vorname"),
                   ("alumni", "email")]
 profil_mailingliste = [("alumni", "mailingliste")]
 profil_verein = [("alumni", "telefon"),
-                 ("alumni", "adresse")]
+                 ("alumni", "adresse"),
+                 ("alumni", "karte")]
 profil_bwinf = [("bwinf", "vorname"),
                 ("bwinf", "nachname"),
                 ("bwinf", "email"),
@@ -378,15 +388,15 @@ profil_bwinf = [("bwinf", "vorname"),
 profil_welt = [("welt", "vorname"),
                ("welt", "nachname")]
 
-def setze_sichtbarkeiten(ma, m):
+def setze_sichtbarkeiten(m, mailingliste, adresse_verein, adresse_bwinf, name_welt):
     profil = profil_default.copy()
-    if ma.mailingliste:
+    if mailingliste:
         profil += profil_mailingliste
-    if ma.adresse_verein:
+    if adresse_verein:
         profil += profil_verein
-    if ma.adresse_bwinf:
+    if adresse_bwinf:
         profil += profil_bwinf
-    if ma.name_welt:
+    if name_welt:
         profil += profil_welt
 
     for (bereich, sache) in profil:
@@ -394,8 +404,9 @@ def setze_sichtbarkeiten(ma, m):
                                           bereich=bereich,
                                           sache=sache)
 
-def setze_default_sichtbarkeiten(m):
-    for (bereich, sache) in profil_default:
-        neu = Sichtbarkeit.objects.create(mitglied=m,
-                                          bereich=bereich,
-                                          sache=sache)
+def setze_sichtbarkeiten_antrag(m, ma):
+    setze_sichtbarkeiten(m,
+                         ma.mailingliste,
+                         ma.adresse_verein,
+                         ma.adresse_bwinf,
+                         ma.name_welt)
