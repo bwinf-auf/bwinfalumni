@@ -159,6 +159,15 @@ def zahlungsaufforderungen(request, templatename, schulden):
                     for buchung in buchungen:
                         kontostand += buchung.cent_wert
                     if kontostand < 0 or not schulden:
+                        gueltige_lastschriftmandate = mitglied.gekuerzteslastschriftmandat_set.filter(gueltig_ab__lte=today).exclude(gueltig_bis__lte=today)
+                        if len(gueltige_lastschriftmandate) > 0:
+                            mandat = gueltige_lastschriftmandate[0]
+                            lastschrift_vorhanden = "JA"
+                            lastschrift_info = "IBAN: " + mandat.iban[0:9] + " … (" + mandat.bankname + ")\n"
+                        else:
+                            lastschrift_vorhanden = "NEIN"
+                            lastschrift_info = ""
+
                         data = {'vorname': mitglied.vorname,
                                 'nachname': mitglied.nachname,
                                 'anrede': mitglied.anrede,
@@ -166,7 +175,10 @@ def zahlungsaufforderungen(request, templatename, schulden):
                                 'datum': str(date.today()),
                                 'kontostand': kontostand / 100.0,
                                 'schulden': -kontostand / 100.0,
-                                'email': mitglied.email}
+                                'email': mitglied.email,
+                                'lastschrift_vorhanden': lastschrift_vorhanden,
+                                'lastschrift': lastschrift_info,
+                                }
                         betreff = cform.cleaned_data['betreff'].format(**data)
                         text = cform.cleaned_data['text'].format(**data)
 
