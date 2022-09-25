@@ -1,7 +1,11 @@
+{% if isadmin %}
+
 <h1>Admin</h1>
 
 <p><a href="{% url 'mitgliedschaftsantrag:liste' %}">Offene Mitgliedsanträge anzeigen</a></p>
 <p><a href="{% url 'mitgliedschaftsantrag:neuemitgliedschaft' %}">Neues Mitglied direkt eintragen</a></p>
+
+{% endif %}
 
 <h1>Mitgliedschaftsantrag</h1>
 

@@ -54,8 +54,11 @@ def neuerantrag(request):
     else:
         form = MitgliedschaftsantragForm()
 
+    isadmin = request.user.is_superuser or request.user.groups.filter(name='vorstand').exists()
+
     return render(request, 'mitgliedschaftsantrag/antrag.html',
                   {'form': form,
+                   'isadmin': isadmin,
                    'errormessage': errormessage,
                    'successmessage': successmessage,
                   })
