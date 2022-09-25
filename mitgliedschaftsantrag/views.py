@@ -56,7 +56,8 @@ def neuerantrag(request):
 
     isadmin = request.user.is_superuser or request.user.groups.filter(name='vorstand').exists()
 
-    return render(request, 'mitgliedschaftsantrag/antrag.html',
+    return render(request,
+                  'mitgliedschaftsantrag/antrag.html',
                   {'form': form,
                    'isadmin': isadmin,
                    'errormessage': errormessage,
@@ -92,7 +93,6 @@ def liste(request):
 
 
 class MitgliedForm(forms.ModelForm):
-    #antragsdatum = forms.IntegerField()
     beitrag              = forms.BooleanField(required=False)
     beitrag_text         = forms.CharField(required=False)
     gutschrift           = forms.BooleanField(required=False)
@@ -108,7 +108,6 @@ class MitgliedForm(forms.ModelForm):
     class Meta:
         model = Mitglied
         exclude = ["austrittsdatum", "mitgliedsnummer", "anzahl_mahnungen"]
-
 
 
 @login_required
@@ -148,20 +147,21 @@ def neuemitgliedschaft(request):
                 except:
                     typ = MitgliedskontoBuchungstyp.objects.create(typname="Mitgliedsbeitrag")
                 MitgliedskontoBuchung.objects.create(mitglied=m, typ=typ, cent_wert=-m.beitrag_cent, kommentar=form.cleaned_data['beitrag_text'])
+
             if form.cleaned_data['gutschrift']:
                 try:
                     typ = MitgliedskontoBuchungstyp.objects.filter(typname="Gutschrift")[0]
                 except:
                     typ = MitgliedskontoBuchungstyp.objects.create(typname="Gutschrift")
-
                 MitgliedskontoBuchung.objects.create(mitglied=m, typ=typ, cent_wert=form.cleaned_data['gutschrift_wert_cent'], kommentar=form.cleaned_data['gutschrift_text'])
 
             return redirect('mitgliedschaftsantrag:neuerantrag')
         else:
             errormessage = "Es sind Fehler aufgetreten. (S. o.)"
     else:
-        form = MitgliedForm(initial={'beitrag_text': 'Mitgliedsbeitrag 202x',
-                                     'gutschrift_text': "Gutschrift Endrundenteilnahme (Endrunde 202x)",
+        form = MitgliedForm(initial={'beitrag': True,
+                                     'beitrag_text': "Mitgliedsbeitrag " + str(date.today().year),
+                                     'gutschrift_text': "Gutschrift Endrundenteilnahme (Endrunde " + str(date.today().year) + ")",
                                      'gutschrift_wert_cent': 2000,
                                      'mail': True})
 
@@ -215,8 +215,13 @@ def zahlungsinformationen(request, mitgliedsnummer):
                    'mitgliedsbeitrag': mitglied.beitrag_cent / 100.0,
                   })
 
-class EmptyForm(forms.Form):
-    pass
+class BeitragForm(forms.Form):
+    beitrag              = forms.BooleanField(required=False)
+    beitrag_text         = forms.CharField(required=False)
+    gutschrift           = forms.BooleanField(required=False)
+    gutschrift_text      = forms.CharField(required=False)
+    gutschrift_wert_cent = forms.IntegerField(required=False)
+    mail                 = forms.BooleanField(required=False)
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
@@ -225,18 +230,36 @@ def antrag(request, mitgliedsnummer):
     mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer, beitrittsdatum__exact = None)
 
     if request.method == 'POST':
-        empty = EmptyForm(request.POST)
-        if empty.is_valid():
+        form = BeitragForm(request.POST)
+        if form.is_valid():
             mitglied.beitrittsdatum = date.today()
             mitglied.save()
-            benutzername = "m" + str(mitglied.mitgliedsnummer)
-            passwort = ''.join(choice("ABCDEFGHKMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz23456789") for _ in range(16))
-            benutzer = User.objects.create_user(username=benutzername, email=mitglied.email, password=passwort)
-            benutzermitglied = BenutzerMitglied(benutzer=benutzer, mitglied=mitglied)
-            benutzermitglied.save()
-            sende_email_mit_zugangsdaten(mitglied, passwort, benutzername)
+
+            if form.cleaned_data['mail']:
+                benutzername = "m" + str(mitglied.mitgliedsnummer)
+                passwort = ''.join(choice("ABCDEFGHKMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz23456789") for _ in range(16))
+                benutzer = User.objects.create_user(username=benutzername, email=mitglied.email, password=passwort)
+                benutzermitglied = BenutzerMitglied(benutzer=benutzer, mitglied=mitglied)
+                benutzermitglied.save()
+                sende_email_mit_zugangsdaten(mitglied, passwort, benutzername)
+
+            if form.cleaned_data['beitrag']:
+                try:
+                    typ = MitgliedskontoBuchungstyp.objects.filter(typname="Mitgliedsbeitrag")[0]
+                except:
+                    typ = MitgliedskontoBuchungstyp.objects.create(typname="Mitgliedsbeitrag")
+                MitgliedskontoBuchung.objects.create(mitglied=mitglied, typ=typ, cent_wert=-mitglied.beitrag_cent, kommentar=form.cleaned_data['beitrag_text'])
+
+            if form.cleaned_data['gutschrift']:
+                try:
+                    typ = MitgliedskontoBuchungstyp.objects.filter(typname="Gutschrift")[0]
+                except:
+                    typ = MitgliedskontoBuchungstyp.objects.create(typname="Gutschrift")
+                MitgliedskontoBuchung.objects.create(mitglied=mitglied, typ=typ, cent_wert=form.cleaned_data['gutschrift_wert_cent'], kommentar=form.cleaned_data['gutschrift_text'])
+
             return redirect(reverse('mitgliedschaftsantrag:neuerantrag'))
-        return render(request, 'mitgliedschaftsantrag/showantrag.html', {'antrag': antrag, 'errormessage': errormessage})
+        errormessage = "Something went wrong!"
+        return render(request, 'mitgliedschaftsantrag/showantrag.html', {'antrag': antrag, 'form': form, 'errormessage': errormessage})
     else:
         antrag = {
             "id": mitglied.id,
@@ -259,8 +282,18 @@ def antrag(request, mitgliedsnummer):
             'studienort': mitglied.studienort,
             'studienfach': mitglied.studienfach,
         }
+        form = BeitragForm(initial={'beitrag': True,
+                                    'beitrag_text': "Mitgliedsbeitrag " + str(date.today().year),
+                                    'gutschrift_text': "Gutschrift Beitritt am Jahresende",
+                                    'gutschrift_wert_cent': 1000,
+                                    'mail': True})
 
-        return render(request, 'mitgliedschaftsantrag/showantrag.html', {'antrag': antrag})
+        return render(request,
+                      'mitgliedschaftsantrag/showantrag.html',
+                      {'antrag': antrag,
+                       'form': form,
+                       'errormessage': "",
+                       })
 
 
 def sende_email_mit_verifikationscode(mitgliedschaftsantrag):
