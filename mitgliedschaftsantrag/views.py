@@ -140,6 +140,7 @@ def neuemitgliedschaft(request):
                     benutzermitglied = BenutzerMitglied(benutzer=benutzer, mitglied=m)
                     benutzermitglied.save()
                     sende_email_mit_zugangsdaten(m, passwort, benutzername)
+            sende_email_an_vorstand(m, m.beitrittsdatum != None)
 
             if form.cleaned_data['beitrag']:
                 try:
@@ -193,6 +194,7 @@ def verifikation(request, code=None):
             ma = Mitgliedschaftsantrag.objects.get(verifikationscode = code)
             m = vorlaeufiges_mitglied(ma)
             sende_email_mit_zahlungsinformationen(m)
+            sende_email_an_vorstand(m, False)
             m.save()
             setze_sichtbarkeiten_antrag(m, ma)
             ma.delete()
@@ -242,6 +244,8 @@ def antrag(request, mitgliedsnummer):
                 benutzermitglied = BenutzerMitglied(benutzer=benutzer, mitglied=mitglied)
                 benutzermitglied.save()
                 sende_email_mit_zugangsdaten(mitglied, passwort, benutzername)
+
+            sende_email_an_vorstand(mitglied, True)
 
             if form.cleaned_data['beitrag']:
                 try:
@@ -379,6 +383,50 @@ def sende_email_mit_zugangsdaten(mitglied, passwort, benutzername):
             except:
                 f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ") (" +  benutzername + ":" + passwort + ")\n\n")
 
+def sende_email_an_vorstand(mitglied, aufgenommen):
+    with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
+        if aufgenommen:
+            betrefftemplate = "Neuer Mitgliedschaftsantrag"
+            template = """Ein neuer Mitgliedschaftsantrag ist eingegangen:
+
+Name: {name}
+Vorläufige Mitgliedsnummer: {mitgliedsnummer}
+Mitgliedsbeitrag: {mitgliedsbeitrag} €
+
+Sobald der Mitgliedsbeitrag eingegangen ist, kann der Mitgliedschafts-
+antrag unter https://alumni.bwinf.de/mitgliedschaftsantrag/liste
+bestätigt werden."""
+        else:
+            betrefftemplate = "Neues Mitglied aufgenommen! 🥳"
+            template = """Ein neues Mitglied wurde in den Verein aufgenommen:
+
+Name: {name}
+Mitgliedsnummer: {mitgliedsnummer}
+Mitgliedsbeitrag: {mitgliedsbeitrag} €
+
+🥳🥳🥳"""
+
+        data = {'name': mitglied.vorname + " " + mitglied.nachname,
+                'vorname': mitglied.vorname,
+                'nachname': mitglied.nachname,
+                'anrede': mitglied.anrede,
+                'mitgliedsnummer': mitglied.mitgliedsnummer,
+                'datum': str(date.today()),
+                'mitgliedsbeitrag': mitglied.beitrag_cent / 100.0,
+                'email': mitglied.email}
+
+        betreff = betrefftemplate.format(**data)
+        text = template.format(**data)
+
+        try:
+            send_mail(betreff, text, 'vorstand@alumni.bwinf.de', ['vorstand@alumni.bwinf.de'])
+            f.write("Date: " + str(date.today()) + "\n")
+            f.write("To: vorstand@alumni.bwinf.de\n")
+            f.write("From: vorstand@alumni.bwinf.de\n")
+            f.write("Subject: " + betreff + "\n\n")
+            f.write(text + "\n\n")
+        except:
+            f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ")\n\n")
 
 def vorlaeufiges_mitglied(ma):
     mitgliedsnummer = Mitglied.objects.order_by('-mitgliedsnummer')[0].mitgliedsnummer + 1
