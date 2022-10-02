@@ -386,6 +386,15 @@ def sende_email_mit_zugangsdaten(mitglied, passwort, benutzername):
 def sende_email_an_vorstand(mitglied, aufgenommen):
     with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
         if aufgenommen:
+            betrefftemplate = "Neues Mitglied aufgenommen! 🥳"
+            template = """Ein neues Mitglied wurde in den Verein aufgenommen:
+
+Name: {name}
+Mitgliedsnummer: {mitgliedsnummer}
+Mitgliedsbeitrag: {mitgliedsbeitrag} €
+
+🥳🥳🥳"""
+        else:
             betrefftemplate = "Neuer Mitgliedschaftsantrag"
             template = """Ein neuer Mitgliedschaftsantrag ist eingegangen:
 
@@ -396,15 +405,6 @@ Mitgliedsbeitrag: {mitgliedsbeitrag} €
 Sobald der Mitgliedsbeitrag eingegangen ist, kann der Mitgliedschafts-
 antrag unter https://alumni.bwinf.de/mitgliedschaftsantrag/liste
 bestätigt werden."""
-        else:
-            betrefftemplate = "Neues Mitglied aufgenommen! 🥳"
-            template = """Ein neues Mitglied wurde in den Verein aufgenommen:
-
-Name: {name}
-Mitgliedsnummer: {mitgliedsnummer}
-Mitgliedsbeitrag: {mitgliedsbeitrag} €
-
-🥳🥳🥳"""
 
         data = {'name': mitglied.vorname + " " + mitglied.nachname,
                 'vorname': mitglied.vorname,
