@@ -152,7 +152,7 @@ def zahlungsaufforderungen(request, templatename, schulden):
             mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today)
             numEmails = 0
             failEmails = 0
-            with open('listen/maillog', 'a', encoding='utf8') as f:
+            with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
                 for mitglied in mitglieder:
                     kontostand = 0
                     buchungen = mitglied.mitgliedskontobuchung_set.all()

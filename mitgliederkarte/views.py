@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.conf import settings
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from mitglieder.models import Mitglied
@@ -8,7 +9,7 @@ import datetime
 
 plzs = {}
 
-with open("mitgliederkarte/data/PLZ.tab", "r", encoding='utf8') as f:
+with open(settings.BWINFALUMNI_BASE_DIR + 'mitgliederkarte/data/PLZ.tab', 'r', encoding='utf8') as f:
     for line in f:
         if line.startswith("#"):
             continue

@@ -142,7 +142,7 @@ def addnew(request, mitgliedsnummer):
                 iban_starred = " ".join(iban_starred[i:i+4] for i in range(0, len(iban), 4))
                 mandat.iban = iban_starred
                 try:
-                    with open(settings.BWINFALUMNI_LOGS_DIR + 'mandatlog', 'a') as mandatlog:
+                    with open(settings.BWINFALUMNI_LOGS_DIR + 'mandatlog', 'a', encoding='utf8') as mandatlog:
                         mandatlog.write("M" + str(mitglied.mitgliedsnummer) + " ADD IBAN: " + iban_spaced + "\n")
                         mandat.save()
                 except:
@@ -180,7 +180,7 @@ def delete(request, lastschriftmandat_id):
                 lsm.gueltig_bis = date.today()
                 lsm.save()
                 try:
-                    with open("mandatlog", "a") as mandatlog:
+                    with open(settings.BWINFALUMNI_LOGS_DIR + 'mandatlog', 'a', encoding='utf8') as mandatlog:
                         mandatlog.write("M" + str(mitglied.mitgliedsnummer) + " REMOVE IBAN: " + lsm.iban + "\n")
                         mandat.save()
                 except:
