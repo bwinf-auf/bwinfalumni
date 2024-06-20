@@ -180,6 +180,8 @@ LOGGING = {
 
 
 try:
+    import sys
+    sys.path.append(BASE_DIR + '/bwinfalumni/')
     from settings_local import *
 except ImportError as e:
     pass
