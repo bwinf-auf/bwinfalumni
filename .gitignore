@@ -5,3 +5,4 @@ __pycache__
 db.sqlite3
 log/django_debug.log
 notizen
+bwinfalumni/settings_local.py
