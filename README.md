@@ -13,13 +13,12 @@ Zuerst muss eine Datenbank angelegt werden und ein Account erstellt
 werden
 
     cd bwinf-alumni
-    python3 manage.py makemigrations benutzer mitglieder umsaetze profil
-    python3 manage.py migrate            # Datenbank anlegen (sqlite)
-    python3 manage.py createsuperuser    # Test-Admin erstellen 
+    ./manage.py migrate            # Datenbank anlegen (sqlite)
+    ./manage.py createsuperuser    # Test-Admin erstellen 
     
 Jetzt kann man der Server starten
     
-    python3 manage.py runserver          # Server starten
+    ./manage.py runserver          # Server starten
     
 Ein Webserver müsste jetzt auf Port 8000 lauschen.
 
@@ -31,7 +30,7 @@ http://localhost:8000/admin anmelden.
 Um ein paar Testdaten zu erzeugen, muss erst eine Django-Shell gestartet
 werden
 
-    python3 manage.py shell
+    ./manage.py shell
     
 Dann kann man mithilfe des Pakets `mockverein` Testdaten erzeugen
 
@@ -47,7 +46,7 @@ doppelte Nutzer/Mitglieder zu erzeugen. Ggf. können diese aber mit
 Dafür bitte eine neue App erstellen und in INSTALLED_APPS eintragen 
 (bwinfalumni/settings.py)
 
-    python3 manage.py startapp <name>
+    ./manage.py startapp <name>
     
 Bestehende Apps als Referenz sind:
 `benutzer`, `mitglieder`, `mitgliederverwaltung`, `mitgliedskonto`, `profil`, `umsaetze`.
