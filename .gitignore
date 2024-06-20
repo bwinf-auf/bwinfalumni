@@ -6,3 +6,5 @@ db.sqlite3
 log/django_debug.log
 notizen
 bwinfalumni/settings_local.py
+log/maillog
+log/mandatlog
