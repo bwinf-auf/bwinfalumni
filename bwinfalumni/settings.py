@@ -19,11 +19,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '^j2)b@o)w_0ot74!_7+%)8#xsq#6822v&0!y@j2w9(&4$+^aea'
+DEBUG = False
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# For security reasons, SECRET_KEY is not set in this config and DEBUG
+# is set to False by default. You can enable the next two lines, but
+# you should rather create a settings_local.py with the values set!
+# Create a key e.g. with `tr -dc A-Za-z0-9 </dev/urandom | head -c 50; echo`
+
+#  SECURITY WARNING: keep the secret key used in production secret!
+#SECRET_KEY = '^j2)b@o)w_0ot74!_7+%)8#xsq#6822v&0!y@j2w9(&4$+^aea'
+
+#  SECURITY WARNING: don't run with debug turned on in production!
+#DEBUG = True
 
 ALLOWED_HOSTS = []
 
