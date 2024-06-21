@@ -1,2 +1,2 @@
 django==2.2
-distutils==3.9
+distutils
