@@ -11,6 +11,7 @@ class Mitglied(models.Model):
     beitrittsdatum  = models.DateField(null=True, blank=True)
     austrittsdatum  = models.DateField(null=True, blank=True)
     beitrag_cent    = models.IntegerField(default=1000)
+    foerdermitglied = models.BooleanField(default=False)
 
     vorname         = models.CharField(max_length=250)
     nachname        = models.CharField(max_length=250)
