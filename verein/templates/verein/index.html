@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Vereinsbeschlüsse</h1>
+
+<table style="border:0px; border-collapse: collapse; ">
+
+  <tr>
+    <td>Beschlussfassung</td>
+    <td>Mitgliedsbeitrag (in Cent)</td>
+  </tr>
+
+
+  {% for beschluss in beschluesse %}
+    <tr style="border-top:1px solid grey;">
+      <td>{{ beschluss.beschlussfassung }}</td>
+      <td class="ra">{{ beschluss.mitgliedsbeitrag_cent }} Cent</td>
+    </tr>
+  {% endfor %}
+
+</table>
+
+<form action="." method="post" id="beschlussform">
+  {% csrf_token %}
+
+  <table>
+    {{ beschluss }}
+  </table>
+
+  <input type="submit" value="Hinzufügen" />
+
+</form>
+
+<script>
+  document.getElementById("beschlussform").onsubmit = function(event) {
+      if (confirm("Mitgliedsbeitrag für alle ordentlichen Mitglieder anpassen?")) {
+
+      } else {
+          event.preventDefault();
+
+      }
+  }
+</script>
+{% endblock %}
