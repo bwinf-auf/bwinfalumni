@@ -22,6 +22,7 @@ from django.views.generic.base import RedirectView
 
 
 urlpatterns = [
+    url(r'^verein/', include('verein.urls', namespace='verein')),
     url(r'^umsaetze/', include('umsaetze.urls', namespace='umsaetze')),
     url(r'^profil/', include('profil.urls', namespace='profil')),
     url(r'^verwaltung/', include('mitgliederverwaltung.urls', namespace='mitgliederverwaltung')),
