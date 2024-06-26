@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'mitgliederstatistik.apps.MitgliederstatistikConfig',
     'emailbenutzername.apps.EmailbenutzernameConfig',
     'passwordlesslogin.apps.PasswordlessloginConfig',
+    'verein.apps.VereinConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
