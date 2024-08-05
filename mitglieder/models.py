@@ -60,6 +60,7 @@ class Mitglied(models.Model):
         db_table = "mitglied"
         verbose_name = "Mitglied"
         verbose_name_plural = "Mitglieder"
+        ordering = ('mitgliedsnummer',)
 
 
 
