@@ -27,7 +27,7 @@
 
   <tr style="border-top:1px solid #999;">
     <th class="la">Einnahmen Gesamt</th>
-    <th class="ra" {% if value < 0.0 %} style="color: red;" {% endif %}>{{ geseinnahmen|floatformat:2 }} €</th>
+    <th class="ra" {% if geseinnahmen < 0.0 %} style="color: red;" {% endif %}>{{ geseinnahmen|floatformat:2 }} €</th>
   </tr>
 
   <tr style="">
@@ -45,7 +45,7 @@
 
   <tr style="border-top:1px solid #999;">
     <th class="la">Ausgaben Gesamt</th>
-    <th class="ra" {% if value < 0.0 %} style="color: red;" {% endif %}>{{ gesausgaben|floatformat:2 }} €</th>
+    <th class="ra" {% if gesausgaben < 0.0 %} style="color: red;" {% endif %}>{{ gesausgaben|floatformat:2 }} €</th>
   </tr>
 
   <tr style="">
@@ -55,7 +55,7 @@
 
   <tr style="border-top:1px solid #555;">
     <th class="la">Total</th>
-    <th class="ra" {% if value < 0.0 %} style="color: red;" {% endif %}>{{ gesamt|floatformat:2 }} €</th>
+    <th class="ra" {% if gesamt < 0.0 %} style="color: red;" {% endif %}>{{ gesamt|floatformat:2 }} €</th>
   </tr>
 
   </table>
