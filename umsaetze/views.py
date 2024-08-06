@@ -120,10 +120,8 @@ def reportumsaetze(request, jahr):
 def reportumsaetzecsv(request, jahr):
     import csv
     from django.http import HttpResponse
-    response = HttpResponse(
-        content_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="kasse_' + jahr + '.csv"'},
-    )
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="kasse_' + jahr + '.csv"'
 
     writer = csv.writer(response)
     writer.writerow(["Wertstellung", "Umsatz (in €)", "Kontostand (in €)", "Buchung", "Art der Buchung", "Beleg", "Geschäftspartner", "Kommentar"])
@@ -187,10 +185,8 @@ def report(request, jahr):
 def reportcsv(request, jahr):
     import csv
     from django.http import HttpResponse
-    response = HttpResponse(
-        content_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="bericht_' + jahr + '.csv"'},
-    )
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="bericht_' + jahr + '.csv"'
 
     writer = csv.writer(response)
     writer.writerow(["Typ", "Umsatz (in €)"])
