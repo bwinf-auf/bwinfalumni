@@ -7,7 +7,7 @@ from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuc
 
 from django import forms
 
-from datetime import date
+from datetime import date, timedelta
 
 
 
@@ -24,9 +24,9 @@ class UmsatzForm(forms.ModelForm):
     class Meta:
         model = Umsatz
         fields = ['konto', 'typ', 'text', 'cent_wert', 'beleg', 'author', 'geschaeftspartner', 'wertstellungsdatum', 'kommentar']
-    
+
     def __init__(self, *args, **kwargs):
-        super(UmsatzForm, self).__init__(*args, **kwargs) 
+        super(UmsatzForm, self).__init__(*args, **kwargs)
         self.fields['wertstellungsdatum'].widget.attrs['style'] = 'width:100px;'
         self.fields['cent_wert'].widget.attrs['style'] = 'width:80px;'
         self.fields['text'].widget.attrs['style'] = 'width:300px;'
@@ -59,7 +59,7 @@ def listumsaetze(request, reverse = True):
                 neu_umsatz.save()
                 neu_umsatz = UmsatzForm(prefix='umsatz')
                 mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
-        else: 
+        else:
             if mkbuchung.data['buchung-mitglied'] or mkbuchung.data['buchung-typ']:
                 # ICH HABE KEINE IDEE, WARUM AN DIESER STELLE DAS PREFIX
                 # STEHEN MUSS UND AN JEDER ANDEREN STELLE NICHT … ABER SO
@@ -70,28 +70,174 @@ def listumsaetze(request, reverse = True):
     else:
         neu_umsatz = UmsatzForm(prefix='umsatz')
         mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
-  
-    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum')
-        
+
+    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'geschaeftspartner')
+
     current_val = 0;
-    
+
     umsaetzeinfos = []
     for umsatz in all_umsaetze:
-        
+
         umsaetzeinfos.append({'umsatz': umsatz,
                               'before': current_val / 100.0,
-                              'after':  (current_val+umsatz.cent_wert) / 100.0 , 
+                              'after':  (current_val+umsatz.cent_wert) / 100.0 ,
                               'amount': umsatz.cent_wert / 100.0,})
         current_val += umsatz.cent_wert
-        
+
     if reverse:
-        umsaetzeinfos.reverse()  
+        umsaetzeinfos.reverse()
     return render(request, 'umsaetze/werstellungen.html', {'umsaetze': umsaetzeinfos, 'form': neu_umsatz, 'mbform': mkbuchung})
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def reportumsaetze(request, jahr):
+    jahr = int(jahr)
+    begin = date(jahr-1, 8, 1)
+    end = date(jahr, 8, 1)
+    before_end = end - timedelta(days=1)
+
+    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'geschaeftspartner')
+
+    current_val = 0
+
+    umsaetzeinfos = []
+    for umsatz in all_umsaetze:
+        if umsatz.wertstellungsdatum >= begin and umsatz.wertstellungsdatum < end:
+            umsaetzeinfos.append({'umsatz': umsatz,
+                                  'before': current_val / 100.0,
+                                  'after':  (current_val+umsatz.cent_wert) / 100.0 ,
+                                  'amount': umsatz.cent_wert / 100.0,
+                                  'last': False, })
+        current_val += umsatz.cent_wert
+
+    umsaetzeinfos[-1]['last'] = True
+
+    return render(request, 'umsaetze/kassenbuch.html', {'umsaetze': umsaetzeinfos, 'begin': begin, 'end': before_end})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def reportumsaetzecsv(request, jahr):
+    import csv
+    from django.http import HttpResponse
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="kasse_' + jahr + '.csv"'},
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(["Wertstellung", "Umsatz (in €)", "Kontostand (in €)", "Buchung", "Art der Buchung", "Beleg", "Geschäftspartner", "Kommentar"])
+
+    jahr = int(jahr)
+    begin = date(jahr-1, 8, 1)
+    end = date(jahr, 8, 1)
+    before_end = end - timedelta(days=1)
+
+    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'geschaeftspartner')
+
+    current_val = 0
+
+    firstumsatz = True
+
+    umsaetzeinfos = []
+    for umsatz in all_umsaetze:
+        if umsatz.wertstellungsdatum >= begin and umsatz.wertstellungsdatum < end:
+            if firstumsatz:
+                writer.writerow(["", "", current_val / 100.0, "", "", "", "", ""])
+                firstumsatz = False
+            writer.writerow([umsatz.wertstellungsdatum, umsatz.cent_wert / 100.0, (current_val+umsatz.cent_wert) / 100.0, umsatz.text, umsatz.typ, umsatz.beleg, umsatz.geschaeftspartner, umsatz.kommentar])
+
+    return response
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def report(request, jahr):
+    jahr = int(jahr)
+    begin = date(jahr-1, 8, 1)
+    end = date(jahr, 8, 1)
+    before_end = end - timedelta(days=1)
+
+    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'geschaeftspartner')
+
+    einnahmeninfos = {}
+    ausgabeninfos = {}
+
+    einnahmen = 0
+    ausgaben = 0
+
+    for umsatz in all_umsaetze:
+        if umsatz.wertstellungsdatum >= begin and umsatz.wertstellungsdatum < end:
+            # TODO: Calculate with ints here?
+            if umsatz.cent_wert >= 0:
+                einnahmeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                einnahmen += umsatz.cent_wert
+            else:
+                ausgabeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                ausgaben += umsatz.cent_wert
+
+    einnahmen = einnahmen / 100.0
+    ausgaben = ausgaben / 100.0
+    gesamt = einnahmen + ausgaben
+
+    return render(request, 'umsaetze/bericht.html', {'einnahmen': einnahmeninfos, 'ausgaben': ausgabeninfos, 'geseinnahmen': einnahmen, 'gesausgaben': ausgaben, 'gesamt': gesamt, 'begin': begin, 'end': before_end})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def reportcsv(request, jahr):
+    import csv
+    from django.http import HttpResponse
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="bericht_' + jahr + '.csv"'},
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(["Typ", "Umsatz (in €)"])
+
+    jahr = int(jahr)
+    begin = date(jahr-1, 8, 1)
+    end = date(jahr, 8, 1)
+    before_end = end - timedelta(days=1)
+
+    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'geschaeftspartner')
+
+    einnahmeninfos = {}
+    ausgabeninfos = {}
+
+    einnahmen = 0
+    ausgaben = 0
+
+    for umsatz in all_umsaetze:
+        if umsatz.wertstellungsdatum >= begin and umsatz.wertstellungsdatum < end:
+            # TODO: Calculate with ints here?
+            if umsatz.cent_wert >= 0:
+                einnahmeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                einnahmen += umsatz.cent_wert
+            else:
+                ausgabeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                ausgaben += umsatz.cent_wert
+
+    einnahmen = einnahmen / 100.0
+    ausgaben = ausgaben / 100.0
+    gesamt = einnahmen + ausgaben
+
+    for typ, wert in einnahmeninfos.items():
+        writer.writerow([typ, wert])
+
+    writer.writerow(["Einnahmen Gesamt", einnahmen])
+
+    for typ, wert in ausgabeninfos.items():
+        writer.writerow([typ, wert])
+
+    writer.writerow(["Ausgaben Gesamt", ausgaben])
+    writer.writerow(["Total", gesamt])
+
+    return response
+
 class UmsatzEinzahlungenForm(forms.ModelForm):
     text = forms.CharField(max_length=250, initial="Mitglied {mitgliedsnummer} ({vorname_initiale}. {nachname}): Beitragszahlung")
-    
+
     class Meta:
         model = Umsatz
         fields = ['konto', 'typ', 'beleg', 'author']
@@ -103,15 +249,15 @@ class MitgliedskontoBuchungEinzahlungenForm(forms.ModelForm):
 
 class MitgliedskontoBuchungEineEinzahlungForm(forms.ModelForm):
     geschaeftspartner = forms.CharField(max_length=250)
-    
+
     class Meta:
         model = MitgliedskontoBuchung
         fields = ['mitglied', 'buchungsdatum', 'cent_wert']
 
 from django.forms import formset_factory
-    
+
 EinzahlungenFormSet = formset_factory(MitgliedskontoBuchungEineEinzahlungForm, extra=99)
-        
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def einzahlungen(request, reverse = True):
@@ -124,7 +270,7 @@ def einzahlungen(request, reverse = True):
             for form in einzahlungen.forms:
                 if form.has_changed():
                     mitglied = form.cleaned_data['mitglied']
-                    
+
                     data = {'vorname': mitglied.vorname,
                             'vorname_initiale': mitglied.vorname[0:1] or "?",
                             'nachname': mitglied.nachname,
@@ -133,10 +279,10 @@ def einzahlungen(request, reverse = True):
                             'mitgliedsnummer': mitglied.mitgliedsnummer,
                             'datum': str(date.today()),
                             'email': mitglied.email}
-                    text = umsatzeinzahlung.cleaned_data['text'].format(**data)    
-                
+                    text = umsatzeinzahlung.cleaned_data['text'].format(**data)
+
                     umsatz = Umsatz()
-                    
+
                     buchung = MitgliedskontoBuchung()
 
                     umsatz.konto               = umsatzeinzahlung.cleaned_data['konto']
@@ -149,7 +295,7 @@ def einzahlungen(request, reverse = True):
                     umsatz.wertstellungsdatum  = form.cleaned_data['buchungsdatum']
 
                     umsatz.save()
-                    
+
                     buchung.mitglied           = mitglied
                     buchung.typ                = kontoeinzahlung.cleaned_data['typ']
                     buchung.cent_wert          = form.cleaned_data['cent_wert']
@@ -158,7 +304,7 @@ def einzahlungen(request, reverse = True):
                     buchung.buchungsdatum      = form.cleaned_data['buchungsdatum']
 
                     buchung.save()
-                    
+
                     num += 1
             umsatzeinzahlung = UmsatzEinzahlungenForm(prefix='umsatz')
             kontoeinzahlung  = MitgliedskontoBuchungEinzahlungenForm(prefix='konto')

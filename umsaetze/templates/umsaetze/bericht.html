@@ -1,0 +1,61 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Kassenbericht</h1>
+<h2>Bundeswettbewerb Informatik Alumni und Freunde e.&nbsp;V.</h2>
+<h3>Zeitraum: {{ begin }} bis {{ end }}</h3>
+
+  <table style="border:0px; border-collapse: collapse;">
+
+    <tr>
+      <th class="la">Typ</th>
+      <th class="ra">Umsatz</th>
+    </tr>
+
+  <tr style="">
+    <td class="la">&nbsp;</td>
+    <td class="ra"></td>
+  </tr>
+
+
+  {% for key, value in einnahmen.items %}
+    <tr style="border-top:1px solid #ccc;">
+      <td class="la">{{ key }}</td>
+      <td class="ra" {% if value < 0.0 %} style="color: red;" {% endif %}>{{ value|floatformat:2 }} €</td>
+    </tr>
+  {% endfor %}
+
+  <tr style="border-top:1px solid #999;">
+    <th class="la">Einnahmen Gesamt</th>
+    <th class="ra" {% if value < 0.0 %} style="color: red;" {% endif %}>{{ geseinnahmen|floatformat:2 }} €</th>
+  </tr>
+
+  <tr style="">
+    <td class="la">&nbsp;</td>
+    <td class="ra"></td>
+  </tr>
+
+
+  {% for key, value in ausgaben.items %}
+    <tr style="border-top:1px solid #ccc;">
+      <td class="la">{{ key }}</td>
+      <td class="ra" {% if value < 0.0 %} style="color: red;" {% endif %}>{{ value|floatformat:2 }} €</td>
+    </tr>
+  {% endfor %}
+
+  <tr style="border-top:1px solid #999;">
+    <th class="la">Ausgaben Gesamt</th>
+    <th class="ra" {% if value < 0.0 %} style="color: red;" {% endif %}>{{ gesausgaben|floatformat:2 }} €</th>
+  </tr>
+
+  <tr style="">
+    <td class="la">&nbsp;</td>
+    <td class="ra"></td>
+  </tr>
+
+  <tr style="border-top:1px solid #555;">
+    <th class="la">Total</th>
+    <th class="ra" {% if value < 0.0 %} style="color: red;" {% endif %}>{{ gesamt|floatformat:2 }} €</th>
+  </tr>
+
+  </table>

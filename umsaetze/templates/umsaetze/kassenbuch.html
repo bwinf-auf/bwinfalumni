@@ -1,0 +1,45 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Kassenbuch</h1>
+<h2>Bundeswettbewerb Informatik Alumni und Freunde e.&nbsp;V.</h2>
+<h3>Zeitraum: {{ begin }} bis {{ end }}</h3>
+
+  <table style="border:0px; border-collapse: collapse;">
+
+    <tr>
+      <th class="ra">Wertstellung</th>
+      <th class="ra">Umsatz</th>
+      <th class="ra">Kontostand</th>
+      <th class="la">Buchung</th>
+      <th class="la">Art der Buchung</th>
+      <th class="la">Beleg</th>
+      <th class="la">Geschäftspartner</th>
+      <th class="la">Kommentar</th>
+    </tr>
+
+    <tr style="border-top:1px solid grey;">
+      <td></td>
+      <td></td>
+      <th class="ra" {% if umsaetze.0.before < 0.0 %} style="color: red;" {% endif %}>{{ umsaetze.0.before|floatformat:2 }} €</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  {% for umsatz in umsaetze %}
+    <tr style="border-top:1px solid #ccc;">
+      <td class="ra">{{ umsatz.umsatz.wertstellungsdatum }}</td>
+      <th class="ra" {% if umsatz.amount < 0.0 %} style="color: red;" {% endif %}>{{ umsatz.amount|floatformat:2 }} €</th>
+      {% if umsatz.last %}<th {% else %}<td {% endif %}
+          class="ra" {% if umsatz.after < 0.0 %} style="color: red;" {% endif %}>{{ umsatz.after|floatformat:2 }} €
+      {% if umsatz.last %}</th>{% else %}</td>{% endif %}
+      <td class="la">{{ umsatz.umsatz.text }}</td>
+      <td class="la">{{ umsatz.umsatz.typ }}</td>
+      <td class="la">{{ umsatz.umsatz.beleg }}</td>
+      <td class="la">{{ umsatz.umsatz.geschaeftspartner }}</td>
+      <td class="la">{{ umsatz.umsatz.kommentar }}</td>
+    </tr>
+  {% endfor %}
+  </table>
