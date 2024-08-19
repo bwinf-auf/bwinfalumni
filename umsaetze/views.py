@@ -174,9 +174,11 @@ def report(request, jahr):
                 ausgabeninfos[umsatz.typ.typname] = ausgabeninfos.get(umsatz.typ.typname, 0.0) + (umsatz.cent_wert / 100.0)
                 ausgaben += umsatz.cent_wert
 
+    gesamt = einnahmen + ausgaben
+
     einnahmen = einnahmen / 100.0
     ausgaben = ausgaben / 100.0
-    gesamt = einnahmen + ausgaben
+    gesamt = gesamt / 100.0
 
     return render(request, 'umsaetze/bericht.html', {'einnahmen': einnahmeninfos, 'ausgaben': ausgabeninfos, 'geseinnahmen': einnahmen, 'gesausgaben': ausgaben, 'gesamt': gesamt, 'begin': begin, 'end': before_end})
 
@@ -214,9 +216,11 @@ def reportcsv(request, jahr):
                 ausgabeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
                 ausgaben += umsatz.cent_wert
 
+    gesamt = einnahmen + ausgaben
+
     einnahmen = einnahmen / 100.0
     ausgaben = ausgaben / 100.0
-    gesamt = einnahmen + ausgaben
+    gesamt = gesamt / 100.0
 
     for typ, wert in einnahmeninfos.items():
         writer.writerow([typ, wert])
