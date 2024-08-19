@@ -168,10 +168,10 @@ def report(request, jahr):
         if umsatz.wertstellungsdatum >= begin and umsatz.wertstellungsdatum < end:
             # TODO: Calculate with ints here?
             if umsatz.cent_wert >= 0:
-                einnahmeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                einnahmeninfos[umsatz.typ.typname] = einnahmeninfos.get(umsatz.typ.typname, 0.0) + (umsatz.cent_wert / 100.0)
                 einnahmen += umsatz.cent_wert
             else:
-                ausgabeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                ausgabeninfos[umsatz.typ.typname] = einnahmeninfos.get(umsatz.typ.typname, 0.0) + (umsatz.cent_wert / 100.0)
                 ausgaben += umsatz.cent_wert
 
     einnahmen = einnahmen / 100.0
