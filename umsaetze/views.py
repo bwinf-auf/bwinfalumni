@@ -144,6 +144,7 @@ def reportumsaetzecsv(request, jahr):
                 writer.writerow(["", "", current_val / 100.0, "", "", "", "", ""])
                 firstumsatz = False
             writer.writerow([umsatz.wertstellungsdatum, umsatz.cent_wert / 100.0, (current_val+umsatz.cent_wert) / 100.0, umsatz.text, umsatz.typ, umsatz.beleg, umsatz.geschaeftspartner, umsatz.kommentar])
+        current_val += umsatz.cent_wert
 
     return response
 
@@ -213,7 +214,7 @@ def reportcsv(request, jahr):
                 einnahmeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
                 einnahmen += umsatz.cent_wert
             else:
-                ausgabeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                ausgabeninfos[umsatz.typ] = ausgabeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
                 ausgaben += umsatz.cent_wert
 
     gesamt = einnahmen + ausgaben
