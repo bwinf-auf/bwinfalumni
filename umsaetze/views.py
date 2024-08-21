@@ -169,13 +169,16 @@ def report(request, jahr):
         if umsatz.wertstellungsdatum >= begin and umsatz.wertstellungsdatum < end:
             # TODO: Calculate with ints here?
             if umsatz.cent_wert >= 0:
-                einnahmeninfos[umsatz.typ.typname] = einnahmeninfos.get(umsatz.typ.typname, 0.0) + (umsatz.cent_wert / 100.0)
+                einnahmeninfos[umsatz.typ.typname] = einnahmeninfos.get(umsatz.typ.typname, 0) + umsatz.cent_wert
                 einnahmen += umsatz.cent_wert
             else:
-                ausgabeninfos[umsatz.typ.typname] = ausgabeninfos.get(umsatz.typ.typname, 0.0) + (umsatz.cent_wert / 100.0)
+                ausgabeninfos[umsatz.typ.typname] = ausgabeninfos.get(umsatz.typ.typname, 0) + umsatz.cent_wert
                 ausgaben += umsatz.cent_wert
 
     gesamt = einnahmen + ausgaben
+
+    einnahmeninfos = {key: value / 100.0 for key, value in einnahmeninfos.items()}
+    ausgabeninfos = {key: value / 100.0 for key, value in ausgabeninfos.items()}
 
     einnahmen = einnahmen / 100.0
     ausgaben = ausgaben / 100.0
@@ -211,10 +214,10 @@ def reportcsv(request, jahr):
         if umsatz.wertstellungsdatum >= begin and umsatz.wertstellungsdatum < end:
             # TODO: Calculate with ints here?
             if umsatz.cent_wert >= 0:
-                einnahmeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                einnahmeninfos[umsatz.typ] = einnahmeninfos.get(umsatz.typ, 0) + umsatz.cent_wert
                 einnahmen += umsatz.cent_wert
             else:
-                ausgabeninfos[umsatz.typ] = ausgabeninfos.get(umsatz.typ, 0.0) + (umsatz.cent_wert / 100.0)
+                ausgabeninfos[umsatz.typ] = ausgabeninfos.get(umsatz.typ, 0) + umsatz.cent_wert
                 ausgaben += umsatz.cent_wert
 
     gesamt = einnahmen + ausgaben
@@ -224,12 +227,12 @@ def reportcsv(request, jahr):
     gesamt = gesamt / 100.0
 
     for typ, wert in einnahmeninfos.items():
-        writer.writerow([typ, wert])
+        writer.writerow([typ, wert / 100.0])
 
     writer.writerow(["Einnahmen Gesamt", einnahmen])
 
     for typ, wert in ausgabeninfos.items():
-        writer.writerow([typ, wert])
+        writer.writerow([typ, wert / 100.0])
 
     writer.writerow(["Ausgaben Gesamt", ausgaben])
     writer.writerow(["Total", gesamt])
