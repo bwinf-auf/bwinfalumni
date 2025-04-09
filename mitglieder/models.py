@@ -88,6 +88,7 @@ class MitgliedskontoBuchung(models.Model):
     kommentar       = models.CharField(max_length=250, blank=True)
     umsatz          = models.ForeignKey(Umsatz, on_delete=models.PROTECT, blank=True, null=True)
     buchungsdatum   = models.DateField(default=date.today)
+    wirksam         = models.BooleanField(default=True) # Spenden sind nichtwirksame Buchungen auf dem Mitgliedskonto
 
     def __str__(self):
         return str(self.buchungsdatum)+ " (" + str(self.typ) + ") " + str(self.cent_wert) + " ct"

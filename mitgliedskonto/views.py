@@ -64,7 +64,8 @@ def detail(request, mitgliedsnummer):
     all_transactions = []
     value = 0
     for buchung in mitglied.mitgliedskontobuchung_set.all().order_by('buchungsdatum'):
-        value += buchung.cent_wert
+        if buchung.wirksam:
+            value += buchung.cent_wert
         all_transactions.append({'amount': buchung.cent_wert / 100.0,
                                  'comment': buchung.kommentar,
                                  'value': value / 100.0,
@@ -155,7 +156,7 @@ def zahlungsaufforderungen(request, templatename, schulden):
             with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
                 for mitglied in mitglieder:
                     kontostand = 0
-                    buchungen = mitglied.mitgliedskontobuchung_set.all()
+                    buchungen = mitglied.mitgliedskontobuchung_set.filter(wirksam=True)
                     for buchung in buchungen:
                         kontostand += buchung.cent_wert
                     if kontostand < 0 or not schulden:
