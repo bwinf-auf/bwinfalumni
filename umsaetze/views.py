@@ -249,7 +249,7 @@ class UmsatzEinzahlungenForm(forms.ModelForm):
 class MitgliedskontoBuchungEinzahlungenForm(forms.ModelForm):
     class Meta:
         model = MitgliedskontoBuchung
-        fields = ['typ', 'kommentar']
+        fields = ['typ', 'kommentar', 'wirksam']
 
 class MitgliedskontoBuchungEineEinzahlungForm(forms.ModelForm):
     geschaeftspartner = forms.CharField(max_length=250)
@@ -306,6 +306,7 @@ def einzahlungen(request, reverse = True):
                     buchung.kommentar          = kontoeinzahlung.cleaned_data['kommentar']
                     buchung.umsatz             = umsatz
                     buchung.buchungsdatum      = form.cleaned_data['buchungsdatum']
+                    buchung.wirksam            = kontoeinzahlung.cleaned_data['wirksam']
 
                     buchung.save()
 

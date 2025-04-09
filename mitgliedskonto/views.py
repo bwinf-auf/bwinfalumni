@@ -34,7 +34,7 @@ def index(request):
 class MitgliedskontoBuchungForm(ModelForm):
     class Meta:
         model = MitgliedskontoBuchung
-        fields = ['typ', 'cent_wert', 'kommentar', 'buchungsdatum']
+        fields = ['typ', 'cent_wert', 'kommentar', 'buchungsdatum', 'wirksam']
 
 
 @login_required
