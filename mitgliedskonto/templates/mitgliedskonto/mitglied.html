@@ -23,10 +23,10 @@ td, th {padding: 0px 20px;}
   {% for transaction in transactions %}
   <tr><td>{{ transaction.type }}</td><td>{{ transaction.date }}</td><td class="ra"><b>{% if transaction.amount > 0 %}+{% endif %}{{ transaction.amount|floatformat:2 }} €</b></td><td class="ra">{{ transaction.value|floatformat:2 }} €</td><td>{{ transaction.comment }}</td></tr>
   {% endfor %}
-  
+
   {% if user.is_superuser or user.is_staff %}
-  <tr><td>{{ form.typ }}</td><td>{{ form.buchungsdatum }}</td><td>{{ form.cent_wert }} <b>Cent</b></td><td></td><td>{{ form.kommentar }}</td><td><input type="submit" value="Hinzufügen" /></td></tr>
-<tr><td>{{ form.typ.errors }}</td><td>{{ form.buchungsdatum.errors }}</td><td>{{ form.cent_wert.errors }}</td><td></td><td>{{ form.kommentar.errors }}</td></tr>
+  <tr><td>{{ form.typ }}</td><td>{{ form.buchungsdatum }}</td><td>{{ form.cent_wert }} <b>Cent</b></td><td></td><td>{{ form.kommentar }}</td><td>{{ form.wirksam }} {{form.wirksam.label}}</td><td><input type="submit" value="Hinzufügen" /></td></tr>
+<tr><td>{{ form.typ.errors }}</td><td>{{ form.buchungsdatum.errors }}</td><td>{{ form.cent_wert.errors }}</td><td></td><td>{{ form.kommentar.errors }}</td><td>{{ form.wirksam.errors }}</td></tr>
   {% endif %}
 </table>
 </form>
