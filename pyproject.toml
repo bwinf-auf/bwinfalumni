@@ -1,0 +1,9 @@
+[project]
+name = "bwinfalumni"
+version = "0.1.0"
+description = "BWINF Alumni und Freunde e.V. Vereinssystem"
+readme = "README.md"
+dependencies = [
+    "django==3.2.19",
+    "setuptools>=80.9.0",
+]
