@@ -4,6 +4,6 @@ version = "0.1.0"
 description = "BWINF Alumni und Freunde e.V. Vereinssystem"
 readme = "README.md"
 dependencies = [
-    "django==4.2.23",
+    "django== 5.2.4",
     "setuptools>=80.9.0",
 ]
