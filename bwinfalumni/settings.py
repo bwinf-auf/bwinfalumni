@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'emailbenutzername.apps.EmailbenutzernameConfig',
     'passwordlesslogin.apps.PasswordlessloginConfig',
     'verein.apps.VereinConfig',
+    'mockverein.apps.MockvereinConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
