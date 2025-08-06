@@ -71,9 +71,90 @@ def detail(request, mitgliedsnummer):
                                  'value': value / 100.0,
                                  'date': buchung.buchungsdatum,
                                  'type': buchung.typ.typname,
+                                 'large': buchung.cent_wert >= 5000,
+                                 'id': buchung.pk,
+                                 'beleg_status': buchung.beleg_status,
                                  })
     return render(request, 'mitgliedskonto/mitglied.html', {'mitglied': mitglied, 'transactions': all_transactions, 'before': 0.0, 'after': value/100.0, 'form': mkbuchung})
 
+
+@login_required
+def bescheinigung(request, mitgliedsnummer, mitgliedskontobuchungsnummer):
+    benutzer = request.user
+
+    if not benutzer.is_superuser and not benutzer.groups.filter(name='vorstand').exists():
+        try:
+            mitglied = benutzer.benutzermitglied.mitglied
+        except:
+            raise Http404("Keine Benutzerinformationen vorhanden.")
+        if mitglied.mitgliedsnummer != int(mitgliedsnummer):
+            raise Http404("Kein Zugriff (" + str(mitglied.mitgliedsnummer) + ")")
+
+    mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer)
+    mitgliedskontobuchung = get_object_or_404(MitgliedskontoBuchung, pk = mitgliedskontobuchungsnummer)
+    if mitglied != mitgliedskontobuchung.mitglied:
+        raise Http404("Buchung nicht gefunden.")
+
+    if mitgliedskontobuchung.beleg_status == "verifiziert":
+        with open(settings.BWINFALUMNI_INVOICE_DIR + str(mitglied.mitgliedsnummer) + '_' + str(mitgliedskontobuchung.pk), 'rb') as f:
+            return HttpResponse(
+                f,
+                content_type='application/pdf',
+                headers={
+                    'Content-Disposition': f"attachment; filename={mitgliedskontobuchung.pk}.pdf",
+                    'Cache-Control': 'no-cache'  # files are dynamic, prevent caching
+                }
+            )
+
+    if mitgliedskontobuchung.beleg_status != "":
+        raise Http404("Buchung nicht gefunden.")
+
+    mitgliedskontobuchung.beleg_status = "angefordert"
+    mitgliedskontobuchung.save()
+    sende_email_an_vorstand(mitglied, mitgliedskontobuchung)
+
+    return render(request, 'mitgliedskonto/request_spendenbescheinigung.html', {})
+
+
+def sende_email_an_vorstand(mitglied, mitgliedskontobuchung):
+    with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
+
+        betrefftemplate = "Spendenbescheinigung angefordert"
+        template = """Eine Spendenbescheinigung wurde angefordert
+
+Name: {name}
+Mitgliedsnummer: {mitgliedsnummer}
+Betrag: {betrag} €
+Buchungs-Datum: {buchungsdatum}
+Buchungs-ID: {buchung}
+
+"""
+
+        data = {'name': mitglied.vorname + " " + mitglied.nachname,
+                'vorname': mitglied.vorname,
+                'nachname': mitglied.nachname,
+                'anrede': mitglied.anrede,
+                'mitgliedsnummer': mitglied.mitgliedsnummer,
+                'datum': str(date.today()),
+                'mitgliedsbeitrag': mitglied.beitrag_cent / 100.0,
+                'email': mitglied.email,
+                'betrag': mitgliedskontobuchung.cent_wert / 100.0,
+                'buchungsdatum': mitgliedskontobuchung.buchungsdatum,
+                'buchung': mitgliedskontobuchung.pk,
+                }
+
+        betreff = betrefftemplate.format(**data)
+        text = template.format(**data)
+
+        try:
+            send_mail(betreff, text, 'vorstand@alumni.bwinf.de', ['vorstand@alumni.bwinf.de'])
+            f.write("Date: " + str(date.today()) + "\n")
+            f.write("To: vorstand@alumni.bwinf.de\n")
+            f.write("From: vorstand@alumni.bwinf.de\n")
+            f.write("Subject: " + betreff + "\n\n")
+            f.write(text + "\n\n")
+        except:
+            f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ")\n\n")
 
 
 class MitgliedForm(forms.ModelForm):
@@ -211,7 +292,7 @@ def zahlungsaufforderungen(request, templatename, schulden):
 
 
 
-# TODO: Adding members / users should be donn in 'mitgliederverwaltung' or in its own app
+# TODO: Adding members / users should be done in 'mitgliederverwaltung' or in its own app
 
 class MitgliedForm(forms.ModelForm):
     class Meta:
