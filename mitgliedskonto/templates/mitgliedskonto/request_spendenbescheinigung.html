@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+{% load humanize %}
+
+<h3>Spendenbescheinigung angefordert</h3>
+
+<p>
+Du erhältst eine E-Mail, sobald deine Spendenbescheinigung hier verfügbar ist.
+</p>
+
+<p>
+<a href="..">Zurück</a>
+</p>
+
+{% endblock %}
