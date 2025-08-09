@@ -11,6 +11,7 @@ from .models import Mitgliedschaftsantrag
 from profil.models import Sichtbarkeit
 from benutzer.models import BenutzerMitglied
 from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
+from verein.models import Verein
 
 from datetime import date
 from random import choice
@@ -36,6 +37,10 @@ def neuerantrag(request):
     errormessage = ""
     successmessage = ""
 
+    beschluesse = Verein.objects.filter(mitgliedsbeitrag_cent__isnull=False).order_by("beschlussfassung").reverse()
+    default_mitgliedsbeitrag = int(beschluesse[0].mitgliedsbeitrag_cent / 100)
+
+
     if request.method == 'POST':
         form = MitgliedschaftsantragForm(data=request.POST)
         if form.is_valid():
@@ -43,7 +48,7 @@ def neuerantrag(request):
             ma.verifikationscode = ''.join(choice("ABCDEFGHKMNPQRSTUVWXYZ23456789") for _ in range(8))
             if ma.mitgliedschaft == 'O' or ma.mitgliedsbeitrag >= 50:
                 if ma.mitgliedschaft == 'O':
-                    ma.mitgliedsbeitrag = 10
+                    ma.mitgliedsbeitrag = default_mitgliedsbeitrag
                 sende_email_mit_verifikationscode(ma)
                 ma.save()
                 return redirect('mitgliedschaftsantrag:verifikation')
@@ -59,6 +64,7 @@ def neuerantrag(request):
     return render(request,
                   'mitgliedschaftsantrag/antrag.html',
                   {'form': form,
+                   'mitgliedsbeitrag': default_mitgliedsbeitrag,
                    'isadmin': isadmin,
                    'errormessage': errormessage,
                    'successmessage': successmessage,
