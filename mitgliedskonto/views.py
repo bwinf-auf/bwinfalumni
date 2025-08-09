@@ -12,6 +12,7 @@ from django import forms
 
 from benutzer.models import BenutzerMitglied
 from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
+from verein.models import Freistellungsbescheid
 
 from datetime import date
 import os.path
@@ -175,6 +176,9 @@ def bescheinigung_erstellen(request, mitgliedsnummer, mitgliedskontobuchungsnumm
     mitgliedskontobuchung.beleg_status = "erstellt"
     mitgliedskontobuchung.save()
 
+    bescheide = Freistellungsbescheid.objects.order_by("datum").reverse()
+    bescheid = bescheide[0]
+
     # Important: JSON-encode user controlled data here, as we will just dump them into a JSON object in the template
     return render(request, 'mitgliedskonto/create_spendenbescheinigung.html', {
         'name': json.dumps(mitglied.vorname + " " + mitglied.nachname),
@@ -190,6 +194,7 @@ def bescheinigung_erstellen(request, mitgliedsnummer, mitgliedskontobuchungsnumm
         'betrag_cent': mitgliedskontobuchung.cent_wert,
         'buchungsdatum': mitgliedskontobuchung.buchungsdatum,
         'buchung': mitgliedskontobuchung.pk,
+        'bescheid': bescheid,
     })
 
 @login_required
