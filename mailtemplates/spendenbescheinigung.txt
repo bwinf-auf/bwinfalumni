@@ -1,0 +1,14 @@
+Hallo {name},
+
+
+eine Spendenbescheinigung für dich wurde erstellt.
+
+Die von dir angeforderte Spendenbescheinigung kann ab sofort unter
+
+  https://alumni.bwinf.de/konto/
+
+heruntergeladen werden.
+
+
+Viele Grüße
+Robert & Nikolai (Vorstand)

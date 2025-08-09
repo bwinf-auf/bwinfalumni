@@ -21,7 +21,26 @@ td, th {padding: 0px 20px;}
 <table>
   <tr><th>Art</th><th>Wertstellung</th><th>Umsatz</th><th>Kontostand</th><th>Kommentar</th><th></th></tr>
   {% for transaction in transactions %}
-  <tr><td>{{ transaction.type }}</td><td>{{ transaction.date }}</td><td class="ra"><b>{% if transaction.amount > 0 %}+{% endif %}{{ transaction.amount|floatformat:2 }} €</b></td><td class="ra">{{ transaction.value|floatformat:2 }} €</td><td>{{ transaction.comment }}</td><td>{% if transaction.large or user.is_superuser or user.is_staff or transaction.beleg_status != "" %}{% if transaction.beleg_status != "angefordert" and transaction.beleg_status != "erstellt" and transaction.beleg_status != "verifiziert" %}<a href="{{ transaction.id }}/">Spendenbescheinigung anfordern</a>{% endif %}{% if transaction.beleg_status == "angefordert" or transaction.beleg_status == "erstellt" %}Spendenbescheinigung wurde angefordert{% endif %}{% if transaction.beleg_status == "verifiziert" %}<a href="{{ transaction.id }}/">Spendenbescheinigung herunterladen</a>{% endif %}{% endif %}</td></tr>
+  <tr><td>{{ transaction.type }}</td><td>{{ transaction.date }}</td><td class="ra"><b>{% if transaction.amount > 0 %}+{% endif %}{{ transaction.amount|floatformat:2 }} €</b></td><td class="ra">{{ transaction.value|floatformat:2 }} €</td><td>{{ transaction.comment }}</td><td>
+      {% if transaction.large or user.is_superuser or user.is_staff or transaction.beleg_status != "" %}
+        {% if transaction.beleg_status != "angefordert" and transaction.beleg_status != "erstellt" and transaction.beleg_status != "verifiziert" %}
+          <a href="{{ transaction.id }}/">Spendenbescheinigung anfordern</a>
+        {% endif %}
+        {% if transaction.beleg_status == "angefordert" or transaction.beleg_status == "erstellt" %}
+          Spendenbescheinigung wurde angefordert
+        {% endif %}
+        {% if user.is_superuser and transaction.beleg_status == "angefordert" or user.is_staff and transaction.beleg_status == "angefordert" or user.is_superuser and transaction.beleg_status == "erstellt" or user.is_staff and transaction.beleg_status == "erstellt" %}
+          <a href="{{ transaction.id }}/create">Spendenbescheinigung erstellen</a>
+        {% endif %}
+        {% if user.is_superuser and transaction.beleg_status == "erstellt" or user.is_staff and transaction.beleg_status == "erstellt" %}
+          <a href="{{ transaction.id }}/">Spendenbescheinigung herunterladen</a>
+          <a href="{{ transaction.id }}/verify">Spendenbescheinigung verifizieren</a>
+        {% endif %}
+        {% if transaction.beleg_status == "verifiziert" %}
+          <a href="{{ transaction.id }}/">Spendenbescheinigung herunterladen</a>
+        {% endif %}
+      {% endif %}
+    </td></tr>
   {% endfor %}
 
   {% if user.is_superuser or user.is_staff %}

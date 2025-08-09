@@ -14,6 +14,8 @@ from benutzer.models import BenutzerMitglied
 from mitglieder.models import Mitglied, MitgliedskontoBuchung, MitgliedskontoBuchungstyp
 
 from datetime import date
+import os.path
+import json
 
 @login_required
 def index(request):
@@ -95,8 +97,11 @@ def bescheinigung(request, mitgliedsnummer, mitgliedskontobuchungsnummer):
     if mitglied != mitgliedskontobuchung.mitglied:
         raise Http404("Buchung nicht gefunden.")
 
-    if mitgliedskontobuchung.beleg_status == "verifiziert":
-        with open(settings.BWINFALUMNI_INVOICE_DIR + str(mitglied.mitgliedsnummer) + '_' + str(mitgliedskontobuchung.pk), 'rb') as f:
+    if mitgliedskontobuchung.beleg_status == "verifiziert" or (mitgliedskontobuchung.beleg_status != "" and (benutzer.is_superuser or benutzer.groups.filter(name='vorstand').exists())):
+        if not os.path.isfile(settings.BWINFALUMNI_INVOICE_DIR + str(mitglied.mitgliedsnummer) + '_' + str(mitgliedskontobuchung.pk) + '.pdf'):
+            raise Http404("Datei nicht vorhanden.")
+
+        with open(settings.BWINFALUMNI_INVOICE_DIR + str(mitglied.mitgliedsnummer) + '_' + str(mitgliedskontobuchung.pk) + '.pdf', 'rb') as f:
             return HttpResponse(
                 f,
                 content_type='application/pdf',
@@ -155,6 +160,92 @@ Buchungs-ID: {buchung}
             f.write(text + "\n\n")
         except:
             f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ")\n\n")
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def bescheinigung_erstellen(request, mitgliedsnummer, mitgliedskontobuchungsnummer):
+    mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer)
+    mitgliedskontobuchung = get_object_or_404(MitgliedskontoBuchung, pk = mitgliedskontobuchungsnummer)
+    if mitglied != mitgliedskontobuchung.mitglied:
+        raise Http404("Buchung nicht gefunden.")
+
+    if mitgliedskontobuchung.beleg_status != "angefordert" and mitgliedskontobuchung.beleg_status != "erstellt" and mitgliedskontobuchung.beleg_status != "":
+        raise Http404("Buchung nicht gefunden.")
+
+    mitgliedskontobuchung.beleg_status = "erstellt"
+    mitgliedskontobuchung.save()
+
+    # Important: JSON-encode user controlled data here, as we will just dump them into a JSON object in the template
+    return render(request, 'mitgliedskonto/create_spendenbescheinigung.html', {
+        'name': json.dumps(mitglied.vorname + " " + mitglied.nachname),
+        'vorname': json.dumps(mitglied.vorname),
+        'nachname': json.dumps(mitglied.nachname),
+        'anrede': json.dumps(mitglied.anrede),
+        'strasse': json.dumps(mitglied.strasse + ("" if mitglied.adresszusatz == "" else " " + adresszusatz)),
+        'plz': json.dumps(mitglied.plz),
+        'stadt': json.dumps(mitglied.stadt),
+        'mitgliedsnummer': mitglied.mitgliedsnummer,
+        'datum': date.today(),
+        'mitgliedsbeitrag': mitglied.beitrag_cent / 100.0,
+        'betrag_cent': mitgliedskontobuchung.cent_wert,
+        'buchungsdatum': mitgliedskontobuchung.buchungsdatum,
+        'buchung': mitgliedskontobuchung.pk,
+    })
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def bescheinigung_verifizieren(request, mitgliedsnummer, mitgliedskontobuchungsnummer):
+    mitglied = get_object_or_404(Mitglied, mitgliedsnummer__exact = mitgliedsnummer)
+    mitgliedskontobuchung = get_object_or_404(MitgliedskontoBuchung, pk = mitgliedskontobuchungsnummer)
+    if mitglied != mitgliedskontobuchung.mitglied:
+        raise Http404("Buchung nicht gefunden.")
+
+    if mitgliedskontobuchung.beleg_status != "erstellt":
+        raise Http404("Buchung nicht gefunden.")
+
+    if not os.path.isfile(settings.BWINFALUMNI_INVOICE_DIR + str(mitglied.mitgliedsnummer) + '_' + str(mitgliedskontobuchung.pk) + '.pdf'):
+        raise Http404("Datei nicht vorhanden.")
+
+    mitgliedskontobuchung.beleg_status = "verifiziert"
+    mitgliedskontobuchung.save()
+    sende_email_an_mitglied(mitglied, mitgliedskontobuchung)
+
+    return render(request, 'mitgliedskonto/verify_spendenbescheinigung.html', {})
+
+
+def sende_email_an_mitglied(mitglied, mitgliedskontobuchung):
+    with open(settings.BWINFALUMNI_LOGS_DIR + 'maillog', 'a', encoding='utf8') as f:
+        with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + 'spendenbescheinigung.txt', 'r', encoding='utf8') as templatefile:
+            template = ""
+            for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
+                template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
+            data = {'name': mitglied.vorname + " " + mitglied.nachname,
+                    'vorname': mitglied.vorname,
+                    'nachname': mitglied.nachname,
+                    'anrede': mitglied.anrede,
+                    'mitgliedsnummer': mitglied.mitgliedsnummer,
+                    'datum': str(date.today()),
+                    'mitgliedsbeitrag': mitglied.beitrag_cent / 100.0,
+                    'email': mitglied.email,
+                    'betrag': mitgliedskontobuchung.cent_wert / 100.0,
+                    'buchungsdatum': mitgliedskontobuchung.buchungsdatum,
+                    'buchung': mitgliedskontobuchung.pk,
+                    }
+
+            betreff = "BWINF Alumni und Freunde e.V.: Spendenbescheinigung erstellt".format(**data)
+            text = template.format(**data)
+
+            try:
+                send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [mitglied.email])
+                f.write("Date: " + str(date.today()) + "\n")
+                f.write("To: " + email + "\n")
+                f.write("From: vorstand@alumni.bwinf.de\n")
+                f.write("Subject: " + betreff + "\n\n")
+                f.write(text + "\n\n")
+                return True
+            except:
+                f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ") \n\n")
+    return False
 
 
 class MitgliedForm(forms.ModelForm):
