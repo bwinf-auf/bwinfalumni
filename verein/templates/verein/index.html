@@ -5,12 +5,16 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
 
-<h1>Vereinsbeschlüsse</h1>
+<h1>Vereinsbeschlüsse & Bescheide</h1>
+
+<h2>Vereinsbeschlüsse</h2>
 
 <table style="border:0px; border-collapse: collapse; ">
 
   <tr>
     <td>Beschlussfassung</td>
+    <td>1. Vorstand</td>
+    <td>2. Vorstand</td>
     <td>Mitgliedsbeitrag (in Cent)</td>
   </tr>
 
@@ -18,11 +22,14 @@
   {% for beschluss in beschluesse %}
     <tr style="border-top:1px solid grey;">
       <td>{{ beschluss.beschlussfassung }}</td>
-      <td class="ra">{{ beschluss.mitgliedsbeitrag_cent }} Cent</td>
+      <td>{{ beschluss.vorstand1 }}</td>
+      <td>{{ beschluss.vorstand2 }}</td>
+      <td class="ra">{% if beschluss.mitgliedsbeitrag_cent %}{{ beschluss.mitgliedsbeitrag_cent }} Cent{% endif %}</td>
     </tr>
   {% endfor %}
 
 </table>
+
 
 <form action="." method="post" id="beschlussform">
   {% csrf_token %}
@@ -35,13 +42,46 @@
 
 </form>
 
+<h2>Freistellungsbescheide Finanzamt</h2>
+
+<table style="border:0px; border-collapse: collapse; ">
+
+  <tr>
+    <td>Datum</td>
+    <td>Finanzamt</td>
+    <td>Steuernummer</td>
+    <td>Zeitraum</td>
+  </tr>
+
+
+  {% for bescheid in bescheide %}
+    <tr style="border-top:1px solid grey;">
+      <td>{{ bescheid.datum }}</td>
+      <td>{{ bescheid.finanzamt }}</td>
+      <td>{{ bescheid.steuernummer }}</td>
+      <td>{{ bescheid.zeitraum }}</td>
+    </tr>
+  {% endfor %}
+
+</table>
+
+<form action="." method="post" id="bescheidform">
+  {% csrf_token %}
+
+  <table>
+    {{ bescheid }}
+  </table>
+
+  <input type="submit" value="Hinzufügen" />
+
+</form>
+
 <script>
   document.getElementById("beschlussform").onsubmit = function(event) {
-      if (confirm("Mitgliedsbeitrag für alle ordentlichen Mitglieder anpassen?")) {
-
-      } else {
-          event.preventDefault();
-
+      if (document.getElementById("id_mitgliedsbeitrag_cent").value != "")
+          if (!confirm("Mitgliedsbeitrag für alle ordentlichen Mitglieder anpassen?")) {
+             event.preventDefault();
+          }
       }
   }
 </script>
