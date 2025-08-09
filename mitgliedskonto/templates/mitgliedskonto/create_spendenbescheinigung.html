@@ -2,7 +2,7 @@
 
 <div style="max-width: 900px;">
 <kbd>
-  ./generate.py '{"name":{{ name }}, "adresse": {{ strasse }}, "plz": {{ plz }}, "ort": {{ stadt }}, "betrag_cent": {{ betrag_cent }}, "betrag_datum": "{{ buchungsdatum }}", "gem_finanzamt": "Bonn--Innenstadt", "gem_steuernummer": "205/5760/1521", "gem_datum": "28.08.2023", "gem_zeitraum": "2017 -- 2019", "unterschrift_datum": "{{ datum }}" }' | lualatex --jobname overlay && pdftk 034122.pdf background overlay.pdf output {{ mitgliedsnummer }}_{{ buchung }}.pdf && scp {{ mitgliedsnummer }}_{{ buchung }}.pdf alumni.bwinf.de:/home/robert/bwinf-alumni/invoices
+  ./generate.py '{"name":{{ name }}, "adresse": {{ strasse }}, "plz": {{ plz }}, "ort": {{ stadt }}, "betrag_cent": {{ betrag_cent }}, "betrag_datum": "{{ buchungsdatum }}", "gem_finanzamt": "Bonn--Innenstadt", "gem_steuernummer": "205/5760/1521", "gem_datum": "22.05.2025", "gem_zeitraum": "2020 -- 2022", "unterschrift_datum": "{{ datum }}" }' | lualatex --jobname overlay && pdftk 034122.pdf background overlay.pdf output {{ mitgliedsnummer }}_{{ buchung }}.pdf && scp {{ mitgliedsnummer }}_{{ buchung }}.pdf alumni.bwinf.de:/home/robert/bwinf-alumni/invoices
 </kbd>
 </div>
 
