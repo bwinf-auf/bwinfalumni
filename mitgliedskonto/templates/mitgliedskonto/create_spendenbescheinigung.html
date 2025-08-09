@@ -1,10 +1,24 @@
 <h3>Spendenbescheinigung anlegen</h3>
 
-<div style="max-width: 900px;">
+<p>Nutze <kbd>generate.sh</kbd> im Verzeichnis <kbd>spendenbescheinigungen</kbd> vom Vorstandsrepository:<p>
+
+<div style="max-width: 1200px; background-color: #eee;">
 <kbd>
-  ./generate.py '{"name":{{ name }}, "adresse": {{ strasse }}, "plz": {{ plz }}, "ort": {{ stadt }}, "betrag_cent": {{ betrag_cent }}, "betrag_datum": "{{ buchungsdatum }}", "gem_finanzamt": "{{ bescheid.finanzamt }}", "gem_steuernummer": "{{ bescheid.steuernummer }}", "gem_datum": "{{ bescheid.datum }}", "gem_zeitraum": "{{ bescheid.zeitraum }}", "unterschrift_datum": "{{ datum }}" }' | lualatex --jobname overlay && pdftk 034122.pdf background overlay.pdf output {{ mitgliedsnummer }}_{{ buchung }}.pdf && scp {{ mitgliedsnummer }}_{{ buchung }}.pdf alumni.bwinf.de:/home/robert/bwinf-alumni/invoices
+  ./generate.sh '{"name":{{ name }}, "adresse": {{ strasse }}, "plz": {{ plz }}, "ort": {{ stadt }}, "betrag_cent": {{ betrag_cent }}, "betrag_datum": "{{ buchungsdatum }}", "gem_finanzamt": "{{ bescheid.finanzamt }}", "gem_steuernummer": "{{ bescheid.steuernummer }}", "gem_datum": "{{ bescheid.datum }}", "gem_zeitraum": "{{ bescheid.zeitraum }}", "unterschrift_datum": "{{ datum }}" }' '{{ mitgliedsnummer }}_{{ buchung }}.pdf'
 </kbd>
 </div>
+
+<p>
+Benötigt:
+<ul>
+  <li><kbd>uv</kbd></li>
+  <li><kbd>lualatex</kbd></li>
+</ul>
+</p>
+
+<p>
+Anschließend "Spendenbescheinigung verizieren" klicken um die Spendenbescheinigung für das Mitglied verfügbar zu machen und automatisch eine Benachrichtigung per E-Mail an das Mitglied zu senden.
+</p>
 
 <p>
 <a href="..">Zurück</a>
