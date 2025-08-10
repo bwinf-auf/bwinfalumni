@@ -75,8 +75,8 @@ def sende_email_an_vorstand(name, titel):
         betrefftemplate = "Erinnerung: " + titel
         template = titel
 
-        if os.path.isfile(settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + name + '.txt'):
-            with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + name + '.txt', 'r', encoding='utf8') as templatefile:
+        if os.path.isfile(settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + "erinnerungen/" + name + '.txt'):
+            with open (settings.BWINFALUMNI_MAIL_TEMPLATE_DIR + "erinnerungen/" + name + '.txt', 'r', encoding='utf8') as templatefile:
                 template = ""
                 for line in templatefile.readlines():   # Remove first two character of every line if they are spaces, allows …
                     template += line[2:] if line[:2] == "  " else line   # … for templates as codeblocks in dokuwiki syntax.
