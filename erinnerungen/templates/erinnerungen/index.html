@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Erinnerungen</h1>
+
+<table style="border:0px; border-collapse: collapse; ">
+
+  <tr>
+    <td>Name</td>
+    <td>Titel</td>
+    <td>Zyklus</td>
+    <td>Erster Zeitpunkt</td>
+    <td>Letzte Erinnerung</td>
+  </tr>
+
+
+  {% for erinnerung in erinnerungen %}
+    <tr style="border-top:1px solid grey;">
+      <td style="padding:2px 6px;">{{ erinnerung.name }}</td>
+      <td style="padding:2px 6px;">{{ erinnerung.titel }}</td>
+      <td style="padding:2px 6px;">{{ erinnerung.get_zyklus_display }}</td>
+      <td style="padding:2px 6px;">{{ erinnerung.erstmals }}</td>
+      <td style="padding:2px 6px;">{{ erinnerung.zuletzt }}</td>
+    </tr>
+  {% endfor %}
+
+</table>
+
+
+<form action="." method="post" id="erinnerungform">
+  {% csrf_token %}
+
+  <table>
+    {{ erinnerung }}
+  </table>
+
+  <input type="submit" value="Hinzufügen" />
+</form>
+
+
+<p>Der Titel wird als E-Mail-Betreff in der Erinnerungsmail verwendet.</p>
+
+<p>Im Wiki können unter <kbd>templates</kbd> mit dem Namen der Erinnerung Templates angelegt werden, die den E-Mail-Text definieren. Ansonsten wird der Titel als E-Mail-Text wiederverwendet.</p>
+
+{% endblock %}

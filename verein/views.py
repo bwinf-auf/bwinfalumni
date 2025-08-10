@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 from django.forms import ModelForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 

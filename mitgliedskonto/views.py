@@ -134,6 +134,8 @@ Betrag: {betrag} €
 Buchungs-Datum: {buchungsdatum}
 Buchungs-ID: {buchung}
 
+Gehe zu https://alumni.bwinf.de/konto/{mitgliedsnummer} um die Bescheinigung zu erstellen und zu verifizieren.
+
 """
 
         data = {'name': mitglied.vorname + " " + mitglied.nachname,
@@ -160,7 +162,7 @@ Buchungs-ID: {buchung}
             f.write("Subject: " + betreff + "\n\n")
             f.write(text + "\n\n")
         except:
-            f.write("ERROR: Could not send mail to: " + mitglied.email + "(" + str(date.today()) + ": " + betreff + ")\n\n")
+            f.write("ERROR: Could not send mail to: vorstand@alumni.bwinf.de (" + str(date.today()) + ": " + betreff + ")\n\n")
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
