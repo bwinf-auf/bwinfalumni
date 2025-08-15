@@ -8,7 +8,7 @@ from mitglieder.models import Mitglied
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def index(request):
     neue_mandate = GekuerztesLastschriftmandat.objects.filter(gueltig_ab=None).filter(gueltig_bis=None).count()
-    alte_mandate = GekuerztesLastschriftmandat.objects.exclude(gueltig_bis=None).filter(entfernt=None).count()
+    alte_mandate = GekuerztesLastschriftmandat.objects.exclude(gueltig_ab=None).exclude(gueltig_bis=None).filter(entfernt=None).count()
 
     mitglieder = Mitglied.objects.filter(beitrittsdatum=None).filter(mitgliedskontobuchung__isnull=False).distinct()
 
