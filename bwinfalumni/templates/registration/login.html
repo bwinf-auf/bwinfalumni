@@ -11,10 +11,12 @@
   <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
+<p>oder passwortlos einloggen: <a href="{% url 'passwordlesslogin:index' %}" target="_self">Login-Link per E-Mail zusenden lassen</a>.</p>
+
+<p>&nbsp;</p>
+
 <p>Passwort vergessen? <a href="{% url 'auth:password_reset' %}" target="_self">Hier klicken um es zurückzusetzen</a>.</p>
 
-<p>Ohne Passwort einloggen? <a href="{% url 'passwordlesslogin:index' %}" target="_self">Login-Link per E-Mail zusenden lassen</a>.</p>
-
-<p>Neu: Statt des Benutzernames kann auch die Mitgliedsnummer oder die E-Mailadresse verwendet werden!</p>
+<p>Übrigens: Statt des Benutzernames kann auch die Mitgliedsnummer oder die E-Mailadresse verwendet werden!</p>
 
 {% endblock %}
