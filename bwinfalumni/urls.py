@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^kontostatistik/', include('kontostatistik.urls', namespace='kontostatistik')),
     url(r'^lastschriftmandate/', include('lastschriftmandatverwaltung.urls', namespace='lastschriftmandatverwaltung')),
     url(r'^erinnerungen/', include('erinnerungen.urls', namespace='erinnerungen')),
+    url(r'^dringendes/', include('dringendes.urls', namespace='dringendes')),
     url(r'^logindaten/', include('emailbenutzername.urls', namespace='emailbenutzername')),
     url(r'^directlogin/', include('passwordlesslogin.urls', namespace='passwordlesslogin')),
     url(r'^login/', RedirectView.as_view(url='/accounts/login')),

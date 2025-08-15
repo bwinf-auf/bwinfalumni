@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'passwordlesslogin.apps.PasswordlessloginConfig',
     'verein.apps.VereinConfig',
     'erinnerungen.apps.ErinnerungenConfig',
+    'dringendes.apps.DringendesConfig',
     'mockverein.apps.MockvereinConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
