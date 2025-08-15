@@ -44,6 +44,7 @@ def index(request):
                                     True,
                              'alt': False if mandat.gueltig_ab == None else
                                     False if mandat.gueltig_bis == None else
+                                    False if mandat.entfernt != None else
                                     True,
                              'erstellung': "–" if mandat.erstellung == None else mandat.erstellung,
                              'gueltig_ab': "–" if mandat.gueltig_ab == None else mandat.gueltig_ab,
