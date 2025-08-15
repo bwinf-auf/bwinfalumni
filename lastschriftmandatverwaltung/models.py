@@ -19,6 +19,7 @@ class GekuerztesLastschriftmandat(models.Model):
     bestaetigung = models.DateField(null=True,default=None)
     gueltig_ab   = models.DateField(null=True,default=None)
     gueltig_bis  = models.DateField(null=True,default=None)
+    entfernt     = models.DateField(null=True,default=None)
 
     def __str__(self):
         ab = "noch nicht gültig" if self.gueltig_ab == None or self.gueltig_ab > date.today() else "GÜLTIG"

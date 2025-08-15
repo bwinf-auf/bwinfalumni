@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^(?P<mitgliedsnummer>[0-9]+)/neu$', views.addnew, name='addnew'),
     url(r'^delete/(?P<lastschriftmandat_id>[0-9]+)$', views.delete, name='delete'),
     url(r'^accept/(?P<lastschriftmandat_id>[0-9]+)$', views.accept, name='accept'),
+    url(r'^confirmdelete/(?P<lastschriftmandat_id>[0-9]+)$', views.confirmdelete, name='confirmdelete'),
 ]

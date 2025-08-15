@@ -42,6 +42,9 @@ def index(request):
                              'neu': False if mandat.gueltig_ab != None else
                                     False if mandat.gueltig_bis != None else
                                     True,
+                             'alt': False if mandat.gueltig_ab == None else
+                                    False if mandat.gueltig_bis == None else
+                                    True,
                              'erstellung': "–" if mandat.erstellung == None else mandat.erstellung,
                              'gueltig_ab': "–" if mandat.gueltig_ab == None else mandat.gueltig_ab,
                              'gueltig_bis': "–" if mandat.gueltig_bis == None else mandat.gueltig_bis,
@@ -192,10 +195,7 @@ def delete(request, lastschriftmandat_id):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def accept(request, lastschriftmandat_id):
-    benutzer = request.user
-
     lsm = get_object_or_404(GekuerztesLastschriftmandat, id__exact = lastschriftmandat_id)
-
     mitglied = lsm.mitglied
 
     if request.method == 'POST':
@@ -218,6 +218,20 @@ def accept(request, lastschriftmandat_id):
     return redirect(reverse('lastschriftmandatverwaltung:index'))
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def confirmdelete(request, lastschriftmandat_id):
+    lsm = get_object_or_404(GekuerztesLastschriftmandat, id__exact = lastschriftmandat_id)
+    mitglied = lsm.mitglied
+
+    if request.method == 'POST':
+        empty = EmptyForm(request.POST)
+        if empty.is_valid():
+            if lsm.gueltig_bis != None and lsm.entfernt == None:
+                lsm.entfernt = date.today()
+                lsm.save()
+
+    return redirect(reverse('lastschriftmandatverwaltung:index'))
 
 
 def sende_email_mit_mandatsreferenz(mitglied, mandatsreferenz):
