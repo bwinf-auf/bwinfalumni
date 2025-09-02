@@ -315,6 +315,7 @@ def beitraegeeinziehen(request):
 class EmailForm(forms.Form):
     betreff = forms.CharField()
     text = forms.CharField(widget=forms.Textarea)
+    schulden_betrag_cent = forms.IntegerField()
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
@@ -326,9 +327,10 @@ def zahlungsaufforderungen(request, templatename, schulden):
         successmessage = ""
 
         if not cform.is_valid():
-            errormessage = "Es müssen Text und Titel angegeben werden. " + mform.errors.as_json(escape_html=True)
+            errormessage = "Es müssen Text, Titel und ggf. Betrag angegeben werden. " + mform.errors.as_json(escape_html=True)
         else:
             today = date.today()
+            schulden_betrag_cent = cform.cleaned_data['schulden_betrag_cent']
             mitglieder = Mitglied.objects.filter(beitrittsdatum__lte = today).exclude(austrittsdatum__lte = today)
             numEmails = 0
             failEmails = 0
@@ -338,7 +340,7 @@ def zahlungsaufforderungen(request, templatename, schulden):
                     buchungen = mitglied.mitgliedskontobuchung_set.filter(wirksam=True)
                     for buchung in buchungen:
                         kontostand += buchung.cent_wert
-                    if kontostand < 0 or not schulden:
+                    if kontostand < schulden_betrag_cent or not schulden:
                         gueltige_lastschriftmandate = mitglied.gekuerzteslastschriftmandat_set.filter(gueltig_ab__lte=today).exclude(gueltig_bis__lte=today)
                         if len(gueltige_lastschriftmandate) > 0:
                             mandat = gueltige_lastschriftmandate[0]
@@ -385,7 +387,8 @@ def zahlungsaufforderungen(request, templatename, schulden):
             for line in templatefile.readlines():   # Remove first two character of every line if they are spaces
                 template += line[2:] if line[:2] == "  " else line   # Allows for templates in dokuwiki syntax …
         return render(request, 'mitgliedskonto/email.html', {'cform': EmailForm({'betreff': "Mitgliedsbeitrag BwInf Alumni und Freunde e. V.",
-                                                                                 'text': template}), 'schulden': schulden})
+                                                                                 'text': template,
+                                                                                 'schulden_betrag_cent': -1000}), 'schulden': schulden})
 
 
 

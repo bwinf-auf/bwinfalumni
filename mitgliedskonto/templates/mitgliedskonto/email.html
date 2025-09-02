@@ -8,9 +8,15 @@
     {% csrf_token %}
     <table style="border:0px">
       {{ cform.as_table }}
-      <tr><th></th><td><input type="submit" value="An ALLE Mitglieder {% if schulden %} mit negativem Kontostand {% endif %} senden" /></td></tr>
+      <tr><th></th><td><input type="submit" value="An ALLE Mitglieder {% if schulden %}mit Kontostand unter angegebenem {% endif %}senden" /></td></tr>
     </table>
 </form>
+
+{% if not schulden %}
+<script>
+  document.getElementById("id_schulden_betrag_cent").parentNode.parentNode.style.display = "none";
+</script>
+{% endif %}
 
 <p>Folgende Variablen stehen zur Verfügung</p>
 <table>
