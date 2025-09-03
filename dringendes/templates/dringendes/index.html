@@ -2,18 +2,26 @@
 {% load i18n %}
 
 {% block content %}
+
 <p>
+
 {% if neue_mandate == 0 %}<span>{% else %}<span style="font-weight:bold; color:#a00;">{% endif %}
 Neue Lastschriftmandate: {{neue_mandate}}</span><br>
 
 {% if alte_mandate == 0 %}<span>{% else %}<span style="font-weight:bold; color:#a00;">{% endif %}
 Alte Lastschriftmandate: {{alte_mandate}}</span>
-<p>
 
 <p>
+
+{% if angeforderte_belege == 0 and erstellte_belege == 0 %}<span>{% else %}<span style="font-weight:bold; color:#a00;">{% endif %}
+Spendenbescheigungen angefordert / noch nicht verifziert: {{angeforderte_belege}} / {{erstellte_belege}}</span><br>
+
+<p>
+
 {% if neue_mitglieder == 0 %}<span>{% else %}<span style="font-weight:bold; color:#a00;">{% endif %}
 Aufzunehmende Mitglieder: {{neue_mitglieder}}</span>
     <ul>  {% for mitglied in mitglieder %}<li>{{mitglied.vorname}} {{mitglied.nachname}}</li>{% endfor %}</ul>
+
 </p>
 
 {% endblock %}
