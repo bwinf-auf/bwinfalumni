@@ -4,7 +4,7 @@
 
 <div style="max-width: 1200px; background-color: #eee;">
 <kbd>
-  ./generate.sh '{"name":{{ name }}, "adresse": {{ strasse }}, "plz": {{ plz }}, "ort": {{ stadt }}, "betrag_cent": {{ betrag_cent }}, "betrag_datum": "{{ buchungsdatum }}", "gem_finanzamt": "{{ bescheid.finanzamt }}", "gem_steuernummer": "{{ bescheid.steuernummer }}", "gem_datum": "{{ bescheid.datum }}", "gem_zeitraum": "{{ bescheid.zeitraum }}", "unterschrift_datum": "{{ datum }}" }' '{{ mitgliedsnummer }}_{{ buchung }}.pdf'
+  ./generate.sh '{"name":{{ name }}, "adresse": {{ strasse }}, "plz": {{ plz }}, "ort": {{ stadt }}, "betrag_cent": {{ betrag_cent }}, "betrag_datum": "{{ buchungsdatum }}", "gem_finanzamt": "{{ bescheid.finanzamt }}", "gem_steuernummer": "{{ bescheid.steuernummer }}", "gem_datum": "{{ bescheid.datum|date:"d.m.Y" }}", "gem_zeitraum": "{{ bescheid.zeitraum }}", "unterschrift_datum": "{{ datum }}" }' '{{ mitgliedsnummer }}_{{ buchung }}.pdf'
 </kbd>
 </div>
 
