@@ -245,7 +245,7 @@ def sende_email_an_mitglied(mitglied, mitgliedskontobuchung):
             try:
                 send_mail(betreff, text, 'vorstand@alumni.bwinf.de', [mitglied.email])
                 f.write("Date: " + str(date.today()) + "\n")
-                f.write("To: " + email + "\n")
+                f.write("To: " + mitglied.email + "\n")
                 f.write("From: vorstand@alumni.bwinf.de\n")
                 f.write("Subject: " + betreff + "\n\n")
                 f.write(text + "\n\n")
