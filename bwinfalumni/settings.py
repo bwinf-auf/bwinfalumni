@@ -193,7 +193,7 @@ LOGGING = {
 
 try:
     import sys
-    sys.path.append(os.path.join(BASE_DIR, 'bwinfalumni')
+    sys.path.append(os.path.join(BASE_DIR, 'bwinfalumni'))
     from settings_local import *
 except ImportError as e:
     pass
