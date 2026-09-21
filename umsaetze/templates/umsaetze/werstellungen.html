@@ -12,9 +12,8 @@
 <form action="." method="post">
   {% csrf_token %}
 
-  
   <table style="border:0px; border-collapse: collapse; width:120em;">
-  
+
   <tr>
     <td>{{ form.konto.errors }}</td>
       <td>{{ form.wertstellungsdatum.errors }}</td>
@@ -27,11 +26,9 @@
       <td>{{ form.author.errors }}</td>
       <td>{{ form.geschaeftspartner.errors }}</td>
       <td>{{ form.kommentar.errors }}
-      <td>{{ mbform.mitglied.errors }}</td>
-      <td>{{ mbform.typ.errors }}</td>
       <td></td>
     </tr>
-  
+
     <tr>
     <td>{{ form.konto }}</td>
       <td>{{ form.wertstellungsdatum }}</td>
@@ -44,11 +41,9 @@
       <td>{{ form.author }}</td>
       <td>{{ form.geschaeftspartner }}</td>
       <td>{{ form.kommentar }}
-      <td>{{ mbform.mitglied }}</td>
-      <td>{{ mbform.typ }}</td>
       <td><input type="submit" value="Hinzufügen" /></td>
     </tr>
-    
+
     <tr>
       <th>Konto</th>
       <th>Datum</th>
@@ -61,13 +56,11 @@
       <th>Author</th>
       <th>Geschäftspartner</th>
       <th>Kommentar</th>
-      <td>Optional: Mitglied</td>
-      <td>Buchungstyp</td>
     </tr>
   {% for umsatz in umsaetze %}
     <tr style="border-top:1px solid grey;">
         <td>{{ umsatz.umsatz.konto }}</td>
-    
+
       <td>{{ umsatz.umsatz.wertstellungsdatum }}</td>
       <td>{{ umsatz.umsatz.text }}</td>
       <td>{{ umsatz.umsatz.typ }}</td>
@@ -85,4 +78,3 @@
 
 
 {% endblock %}
-

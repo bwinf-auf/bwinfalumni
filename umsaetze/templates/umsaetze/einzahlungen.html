@@ -26,7 +26,24 @@
   </table>
 
   <input type="submit" value="Hinzufügen" />
-  
-</form>  
-{% endblock %}
 
+</form>
+
+
+<script>
+  function addListener(i) {
+      var select = document.getElementById("id_einzahlungen-" + i + "-mitglied");
+      var input = document.getElementById("id_einzahlungen-" + i + "-geschaeftspartner");
+
+      select.addEventListener("change", (event) => {
+          var value = select.options[select.selectedIndex].text;
+          input.value = value.split(": ")[1].split(" (")[0]
+      });
+  };
+
+  for (var i = 0; i < 99; i++) {
+      addListener(i);
+  }
+</script>
+
+{% endblock %}

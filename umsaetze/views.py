@@ -10,16 +10,6 @@ from django import forms
 from datetime import date, timedelta
 
 
-
-class MitgliedskontoBuchungForm(forms.ModelForm):
-    # Set form elements to not-required:
-    mitglied = forms.ModelChoiceField(queryset=Mitglied.objects.all(), required=False)
-    typ      = forms.ModelChoiceField(queryset=MitgliedskontoBuchungstyp.objects.all(), required=False)
-    class Meta:
-        model = MitgliedskontoBuchung
-        fields = ['mitglied', 'typ']
-    # TODO: Add validation method that check if both of the fields are defined or none is!
-
 class UmsatzForm(forms.ModelForm):
     class Meta:
         model = Umsatz
@@ -36,40 +26,39 @@ class UmsatzForm(forms.ModelForm):
         self.fields['kommentar'].widget.attrs['style'] = 'width:200px;'
 
 
-
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def listumsaetze(request, reverse = True):
+    try:
+        mitglied = request.user.benutzermitglied.mitglied
+        autor = mitglied.vorname + " " + mitglied.nachname
+    except:
+        autor = None
+
+    try:
+        girokonto = Konto.objects.get(kontoname="Girokonto")
+    except:
+        girokonto = None
+
     if request.method == 'POST':
         neu_umsatz = UmsatzForm(request.POST, prefix='umsatz')
-        mkbuchung = MitgliedskontoBuchungForm(request.POST, prefix='buchung')
         if neu_umsatz.is_valid():
-            if mkbuchung.data['buchung-mitglied'] or mkbuchung.data['buchung-typ']:
-                if mkbuchung.is_valid():
-                    umsatz = neu_umsatz.save()
-                    buchung = mkbuchung.save(commit=False)
-                    buchung.umsatz = umsatz
-                    buchung.buchungsdatum = umsatz.wertstellungsdatum
-                    buchung.cent_wert = umsatz.cent_wert
-                    buchung.kommentar = umsatz.text
-                    buchung.save()
-                    neu_umsatz = UmsatzForm(prefix='umsatz')
-                    mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
-            else:
-                neu_umsatz.save()
-                neu_umsatz = UmsatzForm(prefix='umsatz')
-                mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
-        else:
-            if mkbuchung.data['buchung-mitglied'] or mkbuchung.data['buchung-typ']:
-                # ICH HABE KEINE IDEE, WARUM AN DIESER STELLE DAS PREFIX
-                # STEHEN MUSS UND AN JEDER ANDEREN STELLE NICHT … ABER SO
-                # FUNKTIONIERT ES
-                pass
-            else:
-                mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
+            neu_umsatz.save()
+            neu_umsatz = UmsatzForm(
+                prefix='umsatz',
+                initial={
+                    'author': autor,
+                    'konto': girokonto,
+                },
+            )
     else:
-        neu_umsatz = UmsatzForm(prefix='umsatz')
-        mkbuchung = MitgliedskontoBuchungForm(prefix='buchung')
+        neu_umsatz = UmsatzForm(
+            prefix='umsatz',
+            initial={
+                'author': autor,
+                'konto': girokonto,
+            },
+        )
 
     all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'geschaeftspartner')
 
@@ -86,7 +75,7 @@ def listumsaetze(request, reverse = True):
 
     if reverse:
         umsaetzeinfos.reverse()
-    return render(request, 'umsaetze/werstellungen.html', {'umsaetze': umsaetzeinfos, 'form': neu_umsatz, 'mbform': mkbuchung})
+    return render(request, 'umsaetze/werstellungen.html', {'umsaetze': umsaetzeinfos, 'form': neu_umsatz})
 
 
 @login_required
@@ -114,6 +103,7 @@ def reportumsaetze(request, jahr):
     umsaetzeinfos[-1]['last'] = True
 
     return render(request, 'umsaetze/kassenbuch.html', {'umsaetze': umsaetzeinfos, 'begin': begin, 'end': before_end})
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
@@ -186,6 +176,7 @@ def report(request, jahr):
 
     return render(request, 'umsaetze/bericht.html', {'einnahmen': einnahmeninfos, 'ausgaben': ausgabeninfos, 'geseinnahmen': einnahmen, 'gesausgaben': ausgaben, 'gesamt': gesamt, 'begin': begin, 'end': before_end})
 
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def reportcsv(request, jahr):
@@ -239,6 +230,7 @@ def reportcsv(request, jahr):
 
     return response
 
+
 class UmsatzEinzahlungenForm(forms.ModelForm):
     text = forms.CharField(max_length=250, initial="Mitglied {mitgliedsnummer} ({vorname_initiale}. {nachname}): Beitragszahlung")
 
@@ -258,13 +250,39 @@ class MitgliedskontoBuchungEineEinzahlungForm(forms.ModelForm):
         model = MitgliedskontoBuchung
         fields = ['mitglied', 'buchungsdatum', 'cent_wert']
 
+    field_order = ['mitglied', 'geschaeftspartner', 'buchungsdatum', 'cent_wert']
+
+
 from django.forms import formset_factory
 
 EinzahlungenFormSet = formset_factory(MitgliedskontoBuchungEineEinzahlungForm, extra=99)
 
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
 def einzahlungen(request, reverse = True):
+    try:
+        mitglied = request.user.benutzermitglied.mitglied
+        autor = mitglied.vorname + " " + mitglied.nachname
+    except:
+        autor = None
+
+    try:
+        girokonto = Konto.objects.get(kontoname="Girokonto")
+    except:
+        girokonto = None
+
+    try:
+        umsatztyp = UmsatzTyp.objects.get(typname="Beitraege")
+    except:
+        umsatztyp = None
+
+    try:
+        buchungstyp = MitgliedskontoBuchungstyp.objects.get(typname="Beitragszahlung")
+    except:
+        buchungstyp = None
+
+
     num = 0
     if request.method == 'POST':
         umsatzeinzahlung = UmsatzEinzahlungenForm(request.POST, prefix='umsatz')
@@ -311,12 +329,43 @@ def einzahlungen(request, reverse = True):
                     buchung.save()
 
                     num += 1
-            umsatzeinzahlung = UmsatzEinzahlungenForm(prefix='umsatz')
-            kontoeinzahlung  = MitgliedskontoBuchungEinzahlungenForm(prefix='konto')
-            einzahlungen     = EinzahlungenFormSet(prefix='einzahlungen')
+
+            umsatzeinzahlung = UmsatzEinzahlungenForm(
+                prefix='umsatz',
+                initial={
+                    'beleg': 'Kontoauszug',
+                    'author': autor,
+                    'konto': girokonto,
+                    'typ': umsatztyp,
+                },
+            )
+
+            kontoeinzahlung = MitgliedskontoBuchungEinzahlungenForm(
+                prefix='konto',
+                initial={
+                    'typ': buchungstyp,
+                    'kommentar': "Beitragszahlung",
+                }
+            )
+            einzahlungen = EinzahlungenFormSet(prefix='einzahlungen')
     else:
-        umsatzeinzahlung = UmsatzEinzahlungenForm(prefix='umsatz')
-        kontoeinzahlung  = MitgliedskontoBuchungEinzahlungenForm(prefix='konto')
-        einzahlungen     = EinzahlungenFormSet(prefix='einzahlungen')
+        umsatzeinzahlung = UmsatzEinzahlungenForm(
+            prefix='umsatz',
+            initial={
+                'beleg': 'Kontoauszug',
+                'author': autor,
+                'konto': girokonto,
+                'typ': umsatztyp,
+            },
+        )
+
+        kontoeinzahlung = MitgliedskontoBuchungEinzahlungenForm(
+            prefix='konto',
+            initial={
+                'typ': buchungstyp,
+                'kommentar': "Beitragszahlung",
+            }
+        )
+        einzahlungen = EinzahlungenFormSet(prefix='einzahlungen')
 
     return render(request, 'umsaetze/einzahlungen.html', {'umsatzeinzahlung': umsatzeinzahlung, 'kontoeinzahlung': kontoeinzahlung, 'einzahlungen': einzahlungen, 'num':num})
