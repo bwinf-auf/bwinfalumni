@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'mitglieder/style.css' %}" />
+
+<h1>Sortierung ändern</h1>
+
+Nutze das Skript 'parse_kontoauszuege.py' aus dem Vorstandsrepository um die Daten aus den Kontoauszügen zu generieren.
+
+<form action="" method="post">
+  {% csrf_token %}
+
+  <table>
+    {{ sortierung_daten }}
+
+    <tr>
+      <td></td>
+      <td><input type="submit" value="Hinzufügen" /></td>
+    </tr>
+  </table>
+
+</form>
+
+{% for message in messages %}
+  {{ message }}<br>
+{% endfor %}
+
+{% endblock %}

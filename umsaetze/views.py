@@ -60,7 +60,7 @@ def listumsaetze(request, reverse = True):
             },
         )
 
-    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'geschaeftspartner')
+    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'sortierhinweis', 'geschaeftspartner')
 
     current_val = 0;
 
@@ -86,7 +86,7 @@ def reportumsaetze(request, jahr):
     end = date(jahr, 8, 1)
     before_end = end - timedelta(days=1)
 
-    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'geschaeftspartner')
+    all_umsaetze = Umsatz.objects.select_related('konto', 'typ').order_by('wertstellungsdatum', 'sortierhinweis', 'geschaeftspartner')
 
     current_val = 0
 
@@ -369,3 +369,111 @@ def einzahlungen(request, reverse = True):
         einzahlungen = EinzahlungenFormSet(prefix='einzahlungen')
 
     return render(request, 'umsaetze/einzahlungen.html', {'umsatzeinzahlung': umsatzeinzahlung, 'kontoeinzahlung': kontoeinzahlung, 'einzahlungen': einzahlungen, 'num':num})
+
+
+
+def erstelle_sortierhinweis(kontoauszugeintrag):
+    positive = kontoauszugeintrag["amount"][0] != '-'
+    amount = kontoauszugeintrag["amount"].split(".")
+    euro = int(amount[0])
+    cent = int(amount[1])*10 if len(amount[1]) == 1 else int(amount[1])
+    betrag = 100 * euro + cent if positive else 100 * euro - cent
+    umsaetze = Umsatz.objects.filter(
+        wertstellungsdatum=kontoauszugeintrag["date"],
+        cent_wert=betrag,
+    )
+
+    if len(umsaetze) == 0:
+        return (False, "Konnte keinen potentiellen Umsatz finden für " + str(kontoauszugeintrag), False)
+
+    if len(umsaetze) == 1:
+        umsatz = umsaetze[0]
+        umsatz.sortierhinweis = int(kontoauszugeintrag["order_index"])
+        umsatz.save()
+        return (True, "", False)
+
+    ## Prepare for name matching:
+    import re
+    nameparts = [part for part in re.split(r'\W+|-', kontoauszugeintrag["partner"].lower()) if part not in ["dr.", "prof.", "und", "oder"]]
+
+    match_umsatz = None
+    for umsatz in umsaetze:
+        match_name = True
+        names = re.split(r'\W+|-', umsatz.geschaeftspartner.lower())
+        for name in names:
+            if not name in nameparts:
+                match_name = False
+
+        match_mitgliedsnummer = False
+        if kontoauszugeintrag["member_id"] != None:
+            mitgliedskontobuchungen = umsatz.mitgliedskontobuchung_set.all()
+            if len(mitgliedskontobuchungen) == 1:
+
+                if mitgliedskontobuchungen[1].mitglied.mitgliedsnummer == int(kontoauszugeintrag["member_id"]):
+                    match_mitgliedsnummer = True
+                else:
+                    continue
+
+        message = ""
+        if match_mitgliedsnummer and not match_name:
+            message = "Mitgliedsnummer-Match aber Diskrepanz Name: " + str(kontoauszugeintrag)
+
+        if match_mitgliedsnummer or match_name:
+            if match_umsatz is None:
+                match_umsatz = umsatz
+            else:
+                ## Die fatally
+                return (False, "FEHLER: Mehrere Einträge in Kasse passen zu Kontoauszugeintrag:" + str(kontoauszugeintrag), True)
+
+    if match_umsatz is None:
+        return (False, "Konnte keinen Umsatz finden für " + str(kontoauszugeintrag), False)
+
+    umsatz = match_umsatz
+    umsatz.sortierhinweis = int(kontoauszugeintrag["order_index"])
+    umsatz.save()
+    return (True, "", False)
+
+
+class SortierungAendernForm(forms.Form):
+    data = forms.CharField(widget=forms.Textarea(attrs={'rows': 15, 'cols': 120}), initial="date,amount,partner,member_id,order_index")
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='vorstand').exists())
+def sortierung_aendern(request):
+    import csv
+
+    messages = []
+    n_erfolg = 0
+    n_fail = 0
+
+    if request.method == 'POST':
+        sortierung_daten = SortierungAendernForm(request.POST)
+
+        if sortierung_daten.is_valid():
+            if sortierung_daten.has_changed():
+                from io import StringIO
+                f = StringIO(sortierung_daten.cleaned_data['data'])
+                reader = csv.DictReader(f)
+
+                fatal_error = False
+                for row in reader:
+                    (erfolg, message, fatal) = erstelle_sortierhinweis(row)
+                    if erfolg:
+                        n_erfolg += 1
+                    else:
+                        n_fail += 1
+                    if message != "":
+                        messages.append(message)
+                    if fatal:
+                        fatal_error = True
+                        break
+
+                if not fatal_error:
+                    messages.append(str(n_erfolg) + " Einträge erfolgreich")
+                    messages.append(str(n_fail) + " Einträge konnten nicht zugeordnet werden")
+                    sortierung_daten = SortierungAendernForm()
+    else:
+        sortierung_daten = SortierungAendernForm()
+
+    return render(request, 'umsaetze/sortierung_aendern.html', {'sortierung_daten': sortierung_daten, 'messages': messages})
